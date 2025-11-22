@@ -1,0 +1,77 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Gestión de Umbrales de Stock</h1>
+    <button class="btn btn-primary" (click)="openCreateForm()">+ Nuevo Umbral</button>
+  </div>
+
+  @if (showForm) {
+    <div class="modal-overlay" (click)="showForm = false">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>{{ isEdit ? 'Editar Umbral' : 'Nuevo Umbral' }}</h2>
+        <form (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label>Producto *</label>
+            <select [(ngModel)]="formData.productoId" name="productoId" required [disabled]="isEdit">
+              <option value="0">Seleccione un producto</option>
+              @for (producto of productos; track producto.id) {
+                <option [value]="producto.id">{{ producto.nombre || producto.codigo }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mínimo *</label>
+            <input type="number" [(ngModel)]="formData.minimo" name="minimo" min="0" required />
+          </div>
+          <div class="form-group">
+            <label>Punto de Pedido</label>
+            <input type="number" [(ngModel)]="formData.puntoPedido" name="puntoPedido" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Stock de Seguridad</label>
+            <input type="number" [(ngModel)]="formData.stockSeguridad" name="stockSeguridad" min="0" />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="showForm = false">Cancelar</button>
+            <button type="submit" class="btn btn-primary">{{ isEdit ? 'Actualizar' : 'Crear' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Sede</th>
+          <th>Producto</th>
+          <th>Mínimo</th>
+          <th>Punto Pedido</th>
+          <th>Stock Seguridad</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (umbral of umbrales; track umbral.id) {
+          <tr>
+            <td>{{ umbral.id }}</td>
+            <td>{{ umbral.sedeNombre }}</td>
+            <td>{{ umbral.productoNombre }}</td>
+            <td>{{ umbral.minimo }}</td>
+            <td>{{ umbral.puntoPedido || 'N/A' }}</td>
+            <td>{{ umbral.stockSeguridad || 'N/A' }}</td>
+            <td>
+              <button class="btn-icon" (click)="openEditForm(umbral)">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="btn-icon" (click)="deleteUmbral(umbral.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,163 @@
+<div class="inventory-page">
+  <h1 class="page-title">Inventario general y Alertas</h1>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3 class="stat-label blue">Categorías</h3>
+      <p class="stat-value">14</p>
+      <p class="stat-description">en los últimos 7 días</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-label orange">Total Medicamentos</h3>
+      <p class="stat-value">868</p>
+      <p class="stat-description">unidades en stock</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-label purple">Medicamentos más rotados</h3>
+      <p class="stat-value">5</p>
+      <p class="stat-description">con alta salidaCost</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-label red">Stock crítico</h3>
+      <div class="stat-split">
+        <div>
+          <p class="stat-value">12</p>
+          <p class="stat-description">en riesgo</p>
+        </div>
+        <div>
+          <p class="stat-value">2</p>
+          <p class="stat-description">agotados</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Medications Section -->
+  <div class="medications-section">
+    <div class="section-header">
+      <h2 class="section-title">Medicamentos</h2>
+      <div class="section-actions">
+        <button *ngIf="hasAccess(['JefeDeFarmacia', 'Administrador'])" class="btn btn-primary" (click)="openAddProductModal()">Agregar</button>
+        <button class="btn btn-secondary" (click)="openFilterModal()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M3 3a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V3zM3 9a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V9z"/>
+          </svg>
+          Filtros
+        </button>
+        <button class="btn btn-secondary" (click)="openDownloadModal()">Descargar</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table class="medications-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Precio de compra</th>
+            <th>Cantidad</th>
+            <th>Valor de alerta</th>
+            <th>Fecha de vencimiento</th>
+            <th>Disponibilidad</th>
+            <th *ngIf="hasAccess(['Farmaceutico', 'JefeDeFarmacia', 'Administrador'])">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (medication of medications; track medication.id) {
+            <tr>
+              <td class="medication-name">{{ medication.name }}</td>
+              <td>{{ medication.price }}</td>
+              <td>{{ medication.quantity }} cajas</td>
+              <td>{{ medication.alertValue }} cajas</td>
+              <td>{{ medication.expirationDate }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  [ngClass]="medication.status"
+                  [class.clickable]="medication.status === 'critical' || medication.status === 'low-stock'"
+                  (click)="medication.status === 'critical' || medication.status === 'low-stock' ? openStockAlertModal(medication) : null"
+                  [title]="medication.status === 'critical' || medication.status === 'low-stock' ? 'Click para solicitar reabastecimiento' : ''">
+                  {{ medication.statusText }}
+                </span>
+              </td>
+              <td *ngIf="hasAccess(['Farmaceutico', 'JefeDeFarmacia', 'Administrador'])">
+                <button class="btn-action btn-dispensar" (click)="openDispensacionModal(medication)" title="Dispensar medicamento">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm1 8a1 1 0 100 2h6a1 1 0 100-2H7zm0 4a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                  </svg>
+                  Dispensar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="btn btn-outline">Anterior</button>
+      <span class="pagination-info">Página 1 de 10</span>
+      <button class="btn btn-outline">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <app-add-product-modal
+    [isOpen]="isModalOpen"
+    (closeModal)="closeModal()"
+    (saveProduct)="onProductSaved($event)">
+  </app-add-product-modal>
+
+  <!-- Filter Modal -->
+  <app-filter-modal
+    [isOpen]="isFilterModalOpen"
+    (closeModal)="closeFilterModal()"
+    (applyFilters)="applyFilters($event)">
+  </app-filter-modal>
+
+  <!-- Download Modal -->
+  <app-download-modal
+    [isOpen]="isDownloadModalOpen"
+    (closeModal)="closeDownloadModal()"
+    (download)="onDownload($event)">
+  </app-download-modal>
+
+  <!-- Success Modal -->
+  <app-success-modal
+    [isOpen]="isSuccessModalOpen"
+    [message]="successMessage"
+    (closeModal)="closeSuccessModal()"
+    (confirm)="closeSuccessModal()">
+  </app-success-modal>
+
+  <!-- Confirmation Modal -->
+  <app-confirmation-modal
+    [isOpen]="isConfirmationModalOpen"
+    [message]="'Confirmar el envío del correo'"
+    (closeModal)="closeConfirmationModal()"
+    (cancel)="closeConfirmationModal()"
+    (confirm)="confirmRestock()">
+  </app-confirmation-modal>
+
+  <!-- Stock Alert Modal -->
+  <app-stock-alert-modal
+    [isOpen]="isAlertModalOpen"
+    [alertData]="alertData"
+    (closeModal)="closeAlertModal()"
+    (requestRestock)="onRequestRestock($event)">
+  </app-stock-alert-modal>
+
+  <!-- Dispensacion Modal -->
+  <app-dispensacion-modal
+    [isOpen]="isDispensacionModalOpen"
+    [productId]="selectedProductId"
+    [productName]="selectedProductName"
+    (closeModal)="closeDispensacionModal()"
+    (dispensationCompleted)="onDispensationCompleted()">
+  </app-dispensacion-modal>
+</div>

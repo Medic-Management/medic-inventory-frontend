@@ -1,0 +1,89 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Dispensar Medicamento</h2>
+
+      <div class="product-info">
+        <p class="product-name">{{ productName }}</p>
+      </div>
+
+      @if (errorMessage) {
+        <div class="alert alert-error">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <form class="dispensacion-form" (ngSubmit)="onSubmit()">
+        <!-- Lote Selection -->
+        <div class="form-group">
+          <label for="lote">Lote *</label>
+          <select
+            id="lote"
+            class="form-control"
+            [(ngModel)]="formData.loteId"
+            name="loteId"
+            [disabled]="loadingLotes"
+            required>
+            <option [value]="0">{{ loadingLotes ? 'Cargando lotes...' : 'Seleccione un lote' }}</option>
+            @for (lote of lotes; track lote.id) {
+              <option [value]="lote.id">
+                {{ lote.codigoProductoProv }} - Vence: {{ lote.fechaVencimiento }} (Stock: {{ lote.stockDisponible }})
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Cantidad -->
+        <div class="form-group">
+          <label for="cantidad">Cantidad *</label>
+          <input
+            type="number"
+            id="cantidad"
+            class="form-control"
+            placeholder="Ingrese la cantidad"
+            [(ngModel)]="formData.cantidad"
+            name="cantidad"
+            min="1"
+            required
+          />
+        </div>
+
+        <!-- Documento Referencia -->
+        <div class="form-group">
+          <label for="documento">Documento de Referencia</label>
+          <input
+            type="text"
+            id="documento"
+            class="form-control"
+            placeholder="Ej: Receta médica #123"
+            [(ngModel)]="formData.documentoReferencia"
+            name="documentoReferencia"
+          />
+        </div>
+
+        <!-- Motivo -->
+        <div class="form-group">
+          <label for="motivo">Motivo / Observaciones</label>
+          <textarea
+            id="motivo"
+            class="form-control"
+            placeholder="Indicaciones o motivo de la dispensación..."
+            [(ngModel)]="formData.motivo"
+            name="motivo"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="onClose()" [disabled]="isSubmitting">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting || loadingLotes">
+            {{ isSubmitting ? 'Guardando...' : 'Registrar Dispensación' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

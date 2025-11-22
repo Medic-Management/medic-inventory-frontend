@@ -1,0 +1,378 @@
+<div class="dashboard-page">
+  <div class="dashboard-grid">
+    <!-- Left Column -->
+    <div class="left-column">
+      <!-- Resumen de Despachos -->
+      <div class="section-card">
+        <h2 class="section-title">Resumen de Despachos</h2>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-icon blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 00-5.5-1.65l-.5.67-.5-.67C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.resumenDespachos?.despachados || 0 }}</p>
+              <p class="stat-label">Despachados</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.resumenDespachos?.entregadas?.toLocaleString() || 0 }}</p>
+              <p class="stat-label">Entregadas</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">S/. {{ stats.resumenDespachos?.ganancia?.toFixed(2) || '0.00' }}</p>
+              <p class="stat-label">Ganancia</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">S/. {{ stats.resumenDespachos?.costoTotal?.toFixed(2) || '0.00' }}</p>
+              <p class="stat-label">Costo Total</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen de Ingresos al Almacén -->
+      <div class="section-card">
+        <h2 class="section-title">Resumen de Ingresos al Almacén</h2>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-icon cyan">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.resumenIngresos?.ordenes || 0 }}</p>
+              <p class="stat-label">Órdenes</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon green-light">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">S/. {{ stats.resumenIngresos?.costoTotal?.toFixed(2) || '0.00' }}</p>
+              <p class="stat-label">Costo Total</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon purple-light">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.resumenIngresos?.canceladas || 0 }}</p>
+              <p class="stat-label">Canceladas</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon orange-light">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">S/. {{ stats.resumenIngresos?.devueltos?.toFixed(2) || '0.00' }}</p>
+              <p class="stat-label">Devueltos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flujo de Medicamentos Chart -->
+      <div class="section-card chart-section">
+        <div class="chart-header">
+          <h2 class="section-title">Flujo de Medicamentos</h2>
+          <button class="btn btn-outline-small">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M11 2v3h3v2h-3v3H9V7H6V5h3V2h2zM5 8H2v6c0 .55.45 1 1 1h1V8zm9 7c.55 0 1-.45 1-1V8h-3v7h2z"/>
+            </svg>
+            Semanal
+          </button>
+        </div>
+        <div class="chart-placeholder">
+          <div class="chart-bars">
+            @for (month of chartData; track month.mes) {
+              <div class="bar-group">
+                <div class="bars">
+                  <div class="bar blue" [style.height.%]="(month.ingresos / 600)"></div>
+                  <div class="bar green" [style.height.%]="(month.despachos / 600)"></div>
+                </div>
+                <span class="bar-label">{{ month.mes }}</span>
+              </div>
+            }
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-color blue"></span>
+              <span>Ingresos</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color green"></span>
+              <span>Despachos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medicamentos con Mayor Rotación -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Medicamentos con Mayor Rotación</h2>
+          <a href="#" class="link-primary">Ver Todo</a>
+        </div>
+        <table class="simple-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Unidades Despachadas</th>
+              <th>Stock Restante</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (med of topMedications; track med.name) {
+              <tr>
+                <td>{{ med.name }}</td>
+                <td>{{ med.dispatched }}</td>
+                <td>{{ med.remaining }}</td>
+                <td>{{ med.price }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-column">
+      <!-- Estado del Inventario -->
+      <div class="section-card">
+        <h2 class="section-title">Estado del Inventario</h2>
+        <div class="stats-column">
+          <div class="stat-item-vertical">
+            <div class="stat-icon orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.cantidadTotalStock }}</p>
+              <p class="stat-label">Cantidad disponible</p>
+            </div>
+          </div>
+
+          <div class="stat-item-vertical">
+            <div class="stat-icon purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 18.5a1.5 1.5 0 01-1.5-1.5 1.5 1.5 0 011.5-1.5 1.5 1.5 0 011.5 1.5 1.5 1.5 0 01-1.5 1.5zm1.5-9l1.96 2.5L17.5 17V9.5h2M6 18.5A1.5 1.5 0 014.5 17 1.5 1.5 0 016 15.5 1.5 1.5 0 017.5 17 1.5 1.5 0 016 18.5M20 8h-3V4H3c-1.11 0-2 .89-2 2v11h2a3 3 0 003 3 3 3 0 003-3h6a3 3 0 003 3 3 3 0 003-3h2v-5l-3-4z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.enTransito || 0 }}</p>
+              <p class="stat-label">En tránsito</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Productos y Proveedores -->
+      <div class="section-card">
+        <h2 class="section-title">Productos y Proveedores</h2>
+        <div class="stats-column">
+          <div class="stat-item-vertical">
+            <div class="stat-icon blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.proveedoresActivos }}</p>
+              <p class="stat-label">Proveedores activos</p>
+            </div>
+          </div>
+
+          <div class="stat-item-vertical">
+            <div class="stat-icon purple-light">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value">{{ stats.totalCategorias }}</p>
+              <p class="stat-label">Categorías de medicamentos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solicitudes Chart -->
+      <div class="section-card chart-section-small">
+        <h2 class="section-title">Solicitudes</h2>
+        <div class="line-chart-placeholder">
+          <svg width="100%" height="200" viewBox="0 0 300 200">
+            <!-- Grid lines -->
+            <line x1="0" y1="180" x2="300" y2="180" stroke="#e5e7eb" stroke-width="1"/>
+            <line x1="0" y1="135" x2="300" y2="135" stroke="#e5e7eb" stroke-width="1"/>
+            <line x1="0" y1="90" x2="300" y2="90" stroke="#e5e7eb" stroke-width="1"/>
+            <line x1="0" y1="45" x2="300" y2="45" stroke="#e5e7eb" stroke-width="1"/>
+
+            <!-- Solicitadas line (orange) -->
+            <polyline points="20,20 70,60 120,40 170,70 220,50 270,60"
+                      fill="none" stroke="#f97316" stroke-width="2"/>
+
+            <!-- Entregadas line (blue) -->
+            <polyline points="20,60 70,40 120,30 170,50 220,35 270,45"
+                      fill="none" stroke="#3b82f6" stroke-width="2"/>
+          </svg>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-color orange"></span>
+              <span>Solicitadas</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color blue"></span>
+              <span>Entregadas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertas Activas -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Alertas Activas</h2>
+        </div>
+        @if (alertas.length === 0) {
+          <div class="critical-stock-item">
+            <div class="product-info">
+              <p class="product-stock">No hay alertas activas</p>
+            </div>
+          </div>
+        }
+        @for (alerta of alertas; track alerta.id) {
+          <div class="critical-stock-item">
+            <div class="product-image">
+              <div class="product-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 4L4 10v12c0 9.94 6.88 19.25 16 21.5 9.12-2.25 16-11.56 16-21.5V10L20 4z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="product-info">
+              <h4>{{ alerta.productoNombre }}</h4>
+              <p class="product-stock">Stock actual: {{ alerta.stockActual }} | Nivel mínimo: {{ alerta.nivelAlerta }}</p>
+              <p class="product-stock">{{ alerta.sedeNombre }}</p>
+              <span class="badge" [ngClass]="alerta.nivel === 'ALTA' ? 'badge-red' : 'badge-orange'">
+                {{ alerta.tipo }}
+              </span>
+              <button
+                class="btn btn-outline-small"
+                style="margin-left: 10px;"
+                (click)="resolverAlerta(alerta.id)">
+                Resolver
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Stock Crítico -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Stock Crítico</h2>
+          <a href="/inventario" class="link-primary">Ver Todo</a>
+        </div>
+        @if (criticalProducts.length === 0) {
+          <div class="critical-stock-item">
+            <div class="product-info">
+              <p class="product-stock">No hay productos en stock crítico</p>
+            </div>
+          </div>
+        }
+        @for (product of criticalProducts; track product.id) {
+          <div class="critical-stock-item">
+            <div class="product-image">
+              <div class="product-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 2L4 8v12c0 9.94 6.88 19.25 16 21.5 9.12-2.25 16-11.56 16-21.5V8L20 2zm0 8c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0 20c-2.67 0-8-1.34-8-4v-2h16v2c0 2.66-5.33 4-8 4z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="product-info">
+              <h4>{{ product.nombre || product.codigo }}</h4>
+              <p class="product-stock">Cantidad restante: {{ product.cantidad }} unidades</p>
+              <span class="badge" [ngClass]="product.status === 'CRITICAL' ? 'badge-red' : 'badge-orange'">
+                {{ product.status === 'CRITICAL' ? 'Crítico' : 'Bajo' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Alertas de Vencimiento -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Alertas de Vencimiento</h2>
+        </div>
+        @if (alertasVencimiento.length === 0) {
+          <div class="critical-stock-item">
+            <div class="product-info">
+              <p class="product-stock">No hay lotes próximos a vencer</p>
+            </div>
+          </div>
+        }
+        @for (alerta of alertasVencimiento; track alerta.loteId) {
+          <div class="critical-stock-item">
+            <div class="product-image">
+              <div class="product-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 2C10.059 2 2 10.059 2 20s8.059 18 18 18 18-8.059 18-18S29.941 2 20 2zm0 32c-7.732 0-14-6.268-14-14S12.268 6 20 6s14 6.268 14 14-6.268 14-14 14zm-1-22h2v11h-2zm0 13h2v2h-2z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="product-info">
+              <h4>{{ alerta.productoNombre }}</h4>
+              <p class="product-stock">Lote: {{ alerta.codigoLote }} | Vence: {{ formatDate(alerta.fechaVencimiento) }}</p>
+              <p class="product-stock">Cantidad: {{ alerta.cantidadTotal }} unidades | {{ alerta.diasRestantes }} días restantes</p>
+              <span class="badge" [ngClass]="getNivelVencimientoClass(alerta.nivel)">
+                {{ alerta.nivel }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

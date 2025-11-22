@@ -1,0 +1,151 @@
+<div class="ml-predictions-page">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>🤖 Predicciones de Machine Learning</h1>
+    <button class="btn-reload" (click)="recargar()" [disabled]="loading">
+      <span *ngIf="!loading">🔄 Actualizar</span>
+      <span *ngIf="loading">⏳ Cargando...</span>
+    </button>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="alert alert-error">
+    <strong>Error:</strong> {{ error }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading && !error" class="loading-container">
+    <div class="spinner"></div>
+    <p>Analizando productos con Machine Learning...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error">
+    <!-- Estadísticas Generales -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <p class="stat-label">Total Productos</p>
+          <p class="stat-value">{{ totalProductos }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-warning">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-content">
+          <p class="stat-label">Con Alta Demanda</p>
+          <p class="stat-value">{{ productosConPico }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-danger">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-content">
+          <p class="stat-label">Riesgo de Vencimiento</p>
+          <p class="stat-value">{{ productosEnRiesgo }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+      <button
+        class="tab"
+        [class.active]="selectedTab === 'demanda'"
+        (click)="selectTab('demanda')">
+        🔥 Picos de Demanda ({{ productosConPico }})
+      </button>
+      <button
+        class="tab"
+        [class.active]="selectedTab === 'vencimiento'"
+        (click)="selectTab('vencimiento')">
+        ⚠️ Riesgo de Vencimiento ({{ productosEnRiesgo }})
+      </button>
+    </div>
+
+    <!-- Filtros de Nivel -->
+    <div class="filters-container">
+      <span class="filter-label">Filtrar por nivel:</span>
+      <button
+        class="filter-btn"
+        [class.active]="selectedNivel === 'TODOS'"
+        (click)="selectNivel('TODOS')">
+        Todos
+      </button>
+      <button
+        class="filter-btn filter-alto"
+        [class.active]="selectedNivel === 'ALTO'"
+        (click)="selectNivel('ALTO')">
+        🔴 Alto
+      </button>
+      <button
+        class="filter-btn filter-medio"
+        [class.active]="selectedNivel === 'MEDIO'"
+        (click)="selectNivel('MEDIO')">
+        🟡 Medio
+      </button>
+      <button
+        class="filter-btn filter-bajo"
+        [class.active]="selectedNivel === 'BAJO'"
+        (click)="selectNivel('BAJO')">
+        🟢 Bajo
+      </button>
+    </div>
+
+    <!-- Tabla de Predicciones -->
+    <div class="predictions-table-card">
+      <div *ngIf="prediccionesFiltradas.length === 0" class="empty-state">
+        <p>📭 No hay predicciones con este nivel de riesgo</p>
+      </div>
+
+      <table *ngIf="prediccionesFiltradas.length > 0" class="predictions-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Nivel</th>
+            <th>Probabilidad</th>
+            <th>Recomendación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pred of prediccionesFiltradas"
+              [class]="getNivelClass(pred.nivelRiesgo)">
+            <td class="producto-cell">
+              <strong>{{ pred.nombre }}</strong>
+              <span class="producto-id">ID: {{ pred.productoId }}</span>
+            </td>
+            <td>
+              <span class="badge" [class]="getNivelClass(pred.nivelRiesgo)">
+                {{ pred.nivelRiesgo }}
+              </span>
+            </td>
+            <td>
+              <div class="progress-container">
+                <div class="progress-bar"
+                     [style.width.%]="getProbabilidadPorcentaje(pred.probabilidad)"
+                     [class]="getNivelClass(pred.nivelRiesgo)">
+                </div>
+                <span class="progress-label">{{ getProbabilidadPorcentaje(pred.probabilidad) }}%</span>
+              </div>
+            </td>
+            <td class="recomendacion-cell">
+              {{ pred.recomendacion }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+      <h3>ℹ️ Acerca de las Predicciones</h3>
+      <ul>
+        <li><strong>Picos de Demanda:</strong> Identifica productos que tendrán alta demanda en el próximo mes basándose en patrones históricos.</li>
+        <li><strong>Riesgo de Vencimiento:</strong> Detecta productos con baja rotación que podrían vencerse antes de venderse.</li>
+        <li><strong>Nivel de Riesgo:</strong> ALTO (≥70%), MEDIO (40-69%), BAJO (<40%)</li>
+        <li>Las predicciones se actualizan automáticamente cada 24 horas.</li>
+      </ul>
+    </div>
+  </div>
+</div>

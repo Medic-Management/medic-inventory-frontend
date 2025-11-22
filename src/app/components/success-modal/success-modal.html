@@ -1,0 +1,25 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="success-icon">
+          <circle cx="24" cy="24" r="20" fill="#10b981" opacity="0.1"/>
+          <circle cx="24" cy="24" r="18" stroke="#10b981" stroke-width="2"/>
+          <path d="M16 24L22 30L32 18" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2>{{ title }}</h2>
+      </div>
+
+      <div class="modal-body">
+        <p>{{ message }}</p>
+      </div>
+
+      <div class="modal-actions">
+        @if (cancelText) {
+          <button class="btn-cancel" (click)="onCancel()">{{ cancelText }}</button>
+        }
+        <button class="btn-primary" (click)="onConfirm()">{{ confirmText }}</button>
+      </div>
+    </div>
+  </div>
+}

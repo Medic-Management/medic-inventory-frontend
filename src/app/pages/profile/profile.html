@@ -1,0 +1,116 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>Mi Perfil</h1>
+    <p>Gestiona tu información personal</p>
+  </div>
+
+  <div class="profile-content">
+    <!-- Profile Photo Section -->
+    <div class="profile-photo-section">
+      <div class="photo-container">
+        <div class="avatar">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+            <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#94a3b8"/>
+            <path d="M12 14C6.48 14 2 16.48 2 19.5V22H22V19.5C22 16.48 17.52 14 12 14Z" fill="#94a3b8"/>
+          </svg>
+        </div>
+        <button class="change-photo-btn">Cambiar foto</button>
+      </div>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="profile-form-section">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input
+              type="text"
+              [(ngModel)]="profileData.fullName"
+              name="fullName"
+              placeholder="Ingresa tu nombre completo"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input
+              type="email"
+              [(ngModel)]="profileData.email"
+              name="email"
+              placeholder="ejemplo@correo.com"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Rol</label>
+            <input
+              type="text"
+              [(ngModel)]="profileData.role"
+              name="role"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input
+              type="tel"
+              [(ngModel)]="profileData.phone"
+              name="phone"
+              placeholder="999 999 999"
+            />
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- Change Password Section -->
+        <div class="password-section">
+          <h3>Cambiar contraseña</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Contraseña actual</label>
+              <input
+                type="password"
+                [(ngModel)]="passwordData.currentPassword"
+                name="currentPassword"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Nueva contraseña</label>
+              <input
+                type="password"
+                [(ngModel)]="passwordData.newPassword"
+                name="newPassword"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label>Confirmar nueva contraseña</label>
+              <input
+                type="password"
+                [(ngModel)]="passwordData.confirmPassword"
+                name="confirmPassword"
+                placeholder="••••••••"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="onCancel()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-save">
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

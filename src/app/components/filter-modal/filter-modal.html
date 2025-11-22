@@ -1,0 +1,96 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Filtros</h2>
+        <button class="close-btn" (click)="onClose()">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="filter-form">
+        <div class="form-group">
+          <label>Disponibilidad</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="filters.inStock" />
+              <span>En stock</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="filters.lowStock" />
+              <span>Stock bajo</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="filters.critical" />
+              <span>Crítico</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="filters.outOfStock" />
+              <span>Agotado</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="filters.category" class="form-control">
+            <option value="">Todas las categorías</option>
+            <option value="antibioticos">Antibióticos</option>
+            <option value="analgesicos">Analgésicos</option>
+            <option value="antihipertensivos">Antihipertensivos</option>
+            <option value="antidiabeticos">Antidiabéticos</option>
+            <option value="vitaminas">Vitaminas</option>
+            <option value="otros">Otros</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Rango de precio</label>
+          <div class="range-inputs">
+            <input
+              type="number"
+              [(ngModel)]="filters.priceMin"
+              placeholder="Mín"
+              class="form-control"
+            />
+            <span>-</span>
+            <input
+              type="number"
+              [(ngModel)]="filters.priceMax"
+              placeholder="Máx"
+              class="form-control"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de vencimiento</label>
+          <select [(ngModel)]="filters.expirationRange" class="form-control">
+            <option value="">Todas</option>
+            <option value="30">Próximos 30 días</option>
+            <option value="60">Próximos 60 días</option>
+            <option value="90">Próximos 90 días</option>
+            <option value="expired">Vencidos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Proveedor</label>
+          <select [(ngModel)]="filters.supplier" class="form-control">
+            <option value="">Todos los proveedores</option>
+            <option value="farmaplus">FarmaPlus SAC</option>
+            <option value="medipharma">MediPharma</option>
+            <option value="salud">Distribuidora Salud</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="onClear()">Limpiar</button>
+        <button class="btn-primary" (click)="onApply()">Aplicar</button>
+      </div>
+    </div>
+  </div>
+}

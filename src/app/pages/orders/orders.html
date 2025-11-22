@@ -1,0 +1,105 @@
+<div class="orders-page">
+  <h1 class="page-title">Resumen de Órdenes</h1>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3 class="stat-label">Total de Órdenes</h3>
+      <p class="stat-value">37</p>
+      <p class="stat-description">Últimos 7 días</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-label">Total Recibido</h3>
+      <div class="stat-split">
+        <div>
+          <p class="stat-value">32</p>
+          <p class="stat-description">Últimos 7 días</p>
+        </div>
+        <div class="revenue">
+          <p class="stat-value">S/ 6,860</p>
+          <p class="stat-description">Ingresos</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-label">Total Devuelto</h3>
+      <div class="stat-split">
+        <div>
+          <p class="stat-value">5</p>
+          <p class="stat-description">Últimos 7 días</p>
+        </div>
+        <div class="cost">
+          <p class="stat-value">S/ 1,980</p>
+          <p class="stat-description">Costo</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <h3 class="stat-label">En Camino</h3>
+      <div class="stat-split">
+        <div>
+          <p class="stat-value">12</p>
+          <p class="stat-description">Ordenados</p>
+        </div>
+        <div class="cost">
+          <p class="stat-value">S/ 1,380</p>
+          <p class="stat-description">Costo</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders Section -->
+  <div class="orders-section">
+    <div class="section-header">
+      <h2 class="section-title">Órdenes</h2>
+      <div class="section-actions">
+        <button class="btn btn-primary" (click)="openAddOrderModal()">Agregar Producto</button>
+        <button class="btn btn-secondary">Filtros</button>
+        <button class="btn btn-secondary">Historial de Órdenes</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Productos</th>
+            <th>Valor de Orden</th>
+            <th>Cantidad</th>
+            <th>ID de Orden</th>
+            <th>Entrega Esperada</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders; track order.id) {
+            <tr>
+              <td>{{ order.product }}</td>
+              <td>{{ order.value }}</td>
+              <td>{{ order.quantity }}</td>
+              <td class="order-id">{{ order.orderId }}</td>
+              <td>{{ order.expectedDelivery }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="order.status">
+                  {{ order.statusText }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="btn btn-outline">Anterior</button>
+      <span class="pagination-info">Página 1 de 10</span>
+      <button class="btn btn-outline">Siguiente</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,136 @@
+<div class="solicitudes-page">
+  <div class="page-header">
+    <h1>Solicitudes de Reabastecimiento</h1>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ showForm ? 'Cancelar' : '+ Nueva Solicitud' }}
+    </button>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (showForm) {
+    <div class="form-card">
+      <h2>Nueva Solicitud de Compra</h2>
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="producto">Producto *</label>
+            <select
+              id="producto"
+              [(ngModel)]="formData.productoId"
+              name="productoId"
+              required>
+              <option value="0">Seleccione un producto</option>
+              @for (producto of productos; track producto.id) {
+                <option [value]="producto.id">{{ producto.nombre || producto.codigo }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="proveedor">Proveedor *</label>
+            <select
+              id="proveedor"
+              [(ngModel)]="formData.proveedorId"
+              name="proveedorId"
+              required>
+              <option value="0">Seleccione un proveedor</option>
+              @for (proveedor of proveedores; track proveedor.id) {
+                <option [value]="proveedor.id">{{ proveedor.nombre }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="cantidad">Cantidad Solicitada *</label>
+            <input
+              type="number"
+              id="cantidad"
+              [(ngModel)]="formData.cantidadSolicitada"
+              name="cantidadSolicitada"
+              min="1"
+              placeholder="0"
+              required />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="notas">Notas</label>
+            <textarea
+              id="notas"
+              [(ngModel)]="formData.notas"
+              name="notas"
+              rows="3"
+              placeholder="Observaciones o instrucciones especiales..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Crear Solicitud
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <div class="solicitudes-list">
+    <h2>Historial de Solicitudes</h2>
+    @if (solicitudes.length === 0) {
+      <div class="empty-state">
+        <p>No hay solicitudes registradas</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="solicitudes-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Proveedor</th>
+              <th>Cantidad</th>
+              <th>Estado</th>
+              <th>Email</th>
+              <th>Solicitado Por</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (solicitud of solicitudes; track solicitud.id) {
+              <tr>
+                <td>{{ solicitud.id }}</td>
+                <td>{{ solicitud.productoNombre }}</td>
+                <td>{{ solicitud.proveedorNombre }}</td>
+                <td>{{ solicitud.cantidadSolicitada }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getEstadoBadgeClass(solicitud.estado)">
+                    {{ getEstadoTexto(solicitud.estado) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="solicitud.emailEnviado ? 'badge-success' : 'badge-warning'">
+                    {{ solicitud.emailEnviado ? 'Enviado' : 'Pendiente' }}
+                  </span>
+                </td>
+                <td>{{ solicitud.solicitadoPorNombre }}</td>
+                <td>{{ formatDate(solicitud.creadaEn) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

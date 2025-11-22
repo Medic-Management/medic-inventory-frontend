@@ -1,0 +1,268 @@
+.sidebar {
+  width: 260px;
+  background: white;
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    4px 0 20px rgba(5, 150, 105, 0.08),
+    inset -1px 0 0 rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  position: relative;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, #059669 0%, #10b981 50%, transparent 100%);
+    opacity: 0.3;
+  }
+
+  .logo-container {
+    padding: 0 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+    }
+
+    .toggle-btn {
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #059669;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .nav-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 12px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #6b7280;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(5, 150, 105, 0.1) 0%, transparent 100%);
+      transition: width 0.4s ease;
+      border-radius: 12px;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    span {
+      position: relative;
+      z-index: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity 0.2s ease, width 0.3s ease;
+    }
+
+    &:hover {
+      background: linear-gradient(90deg, rgba(5, 150, 105, 0.08) 0%, rgba(243, 244, 246, 0.5) 100%);
+      color: #059669;
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
+
+      &::before {
+        width: 100%;
+      }
+
+      svg {
+        transform: scale(1.1) rotate(5deg);
+      }
+    }
+
+    &.active {
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+      color: #059669;
+      font-weight: 600;
+      box-shadow:
+        0 4px 12px rgba(5, 150, 105, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 70%;
+        background: linear-gradient(180deg, #059669 0%, #10b981 100%);
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4);
+      }
+
+      svg {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 12px;
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid rgba(229, 231, 235, 0.5);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #059669, transparent);
+      opacity: 0.3;
+    }
+  }
+
+  // Collapsed state styles
+  &.collapsed {
+    width: 70px;
+
+    .logo-container {
+      padding: 0 15px 32px;
+      justify-content: center;
+
+      .toggle-btn {
+        position: absolute;
+        top: 24px;
+        right: -16px;
+        background: white;
+        border: 2px solid rgba(5, 150, 105, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+
+        &:hover {
+          background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+          border-color: #059669;
+        }
+      }
+    }
+
+    .nav-menu,
+    .sidebar-footer {
+      padding: 0 7px;
+    }
+
+    .nav-item {
+      justify-content: center;
+      padding: 12px;
+      position: relative;
+
+      span {
+        opacity: 0;
+        width: 0;
+        pointer-events: none;
+      }
+
+      &:hover {
+        transform: none;
+
+        span {
+          opacity: 1;
+          width: auto;
+          position: absolute;
+          left: 100%;
+          margin-left: 12px;
+          padding: 8px 16px;
+          background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(16, 185, 129, 0.9) 100%);
+          color: white;
+          border-radius: 8px;
+          white-space: nowrap;
+          box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+          pointer-events: auto;
+          font-weight: 500;
+          z-index: 100;
+
+          &::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 6px solid rgba(5, 150, 105, 0.95);
+          }
+        }
+      }
+
+      &.active {
+        &::after {
+          height: 60%;
+        }
+      }
+    }
+  }
+}

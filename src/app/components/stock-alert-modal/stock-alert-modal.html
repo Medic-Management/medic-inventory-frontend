@@ -1,0 +1,56 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2>Alerta</h2>
+      </div>
+
+      <div class="alert-title">
+        Alerta de Inventario – {{ alertData.productName }}
+      </div>
+
+      <div class="alert-form">
+        <div class="form-row">
+          <label>Tipo de alerta</label>
+          <input type="text" [value]="alertData.alertType" readonly />
+        </div>
+
+        <div class="form-row">
+          <label>Stock actual</label>
+          <input type="text" [value]="alertData.currentStock" readonly />
+        </div>
+
+        <div class="form-row">
+          <label>Nivel de alerta</label>
+          <input type="text" [value]="alertData.alertLevel" readonly />
+        </div>
+
+        <div class="form-row">
+          <label>Fecha de detección</label>
+          <input type="text" [value]="alertData.detectionDate" readonly />
+        </div>
+
+        <div class="form-row">
+          <label>Prioridad</label>
+          <input type="text" [value]="alertData.priority" readonly />
+        </div>
+
+        <div class="form-row full-width">
+          <label>Sugerencia del sistema</label>
+          <input type="text" [value]="alertData.systemSuggestion" readonly />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="onDiscard()">Descartar</button>
+        <button class="btn-secondary" (click)="onViewDetail()">Ver detalle</button>
+        <button class="btn-primary" (click)="onRequestRestock()">Solicitar Reabastecimiento</button>
+      </div>
+    </div>
+  </div>
+}

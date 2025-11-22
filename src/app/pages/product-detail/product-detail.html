@@ -1,0 +1,114 @@
+<div class="product-detail-page">
+  <div class="page-header">
+    <h1 class="page-title">{{ product.name }}</h1>
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="openRegisterExitModal()">
+        Registrar Salida
+      </button>
+      <button class="btn btn-outline">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+        </svg>
+        Editar
+      </button>
+      <button class="btn btn-outline" (click)="openDownloadModal()">Descargar</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active">Descripción</button>
+  </div>
+
+  <div class="content-grid">
+    <!-- Left Column - Details -->
+    <div class="details-column">
+      <!-- Main Details -->
+      <div class="detail-section">
+        <h2 class="section-title">Detalles principales</h2>
+
+        <div class="detail-item">
+          <span class="detail-label">Nombre</span>
+          <span class="detail-value">{{ product.name }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Número de lote</span>
+          <span class="detail-value">{{ product.batchNumber }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Fecha de vencimiento</span>
+          <span class="detail-value">{{ product.expirationDate }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Cantidad</span>
+          <span class="detail-value">{{ product.quantity }}</span>
+        </div>
+      </div>
+
+      <!-- Supplier Details -->
+      <div class="detail-section">
+        <h2 class="section-title">Detalles del proveedor</h2>
+
+        <div class="detail-item">
+          <span class="detail-label">Nombre del proveedor</span>
+          <span class="detail-value">{{ product.supplierName }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Número de contacto</span>
+          <span class="detail-value">{{ product.supplierContact }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Image & Stats -->
+    <div class="image-stats-column">
+      <!-- Product Image -->
+      <div class="product-image-container">
+        <div class="product-image-placeholder">
+          @if (product.imageUrl) {
+            <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
+          } @else {
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="currentColor">
+              <path d="M40 10c-16.5 0-30 13.5-30 30s13.5 30 30 30 30-13.5 30-30-13.5-30-30-30zm0 8c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8zm0 44c-7.5 0-14.1-3.9-18-9.8 0-6 12-9.3 18-9.3s18 3.3 18 9.3c-3.9 5.9-10.5 9.8-18 9.8z"/>
+            </svg>
+          }
+        </div>
+      </div>
+
+      <!-- Stock Stats -->
+      <div class="stock-stats">
+        <div class="stat-row">
+          <span class="stat-label">Stock inicial</span>
+          <span class="stat-value">{{ product.initialStock }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Stock restante</span>
+          <span class="stat-value">{{ product.remainingStock }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">En camino</span>
+          <span class="stat-value">{{ product.inTransit }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download Modal -->
+  <app-download-modal
+    [isOpen]="isDownloadModalOpen"
+    (closeModal)="closeDownloadModal()"
+    (download)="onDownload($event)">
+  </app-download-modal>
+
+  <!-- Register Exit Modal -->
+  <app-register-exit-modal
+    [isOpen]="isRegisterExitModalOpen"
+    [productData]="product"
+    (closeModal)="closeRegisterExitModal()"
+    (registerExit)="onRegisterExit($event)">
+  </app-register-exit-modal>
+</div>

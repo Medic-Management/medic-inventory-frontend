@@ -1,0 +1,154 @@
+<div class="dispensaciones-page">
+  <div class="page-header">
+    <h1>Dispensación de Medicamentos</h1>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ showForm ? 'Cancelar' : '+ Nueva Dispensación' }}
+    </button>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (showForm) {
+    <div class="form-card">
+      <h2>Registrar Nueva Dispensación</h2>
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="producto">Producto *</label>
+            <select
+              id="producto"
+              [(ngModel)]="formData.productoId"
+              name="productoId"
+              (change)="onProductoChange()"
+              required>
+              <option value="0">Seleccione un producto</option>
+              @for (producto of productos; track producto.id) {
+                <option [value]="producto.id">{{ producto.nombre || producto.codigo }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="lote">Lote *</label>
+            <select
+              id="lote"
+              [(ngModel)]="formData.loteId"
+              name="loteId"
+              [disabled]="!formData.productoId || loadingLotes"
+              required>
+              <option value="0">{{ loadingLotes ? 'Cargando...' : 'Seleccione un lote' }}</option>
+              @for (lote of lotes; track lote.id) {
+                <option [value]="lote.id">
+                  {{ lote.codigoProductoProv }} - Vence: {{ lote.fechaVencimiento }} (Stock: {{ lote.stockDisponible }})
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="cantidad">Cantidad *</label>
+            <input
+              type="number"
+              id="cantidad"
+              [(ngModel)]="formData.cantidad"
+              name="cantidad"
+              min="1"
+              placeholder="0"
+              required />
+          </div>
+
+          <div class="form-group">
+            <label for="documento">Documento de Referencia</label>
+            <input
+              type="text"
+              id="documento"
+              [(ngModel)]="formData.documentoReferencia"
+              name="documentoReferencia"
+              placeholder="Ej: Receta médica #123" />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="motivo">Motivo / Observaciones</label>
+            <textarea
+              id="motivo"
+              [(ngModel)]="formData.motivo"
+              name="motivo"
+              rows="3"
+              placeholder="Indicaciones o motivo de la dispensación..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Registrar Dispensación
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Tabla de Dispensaciones -->
+  <div class="dispensaciones-list">
+    <h2>Mis Dispensaciones Recientes</h2>
+
+    @if (dispensaciones.length === 0) {
+      <div class="empty-state">
+        <p>No hay dispensaciones registradas</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="dispensaciones-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Lote</th>
+              <th>Cantidad</th>
+              <th>Fecha</th>
+              <th>Documento Ref.</th>
+              <th>Motivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (disp of dispensaciones; track disp.id) {
+              <tr>
+                <td>{{ disp.id }}</td>
+                <td class="producto-name">{{ disp.productoNombre }}</td>
+                <td>{{ disp.codigoLote }}</td>
+                <td>{{ disp.cantidad }} unidades</td>
+                <td>{{ formatDate(disp.ocurrioEn) }}</td>
+                <td>{{ disp.documentoReferencia || '-' }}</td>
+                <td>{{ disp.motivo || '-' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <div class="info-card">
+    <h3>Instrucciones</h3>
+    <ul>
+      <li>Seleccione el producto que va a dispensar</li>
+      <li>Elija el lote correspondiente (se muestra stock disponible)</li>
+      <li>Ingrese la cantidad a dispensar (no puede exceder el stock)</li>
+      <li>Opcionalmente agregue el documento de referencia (receta, orden médica, etc.)</li>
+      <li>Agregue observaciones o motivo de la dispensación si es necesario</li>
+      <li>El sistema descontará automáticamente del inventario</li>
+    </ul>
+  </div>
+</div>

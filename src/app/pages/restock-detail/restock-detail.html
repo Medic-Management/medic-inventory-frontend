@@ -1,0 +1,174 @@
+<div class="restock-detail-page">
+  <div class="page-header">
+    <h1 class="page-title">
+      @if (isEditMode) {
+        Ejecución automática
+      } @else {
+        Ejecución automática – Solicitud enviada al proveedor
+      }
+    </h1>
+    <div class="header-actions">
+      @if (isEditMode) {
+        <button class="btn btn-secondary" (click)="cancelEdit()">Cancelar</button>
+        <button class="btn btn-primary" (click)="saveChanges()">Guardar</button>
+      } @else {
+        @if (!restockData.emailSent) {
+          <button class="btn btn-secondary" (click)="viewFullEmail()">Ver correo completo</button>
+          <button class="btn btn-primary" (click)="openSendEmailModal()" [disabled]="sendingEmail">
+            @if (sendingEmail) {
+              Enviando...
+            } @else {
+              Enviar correo
+            }
+          </button>
+        } @else {
+          <button class="btn btn-secondary" (click)="viewFullEmail()">Ver correo completo</button>
+          <button class="btn btn-primary" (click)="markAsAttended()">Marcar como atendida</button>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  @if (successMessage) {
+    <div class="alert alert-success" style="margin: 1rem 0; padding: 1rem; background: #d1fae5; border: 1px solid #10b981; border-radius: 8px; color: #065f46; display: flex; align-items: center; gap: 0.5rem;">
+      <i class="fas fa-check-circle" style="font-size: 20px;"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+  }
+  @if (error) {
+    <div class="alert alert-error" style="margin: 1rem 0; padding: 1rem; background: #fee2e2; border: 1px solid #ef4444; border-radius: 8px; color: #991b1b; display: flex; align-items: center; gap: 0.5rem;">
+      <i class="fas fa-times-circle" style="font-size: 20px;"></i>
+      <span>{{ error }}</span>
+    </div>
+  }
+
+  <div class="content-grid">
+    <!-- Left Column -->
+    <div class="left-column">
+      <div class="section-card">
+        <h2 class="section-title with-underline">Descripción</h2>
+
+        <div class="details-section">
+          <h3>Detalles</h3>
+
+          <div class="detail-row">
+            <label>Proceso automatizado</label>
+            @if (isEditMode) {
+              <input type="text" [(ngModel)]="restockData.processType" class="form-input" />
+            } @else {
+              <span>{{ restockData.processType }}</span>
+            }
+          </div>
+
+          <div class="detail-row">
+            <label>Proveedor</label>
+            @if (isEditMode) {
+              <input type="text" [(ngModel)]="restockData.supplierName" class="form-input" />
+            } @else {
+              <span>{{ restockData.supplierName }}</span>
+            }
+          </div>
+
+          <div class="detail-row">
+            <label>Fecha y hora</label>
+            @if (isEditMode) {
+              <input type="text" [(ngModel)]="restockData.dateTime" class="form-input" />
+            } @else {
+              <span>{{ restockData.dateTime }}</span>
+            }
+          </div>
+
+          <div class="detail-row">
+            <label>Estado</label>
+            @if (isEditMode) {
+              <input type="text" [(ngModel)]="restockData.status" class="form-input" />
+            } @else {
+              <span class="status-ok">{{ restockData.status }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="evidence-section">
+          <h3>Evidencia</h3>
+
+          <div class="email-preview">
+            <div class="email-subject">
+              @if (isEditMode) {
+                <input type="text" [(ngModel)]="restockData.emailSubject" class="form-input" />
+              } @else {
+                <strong>Asunto: {{ restockData.emailSubject }}</strong>
+              }
+            </div>
+
+            <div class="email-body">
+              @if (isEditMode) {
+                <textarea [(ngModel)]="restockData.emailBody" class="form-textarea" rows="8"></textarea>
+              } @else {
+                <p style="white-space: pre-line;">{{ restockData.emailBody }}</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-column">
+      <div class="product-image-card">
+        @if (restockData.productImage) {
+          <img [src]="restockData.productImage" [alt]="restockData.productName" />
+        } @else {
+          <div class="placeholder-image">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <rect width="80" height="80" rx="8" fill="#e5e7eb"/>
+              <path d="M30 50L40 35L50 45L60 30" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ restockData.productName }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="stats-card">
+        <div class="stat-item">
+          <label>Stock actual</label>
+          @if (isEditMode) {
+            <input type="number" [(ngModel)]="restockData.currentStock" class="form-input-number" />
+          } @else {
+            <span class="stat-value">{{ restockData.currentStock }} cajas</span>
+          }
+        </div>
+
+        <div class="stat-item">
+          <label>Cantidad solicitada</label>
+          @if (isEditMode) {
+            <input type="number" [(ngModel)]="restockData.requestedQuantity" class="form-input-number" />
+          } @else {
+            <span class="stat-value">{{ restockData.requestedQuantity }} cajas</span>
+          }
+        </div>
+
+        <div class="stat-item">
+          <label>Responsable automático</label>
+          <span class="stat-value">{{ restockData.responsibleType }}</span>
+        </div>
+      </div>
+
+      @if (!isEditMode) {
+        <button class="btn btn-edit" (click)="toggleEditMode()">
+          <i class="fas fa-pen"></i>
+          Editar correo
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <app-confirmation-modal
+    [isOpen]="isConfirmationModalOpen"
+    [message]="'¿Confirmar el envío del correo al proveedor?'"
+    (closeModal)="closeConfirmationModal()"
+    (cancel)="closeConfirmationModal()"
+    (confirm)="confirmSendEmail()">
+  </app-confirmation-modal>
+</div>

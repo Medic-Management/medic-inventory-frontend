@@ -1,0 +1,117 @@
+<div class="entradas-page">
+  <div class="page-header">
+    <h1>Registro de Entradas de Mercancía</h1>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ showForm ? 'Cancelar' : '+ Nueva Entrada' }}
+    </button>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (showForm) {
+    <div class="form-card">
+      <h2>Registrar Nueva Entrada</h2>
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="producto">Producto *</label>
+            <select
+              id="producto"
+              [(ngModel)]="formData.productoId"
+              name="productoId"
+              required>
+              <option value="0">Seleccione un producto</option>
+              @for (producto of productos; track producto.id) {
+                <option [value]="producto.id">{{ producto.nombre || producto.codigo }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="lote">Código de Lote *</label>
+            <input
+              type="text"
+              id="lote"
+              [(ngModel)]="formData.codigoLote"
+              name="codigoLote"
+              placeholder="Ej: LOTE-2025-001"
+              required />
+          </div>
+
+          <div class="form-group">
+            <label for="vencimiento">Fecha de Vencimiento *</label>
+            <input
+              type="date"
+              id="vencimiento"
+              [(ngModel)]="formData.fechaVencimiento"
+              name="fechaVencimiento"
+              required />
+          </div>
+
+          <div class="form-group">
+            <label for="cantidad">Cantidad *</label>
+            <input
+              type="number"
+              id="cantidad"
+              [(ngModel)]="formData.cantidad"
+              name="cantidad"
+              min="1"
+              placeholder="0"
+              required />
+          </div>
+
+          <div class="form-group">
+            <label for="documento">Documento de Referencia</label>
+            <input
+              type="text"
+              id="documento"
+              [(ngModel)]="formData.documentoReferencia"
+              name="documentoReferencia"
+              placeholder="Ej: FAC-2025-001" />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="observaciones">Observaciones</label>
+            <textarea
+              id="observaciones"
+              [(ngModel)]="formData.observaciones"
+              name="observaciones"
+              rows="3"
+              placeholder="Observaciones adicionales..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Registrar Entrada
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <div class="info-card">
+    <h3>Instrucciones</h3>
+    <ul>
+      <li>Seleccione el producto de la lista</li>
+      <li>Ingrese el código de lote del proveedor</li>
+      <li>Especifique la fecha de vencimiento</li>
+      <li>Ingrese la cantidad recibida</li>
+      <li>Opcionalmente agregue el número de factura u orden de compra</li>
+      <li>El sistema actualizará automáticamente el inventario</li>
+    </ul>
+  </div>
+</div>
