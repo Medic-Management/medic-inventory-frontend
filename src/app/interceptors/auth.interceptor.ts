@@ -4,16 +4,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
   console.log('[AUTH INTERCEPTOR] Token:', token ? 'EXISTS' : 'MISSING', 'URL:', req.url);
 
+  // Crear headers base con ngrok skip
+  const headers: any = {
+    'ngrok-skip-browser-warning': 'true'
+  };
+
+  // Agregar Authorization si existe token
   if (token && !req.url.includes('/auth/')) {
-    const clonedRequest = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    headers['Authorization'] = `Bearer ${token}`;
     console.log('[AUTH INTERCEPTOR] Adding Authorization header');
-    return next(clonedRequest);
   }
 
-  console.log('[AUTH INTERCEPTOR] NOT adding Authorization header');
-  return next(req);
+  const clonedRequest = req.clone({
+    setHeaders: headers
+  });
+
+  return next(clonedRequest);
 };
