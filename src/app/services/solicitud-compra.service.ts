@@ -30,7 +30,7 @@ export interface SolicitudCompraResponse {
   providedIn: 'root'
 })
 export class SolicitudCompraService {
-  private apiUrl = 'http://localhost:8080/api/solicitudes-compra';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/solicitudes-compra';
 
   constructor(private http: HttpClient) { }
 

@@ -22,7 +22,7 @@ export interface AlertaResponse {
   providedIn: 'root'
 })
 export class AlertaService {
-  private apiUrl = 'http://localhost:8080/api/alertas';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/alertas';
 
   constructor(private http: HttpClient) { }
 

@@ -17,7 +17,7 @@ export interface AlertaVencimientoResponse {
   providedIn: 'root'
 })
 export class AlertaVencimientoService {
-  private apiUrl = 'http://localhost:8080/api/alertas-vencimiento';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/alertas-vencimiento';
 
   constructor(private http: HttpClient) { }
 

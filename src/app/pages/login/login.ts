@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
     };
 
     console.log('[LOGIN] Enviando request de login...');
-    this.http.post<any>('http://localhost:8080/api/auth/login', loginData)
+    this.http.post<any>('https://unburglarized-claude-dovetailed.ngrok-free.dev/api/auth/login', loginData)
       .subscribe({
         next: (response) => {
           console.log('[LOGIN] Response recibida:', response);

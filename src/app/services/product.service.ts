@@ -24,7 +24,7 @@ export interface Product {
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:8080/api/products';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/products';
 
   constructor(private http: HttpClient) {}
 

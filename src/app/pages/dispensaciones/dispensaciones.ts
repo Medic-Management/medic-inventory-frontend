@@ -74,7 +74,7 @@ export class DispensacionesComponent implements OnInit {
       this.formData.loteId = 0;
 
       // Obtener lotes disponibles del producto
-      this.http.get<any[]>(`http://localhost:8080/api/products/${this.formData.productoId}/lotes-disponibles`)
+      this.http.get<any[]>(`https://unburglarized-claude-dovetailed.ngrok-free.dev/api/products/${this.formData.productoId}/lotes-disponibles`)
         .subscribe({
           next: (lotes) => {
             this.lotes = lotes;

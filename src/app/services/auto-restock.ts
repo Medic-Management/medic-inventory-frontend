@@ -31,7 +31,7 @@ export interface RestockResponse {
   providedIn: 'root'
 })
 export class AutoRestockService {
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api';
 
   constructor(private http: HttpClient) {}
 

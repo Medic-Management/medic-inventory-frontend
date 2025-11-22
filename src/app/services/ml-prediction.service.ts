@@ -12,7 +12,7 @@ import {
   providedIn: 'root'
 })
 export class MlPredictionService {
-  private apiUrl = 'http://localhost:8080/api/ml';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/ml';
 
   constructor(private http: HttpClient) {}
 

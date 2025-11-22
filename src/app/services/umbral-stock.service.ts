@@ -25,7 +25,7 @@ export interface UmbralStockResponse {
   providedIn: 'root'
 })
 export class UmbralStockService {
-  private apiUrl = 'http://localhost:8080/api/umbrales';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/umbrales';
 
   constructor(private http: HttpClient) { }
 

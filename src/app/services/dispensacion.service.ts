@@ -28,7 +28,7 @@ export interface DispensacionResponse {
   providedIn: 'root'
 })
 export class DispensacionService {
-  private apiUrl = 'http://localhost:8080/api/dispensaciones';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/dispensaciones';
 
   constructor(private http: HttpClient) {}
 

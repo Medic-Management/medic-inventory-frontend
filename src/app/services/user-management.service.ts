@@ -28,7 +28,7 @@ export interface RoleResponse {
   providedIn: 'root'
 })
 export class UserManagementService {
-  private apiUrl = 'http://localhost:8080/api/users';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/users';
 
   constructor(private http: HttpClient) { }
 

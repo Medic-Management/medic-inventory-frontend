@@ -75,7 +75,7 @@ export interface ReporteResponse {
   providedIn: 'root'
 })
 export class ReporteService {
-  private apiUrl = 'http://localhost:8080/api/reportes';
+  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/reportes';
 
   constructor(private http: HttpClient) { }
 

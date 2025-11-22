@@ -55,7 +55,7 @@ export class DispensacionModalComponent implements OnChanges {
     this.formData.loteId = 0;
     this.errorMessage = '';
 
-    this.http.get<Lote[]>(`http://localhost:8080/api/products/${this.productId}/lotes-disponibles`)
+    this.http.get<Lote[]>(`https://unburglarized-claude-dovetailed.ngrok-free.dev/api/products/${this.productId}/lotes-disponibles`)
       .subscribe({
         next: (lotes) => {
           this.lotes = lotes;
