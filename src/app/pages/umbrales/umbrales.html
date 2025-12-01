@@ -35,6 +35,11 @@
             <input type="number" [(ngModel)]="formData.umbralCoberturaDias" name="umbralCoberturaDias" min="1" max="365" />
             <small style="color: #6b7280; font-size: 12px;">Días mínimos de cobertura antes de alertar (default: 15)</small>
           </div>
+          <div class="form-group">
+            <label>Stock Máximo 📦</label>
+            <input type="number" [(ngModel)]="formData.stockMaximo" name="stockMaximo" min="1" />
+            <small style="color: #6b7280; font-size: 12px;">Límite máximo de stock. Pedidos automáticos se ajustarán para no exceder (opcional)</small>
+          </div>
           <div class="form-actions">
             <button type="button" class="btn btn-secondary" (click)="showForm = false">Cancelar</button>
             <button type="submit" class="btn btn-primary">{{ isEdit ? 'Actualizar' : 'Crear' }}</button>
@@ -55,6 +60,7 @@
           <th>Punto Pedido</th>
           <th>Stock Seguridad</th>
           <th>Cobertura (días)</th>
+          <th>Stock Máximo</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -68,6 +74,7 @@
             <td>{{ umbral.puntoPedido || 'N/A' }}</td>
             <td>{{ umbral.stockSeguridad || 'N/A' }}</td>
             <td><span style="color: #3b82f6; font-weight: 600;">{{ umbral.umbralCoberturaDias || 15 }} días</span></td>
+            <td><span style="color: #10b981; font-weight: 600;">{{ umbral.stockMaximo || '∞' }}</span></td>
             <td>
               <button class="btn-icon" (click)="openEditForm(umbral)">
                 <i class="fas fa-pen"></i>

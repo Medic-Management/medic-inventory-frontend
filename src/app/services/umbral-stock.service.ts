@@ -9,6 +9,7 @@ export interface UmbralStockRequest {
   puntoPedido?: number;
   stockSeguridad?: number;
   umbralCoberturaDias?: number; // HU-17: Días mínimos de cobertura
+  stockMaximo?: number; // HU-04.3: Stock máximo permitido
 }
 
 export interface UmbralStockResponse {
@@ -21,6 +22,7 @@ export interface UmbralStockResponse {
   puntoPedido: number;
   stockSeguridad: number;
   umbralCoberturaDias: number; // HU-17: Días mínimos de cobertura
+  stockMaximo: number; // HU-04.3: Stock máximo permitido
 }
 
 @Injectable({
