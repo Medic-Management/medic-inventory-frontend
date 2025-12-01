@@ -39,7 +39,7 @@
           </div>
 
           <div class="form-group">
-            <label for="lote">Lote *</label>
+            <label for="lote">Lote * (ordenado por FEFO - First Expired, First Out)</label>
             <select
               id="lote"
               [(ngModel)]="formData.loteId"
@@ -47,12 +47,15 @@
               [disabled]="!formData.productoId || loadingLotes"
               required>
               <option value="0">{{ loadingLotes ? 'Cargando...' : 'Seleccione un lote' }}</option>
-              @for (lote of lotes; track lote.id) {
+              @for (lote of lotes; track lote.id; let i = $index) {
                 <option [value]="lote.id">
-                  {{ lote.codigoProductoProv }} - Vence: {{ lote.fechaVencimiento }} (Stock: {{ lote.stockDisponible }})
+                  {{ esPrimerLoteFEFO(i) ? '⭐ ' : '' }}{{ lote.codigoLote }} - Vence: {{ formatFechaVencimiento(lote.fechaVencimiento) }} ({{ getUrgenciaTexto(lote.diasHastaVencimiento) }}) - Stock: {{ lote.cantidadDisponible }}
                 </option>
               }
             </select>
+            @if (lotes.length > 0 && formData.loteId === lotes[0].id) {
+              <small class="fefo-recomendado">⭐ Este es el lote recomendado por FEFO (vence primero)</small>
+            }
           </div>
 
           <div class="form-group">
@@ -147,14 +150,16 @@
   </div>
 
   <div class="info-card">
-    <h3>Instrucciones</h3>
+    <h3>Instrucciones - FEFO (First Expired, First Out)</h3>
     <ul>
-      <li>Seleccione el producto que va a dispensar</li>
-      <li>Elija el lote correspondiente (se muestra stock disponible)</li>
-      <li>Ingrese la cantidad a dispensar (no puede exceder el stock)</li>
-      <li>Opcionalmente agregue el documento de referencia (receta, orden médica, etc.)</li>
-      <li>Agregue observaciones o motivo de la dispensación si es necesario</li>
-      <li>El sistema descontará automáticamente del inventario</li>
+      <li><strong>Seleccione el producto</strong> que va a dispensar</li>
+      <li><strong>Los lotes se muestran ordenados por FEFO</strong> (el que vence primero aparece arriba ⭐)</li>
+      <li>El sistema <strong>auto-selecciona el lote recomendado</strong> (próximo a vencer)</li>
+      <li><strong>Ingrese la cantidad</strong> a dispensar (no puede exceder el stock disponible)</li>
+      <li>Opcionalmente agregue el <strong>documento de referencia</strong> (receta, orden médica, etc.)</li>
+      <li>Agregue <strong>observaciones o motivo</strong> de la dispensación si es necesario</li>
+      <li>El sistema <strong>descontará automáticamente</strong> del inventario y generará el comprobante PDF</li>
+      <li><strong>Normativa FEFO:</strong> Siempre use el lote que vence primero para minimizar pérdidas</li>
     </ul>
   </div>
 </div>

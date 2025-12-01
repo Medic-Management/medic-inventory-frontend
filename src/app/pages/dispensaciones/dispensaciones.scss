@@ -261,6 +261,34 @@
   }
 }
 
+// HU-11: Estilos para FEFO (First Expired, First Out)
+.fefo-recomendado {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #059669;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.urgencia-critica {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.urgencia-alta {
+  color: #ea580c;
+  font-weight: 500;
+}
+
+.urgencia-media {
+  color: #f59e0b;
+}
+
+.urgencia-normal {
+  color: #6b7280;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

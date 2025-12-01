@@ -3,14 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DispensacionService, DispensacionRequest, DispensacionResponse } from '../../services/dispensacion.service';
 import { ProductService } from '../../services/product.service';
-import { HttpClient } from '@angular/common/http';
-
-interface Lote {
-  id: number;
-  codigoProductoProv: string;
-  fechaVencimiento: string;
-  stockDisponible: number;
-}
+import { LoteService, LoteResponse } from '../../services/lote.service';
 
 @Component({
   selector: 'app-dispensaciones',
@@ -22,15 +15,16 @@ interface Lote {
 export class DispensacionesComponent implements OnInit {
   private dispensacionService = inject(DispensacionService);
   private productService = inject(ProductService);
-  private http = inject(HttpClient);
+  private loteService = inject(LoteService);
 
   productos: any[] = [];
-  lotes: Lote[] = [];
+  lotes: LoteResponse[] = [];
   dispensaciones: DispensacionResponse[] = [];
   showForm = false;
   successMessage = '';
   errorMessage = '';
   loadingLotes = false;
+  sedeId = 1; // TODO: Obtener de la sesión del usuario
 
   formData: DispensacionRequest = {
     productoId: 0,
@@ -67,17 +61,23 @@ export class DispensacionesComponent implements OnInit {
     });
   }
 
+  // HU-11: Cargar lotes ordenados por FEFO (First Expired, First Out)
   onProductoChange() {
     if (this.formData.productoId > 0) {
       this.loadingLotes = true;
       this.lotes = [];
       this.formData.loteId = 0;
 
-      this.http.get<any[]>(`http://172.200.21.101:8080/api/lotes/producto/${this.formData.productoId}`)
+      this.loteService.obtenerLotesFEFO(this.formData.productoId, this.sedeId)
         .subscribe({
           next: (lotes) => {
             this.lotes = lotes;
             this.loadingLotes = false;
+
+            // Auto-seleccionar el primer lote FEFO si existe
+            if (lotes.length > 0) {
+              this.formData.loteId = lotes[0].id;
+            }
           },
           error: (error) => {
             console.error('Error loading lotes:', error);
@@ -118,8 +118,8 @@ export class DispensacionesComponent implements OnInit {
     }
 
     const loteSeleccionado = this.lotes.find(l => l.id === this.formData.loteId);
-    if (loteSeleccionado && this.formData.cantidad > loteSeleccionado.stockDisponible) {
-      this.errorMessage = `La cantidad excede el stock disponible (${loteSeleccionado.stockDisponible} unidades)`;
+    if (loteSeleccionado && this.formData.cantidad > loteSeleccionado.cantidadDisponible) {
+      this.errorMessage = `La cantidad excede el stock disponible (${loteSeleccionado.cantidadDisponible} unidades)`;
       return;
     }
 
@@ -169,5 +169,33 @@ export class DispensacionesComponent implements OnInit {
         this.errorMessage = 'Error al descargar el comprobante';
       }
     });
+  }
+
+  // HU-11: Helper methods para FEFO
+  formatFechaVencimiento(fechaStr: string): string {
+    if (!fechaStr) return 'N/A';
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleDateString('es-PE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  }
+
+  getUrgenciaClass(diasHastaVencimiento: number): string {
+    if (diasHastaVencimiento < 30) return 'urgencia-critica';
+    if (diasHastaVencimiento < 60) return 'urgencia-alta';
+    if (diasHastaVencimiento < 90) return 'urgencia-media';
+    return 'urgencia-normal';
+  }
+
+  getUrgenciaTexto(diasHastaVencimiento: number): string {
+    if (diasHastaVencimiento < 0) return 'VENCIDO';
+    if (diasHastaVencimiento === 0) return 'Vence hoy';
+    if (diasHastaVencimiento === 1) return 'Vence mañana';
+    if (diasHastaVencimiento < 30) return `Vence en ${diasHastaVencimiento} días`;
+    if (diasHastaVencimiento < 60) return `${diasHastaVencimiento} días`;
+    if (diasHastaVencimiento < 90) return `${diasHastaVencimiento} días`;
+    return `${diasHastaVencimiento} días`;
+  }
+
+  esPrimerLoteFEFO(index: number): boolean {
+    return index === 0;
   }
 }
