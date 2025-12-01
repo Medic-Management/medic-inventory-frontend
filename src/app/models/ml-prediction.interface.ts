@@ -1,6 +1,3 @@
-/**
- * Interfaces para predicciones de Machine Learning
- */
 
 export interface PrediccionPicoDemanda {
   productoId: number;

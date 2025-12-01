@@ -22,7 +22,7 @@ export class UmbralesComponent implements OnInit {
   selectedId: number = 0;
 
   formData: UmbralStockRequest = {
-    sedeId: 1, // Sede por defecto
+    sedeId: 1,
     productoId: 0,
     minimo: 0,
     puntoPedido: 0,

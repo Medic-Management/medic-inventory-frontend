@@ -12,7 +12,6 @@ export interface Product {
   controlado?: number;
   notas?: string;
   creadoEn?: string;
-  // Campos calculados desde otras tablas
   quantity?: number;
   alertValue?: number;
   price?: number;

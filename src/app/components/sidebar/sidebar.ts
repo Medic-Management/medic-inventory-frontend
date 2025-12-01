@@ -19,7 +19,6 @@ export class SidebarComponent {
       this.userRole = user.role || '';
     }
 
-    // Load collapsed state from localStorage
     const savedState = localStorage.getItem('sidebarCollapsed');
     this.isCollapsed = savedState === 'true';
   }
@@ -30,7 +29,6 @@ export class SidebarComponent {
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
-    // Save state to localStorage
     localStorage.setItem('sidebarCollapsed', this.isCollapsed.toString());
   }
 

@@ -1,42 +1,42 @@
 <div class="inventory-page">
   <h1 class="page-title">Inventario general y Alertas</h1>
 
-  <!-- Stats Cards -->
+  
   <div class="stats-grid">
     <div class="stat-card">
       <h3 class="stat-label blue">Categorías</h3>
-      <p class="stat-value">14</p>
-      <p class="stat-description">en los últimos 7 días</p>
+      <p class="stat-value">{{ stats.totalCategories }}</p>
+      <p class="stat-description">tipos de productos</p>
     </div>
 
     <div class="stat-card">
       <h3 class="stat-label orange">Total Medicamentos</h3>
-      <p class="stat-value">868</p>
+      <p class="stat-value">{{ stats.totalUnits }}</p>
       <p class="stat-description">unidades en stock</p>
     </div>
 
     <div class="stat-card">
-      <h3 class="stat-label purple">Medicamentos más rotados</h3>
-      <p class="stat-value">5</p>
-      <p class="stat-description">con alta salidaCost</p>
+      <h3 class="stat-label purple">Productos registrados</h3>
+      <p class="stat-value">{{ stats.totalMedications }}</p>
+      <p class="stat-description">en el inventario</p>
     </div>
 
     <div class="stat-card">
       <h3 class="stat-label red">Stock crítico</h3>
       <div class="stat-split">
         <div>
-          <p class="stat-value">12</p>
+          <p class="stat-value">{{ stats.criticalStock }}</p>
           <p class="stat-description">en riesgo</p>
         </div>
         <div>
-          <p class="stat-value">2</p>
+          <p class="stat-value">{{ stats.outOfStock }}</p>
           <p class="stat-description">agotados</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Medications Section -->
+  
   <div class="medications-section">
     <div class="section-header">
       <h2 class="section-title">Medicamentos</h2>
@@ -52,7 +52,7 @@
       </div>
     </div>
 
-    <!-- Table -->
+    
     <div class="table-container">
       <table class="medications-table">
         <thead>
@@ -67,7 +67,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (medication of medications; track medication.id) {
+          @for (medication of paginatedMedications; track medication.id) {
             <tr>
               <td class="medication-name">{{ medication.name }}</td>
               <td>{{ medication.price }}</td>
@@ -98,36 +98,36 @@
       </table>
     </div>
 
-    <!-- Pagination -->
+    
     <div class="pagination">
-      <button class="btn btn-outline">Anterior</button>
-      <span class="pagination-info">Página 1 de 10</span>
-      <button class="btn btn-outline">Siguiente</button>
+      <button class="btn btn-outline" (click)="previousPage()" [disabled]="currentPage === 1">Anterior</button>
+      <span class="pagination-info">Página {{currentPage}} de {{totalPages}}</span>
+      <button class="btn btn-outline" (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
     </div>
   </div>
 
-  <!-- Add Product Modal -->
+  
   <app-add-product-modal
     [isOpen]="isModalOpen"
     (closeModal)="closeModal()"
     (saveProduct)="onProductSaved($event)">
   </app-add-product-modal>
 
-  <!-- Filter Modal -->
+  
   <app-filter-modal
     [isOpen]="isFilterModalOpen"
     (closeModal)="closeFilterModal()"
     (applyFilters)="applyFilters($event)">
   </app-filter-modal>
 
-  <!-- Download Modal -->
+  
   <app-download-modal
     [isOpen]="isDownloadModalOpen"
     (closeModal)="closeDownloadModal()"
     (download)="onDownload($event)">
   </app-download-modal>
 
-  <!-- Success Modal -->
+  
   <app-success-modal
     [isOpen]="isSuccessModalOpen"
     [message]="successMessage"
@@ -135,7 +135,7 @@
     (confirm)="closeSuccessModal()">
   </app-success-modal>
 
-  <!-- Confirmation Modal -->
+  
   <app-confirmation-modal
     [isOpen]="isConfirmationModalOpen"
     [message]="'Confirmar el envío del correo'"
@@ -144,7 +144,7 @@
     (confirm)="confirmRestock()">
   </app-confirmation-modal>
 
-  <!-- Stock Alert Modal -->
+  
   <app-stock-alert-modal
     [isOpen]="isAlertModalOpen"
     [alertData]="alertData"
@@ -152,7 +152,7 @@
     (requestRestock)="onRequestRestock($event)">
   </app-stock-alert-modal>
 
-  <!-- Dispensacion Modal -->
+  
   <app-dispensacion-modal
     [isOpen]="isDispensacionModalOpen"
     [productId]="selectedProductId"

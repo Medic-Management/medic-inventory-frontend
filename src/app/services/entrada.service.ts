@@ -30,7 +30,7 @@ export interface EntradaResponse {
   providedIn: 'root'
 })
 export class EntradaService {
-  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/entradas';
+  private apiUrl = 'http://localhost:8080/api/entradas';
 
   constructor(private http: HttpClient) { }
 

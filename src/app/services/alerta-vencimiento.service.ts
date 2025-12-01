@@ -9,7 +9,7 @@ export interface AlertaVencimientoResponse {
   productoNombre: string;
   fechaVencimiento: string;
   diasRestantes: number;
-  nivel: string; // CRITICO, ALERTA, ADVERTENCIA
+  nivel: string;
   cantidadTotal: number;
 }
 

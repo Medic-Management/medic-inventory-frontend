@@ -1,5 +1,5 @@
 <div class="ml-predictions-page">
-  <!-- Header -->
+  
   <div class="page-header">
     <h1>🤖 Predicciones de Machine Learning</h1>
     <button class="btn-reload" (click)="recargar()" [disabled]="loading">
@@ -8,20 +8,20 @@
     </button>
   </div>
 
-  <!-- Error Message -->
+  
   <div *ngIf="error" class="alert alert-error">
     <strong>Error:</strong> {{ error }}
   </div>
 
-  <!-- Loading State -->
+  
   <div *ngIf="loading && !error" class="loading-container">
     <div class="spinner"></div>
     <p>Analizando productos con Machine Learning...</p>
   </div>
 
-  <!-- Content -->
+  
   <div *ngIf="!loading && !error">
-    <!-- Estadísticas Generales -->
+    
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon">📊</div>
@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <!-- Tabs -->
+    
     <div class="tabs-container">
       <button
         class="tab"
@@ -64,7 +64,7 @@
       </button>
     </div>
 
-    <!-- Filtros de Nivel -->
+    
     <div class="filters-container">
       <span class="filter-label">Filtrar por nivel:</span>
       <button
@@ -93,7 +93,7 @@
       </button>
     </div>
 
-    <!-- Tabla de Predicciones -->
+    
     <div class="predictions-table-card">
       <div *ngIf="prediccionesFiltradas.length === 0" class="empty-state">
         <p>📭 No hay predicciones con este nivel de riesgo</p>
@@ -137,7 +137,7 @@
       </table>
     </div>
 
-    <!-- Info Box -->
+    
     <div class="info-box">
       <h3>ℹ️ Acerca de las Predicciones</h3>
       <ul>

@@ -55,7 +55,7 @@ export class DispensacionModalComponent implements OnChanges {
     this.formData.loteId = 0;
     this.errorMessage = '';
 
-    this.http.get<Lote[]>(`https://unburglarized-claude-dovetailed.ngrok-free.dev/api/products/${this.productId}/lotes-disponibles`)
+    this.http.get<Lote[]>(`https:
       .subscribe({
         next: (lotes) => {
           this.lotes = lotes;
@@ -89,13 +89,11 @@ export class DispensacionModalComponent implements OnChanges {
   }
 
   onSubmit() {
-    // Validar campos obligatorios
     if (!this.formData.productoId || !this.formData.loteId || this.formData.cantidad <= 0) {
       this.errorMessage = 'Por favor complete todos los campos obligatorios';
       return;
     }
 
-    // Verificar que no exceda el stock disponible
     const loteSeleccionado = this.lotes.find(l => l.id === this.formData.loteId);
     if (loteSeleccionado && this.formData.cantidad > loteSeleccionado.stockDisponible) {
       this.errorMessage = `La cantidad excede el stock disponible (${loteSeleccionado.stockDisponible} unidades)`;
@@ -105,7 +103,6 @@ export class DispensacionModalComponent implements OnChanges {
     this.isSubmitting = true;
     this.errorMessage = '';
 
-    // Convertir explícitamente a números para evitar problemas con el backend
     const request: DispensacionRequest = {
       productoId: Number(this.formData.productoId),
       loteId: Number(this.formData.loteId),

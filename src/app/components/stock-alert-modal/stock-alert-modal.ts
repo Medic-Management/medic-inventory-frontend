@@ -52,20 +52,22 @@ export class StockAlertModalComponent {
 
   onViewDetail() {
     if (this.alertData.productId) {
-      // Extract numbers from strings like "5 cajas" or "Mínimo 8 cajas"
-      const currentStock = parseInt(this.alertData.currentStock);
-      const alertLevel = parseInt(this.alertData.alertLevel);
+      const extractNumber = (str: string): number => {
+        const match = str.match(/\d+/);
+        return match ? parseInt(match[0]) : 0;
+      };
 
-      // Calculate requested quantity (same logic as confirmRestock in inventory.ts)
+      const currentStock = extractNumber(this.alertData.currentStock);
+      const alertLevel = extractNumber(this.alertData.alertLevel);
+
       const requestedQuantity = Math.max(
         alertLevel * 3 - currentStock,
         alertLevel * 2
       );
 
-      // Create restock request
       const restockRequest = {
         productId: this.alertData.productId,
-        supplierId: 1, // Default supplier
+        supplierId: 1,
         requestedQuantity: requestedQuantity,
         notes: `Solicitud desde alerta - ${this.alertData.alertType} (${currentStock} unidades)`
       };
@@ -73,7 +75,6 @@ export class StockAlertModalComponent {
       this.restockService.createRestockRequest(restockRequest).subscribe({
         next: (response) => {
           console.log('Restock request created:', response);
-          // Navigate to restock detail page
           this.router.navigate(['/reabastecimiento', response.id]);
           this.closeModal.emit();
         },

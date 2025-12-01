@@ -24,7 +24,6 @@ export class DownloadModalComponent {
     this.download.emit(format);
     this.downloadSuccess = true;
 
-    // Close modal after 1.5 seconds
     setTimeout(() => {
       this.onClose();
     }, 1500);

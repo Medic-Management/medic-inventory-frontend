@@ -54,7 +54,6 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('[LOGIN] Response recibida:', response);
-          // Guardar token y datos del usuario
           localStorage.setItem('token', response.token);
           localStorage.setItem('currentUser', JSON.stringify({
             userId: response.userId,
@@ -64,7 +63,6 @@ export class LoginComponent implements OnInit {
           }));
           console.log('[LOGIN] Token guardado:', response.token);
 
-          // Navegar al dashboard
           this.isSubmitting = false;
           console.log('[LOGIN] Navegando a dashboard...');
           this.router.navigate(['/dashboard']).then(

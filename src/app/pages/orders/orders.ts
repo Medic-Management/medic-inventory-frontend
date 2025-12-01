@@ -118,6 +118,5 @@ export class OrdersComponent {
 
   openAddOrderModal() {
     console.log('Opening add order modal');
-    // TODO: Implement modal
   }
 }

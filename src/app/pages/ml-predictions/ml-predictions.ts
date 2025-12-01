@@ -18,16 +18,13 @@ export class MlPredictionsComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  // Datos de predicciones
   picosDemanda: PrediccionPicoDemanda[] = [];
   riesgosVencimiento: PrediccionRiesgoVencimiento[] = [];
 
-  // Estadísticas
   totalProductos = 0;
   productosConPico = 0;
   productosEnRiesgo = 0;
 
-  // Filtros
   selectedTab: 'demanda' | 'vencimiento' = 'demanda';
   selectedNivel: 'TODOS' | 'ALTO' | 'MEDIO' | 'BAJO' = 'TODOS';
 
@@ -43,15 +40,12 @@ export class MlPredictionsComponent implements OnInit {
 
     this.mlService.getResumenPredicciones().subscribe({
       next: (resumen: ResumenPredicciones) => {
-        // Picos de demanda
         this.picosDemanda = resumen.picos_demanda.predicciones;
         this.productosConPico = resumen.picos_demanda.productosConPico;
 
-        // Riesgo de vencimiento
         this.riesgosVencimiento = resumen.riesgo_vencimiento.predicciones;
         this.productosEnRiesgo = resumen.riesgo_vencimiento.productosEnRiesgo;
 
-        // Total
         this.totalProductos = resumen.picos_demanda.totalProductos;
 
         this.loading = false;

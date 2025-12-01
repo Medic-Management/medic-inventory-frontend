@@ -1,0 +1,100 @@
+<div class="alertas-page">
+  <div class="page-header">
+    <div>
+      <h1>Alertas de Stock</h1>
+      <p class="page-subtitle">Gestión de alertas de inventario crítico y bajo</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-item">
+        <span class="stat-value">{{ alertas.length }}</span>
+        <span class="stat-label">Alertas activas</span>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <p>Cargando alertas...</p>
+    </div>
+  }
+
+  @if (!loading && alertas.length === 0) {
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+      </svg>
+      <h3>No hay alertas pendientes</h3>
+      <p>Todos los productos tienen stock normal</p>
+    </div>
+  }
+
+  @if (!loading && alertas.length > 0) {
+    <div class="alertas-grid">
+      @for (alerta of alertas; track alerta.id) {
+        <div class="alerta-card" (click)="openAlertModal(alerta)">
+          <div class="alerta-header">
+            <div class="alerta-badges">
+              <span class="badge" [ngClass]="getTipoBadgeClass(alerta.tipo)">
+                {{ getTipoTexto(alerta.tipo) }}
+              </span>
+              <span class="badge" [ngClass]="getNivelBadgeClass(alerta.nivel)">
+                Prioridad {{ alerta.nivel }}
+              </span>
+            </div>
+            <div class="alerta-sede">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+              </svg>
+              {{ alerta.sedeNombre }}
+            </div>
+          </div>
+
+          <div class="alerta-product">
+            <h3>{{ alerta.productoNombre }}</h3>
+            <div class="stock-info">
+              <div class="stock-current">
+                <span class="label">Stock actual:</span>
+                <span class="value critical">{{ alerta.stockActual }} unidades</span>
+              </div>
+              <div class="stock-threshold">
+                <span class="label">Nivel mínimo:</span>
+                <span class="value">{{ alerta.nivelAlerta }} unidades</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="alerta-footer">
+            <div class="alerta-date">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+              </svg>
+              {{ formatDate(alerta.disparadaEn) }}
+            </div>
+            <button class="btn-action" (click)="openAlertModal(alerta); $event.stopPropagation()">
+              Ver detalles
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="alerta-suggestion">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+            </svg>
+            {{ alerta.sugerencia }}
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  
+  @if (isAlertModalOpen && currentAlertData) {
+    <app-stock-alert-modal
+      [isOpen]="isAlertModalOpen"
+      [alertData]="currentAlertData"
+      (closeModal)="onModalClose()"
+    />
+  }
+</div>

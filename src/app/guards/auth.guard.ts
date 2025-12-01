@@ -22,11 +22,9 @@ export const authGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  // Verificar si la ruta requiere un rol específico
   const requiredRoles = route.data['roles'] as string[];
   if (requiredRoles && requiredRoles.length > 0) {
     if (!requiredRoles.includes(userRole)) {
-      // Usuario no tiene el rol requerido
       router.navigate(['/dashboard']);
       return false;
     }

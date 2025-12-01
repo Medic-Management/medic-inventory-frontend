@@ -21,16 +21,10 @@ export interface EmailResponse {
   providedIn: 'root'
 })
 export class UiPathService {
-  // URL del endpoint HTTP de UiPath Studio (configurable)
   private uipathApiUrl = 'http://localhost:8090/enviar-correo';
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Envía un correo electrónico a través de UiPath
-   * @param emailData Datos del correo a enviar
-   * @returns Observable con la respuesta de UiPath
-   */
   enviarCorreo(emailData: EmailRequest): Observable<EmailResponse> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -40,10 +34,6 @@ export class UiPathService {
     return this.http.post<EmailResponse>(this.uipathApiUrl, emailData, { headers });
   }
 
-  /**
-   * Verifica si el servicio de UiPath está disponible
-   * @returns Observable con el estado del servicio
-   */
   verificarDisponibilidad(): Observable<any> {
     return this.http.get(`${this.uipathApiUrl}/health`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })

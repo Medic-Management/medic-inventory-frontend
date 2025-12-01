@@ -28,7 +28,6 @@ export class SettingsComponent implements OnInit {
   };
 
   ngOnInit() {
-    // Cargar configuración desde localStorage o backend
     const savedSettings = localStorage.getItem('appSettings');
     if (savedSettings) {
       this.settings = JSON.parse(savedSettings);
@@ -36,10 +35,8 @@ export class SettingsComponent implements OnInit {
   }
 
   saveSettings() {
-    // Guardar en localStorage temporalmente
     localStorage.setItem('appSettings', JSON.stringify(this.settings));
 
-    // Aquí iría la llamada al backend
     console.log('Guardando configuración:', this.settings);
 
     alert('Configuración guardada correctamente');

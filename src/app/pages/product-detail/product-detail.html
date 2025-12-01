@@ -15,15 +15,15 @@
     </div>
   </div>
 
-  <!-- Tabs -->
+  
   <div class="tabs">
     <button class="tab active">Descripción</button>
   </div>
 
   <div class="content-grid">
-    <!-- Left Column - Details -->
+    
     <div class="details-column">
-      <!-- Main Details -->
+      
       <div class="detail-section">
         <h2 class="section-title">Detalles principales</h2>
 
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <!-- Supplier Details -->
+      
       <div class="detail-section">
         <h2 class="section-title">Detalles del proveedor</h2>
 
@@ -64,9 +64,9 @@
       </div>
     </div>
 
-    <!-- Right Column - Image & Stats -->
+    
     <div class="image-stats-column">
-      <!-- Product Image -->
+      
       <div class="product-image-container">
         <div class="product-image-placeholder">
           @if (product.imageUrl) {
@@ -79,7 +79,7 @@
         </div>
       </div>
 
-      <!-- Stock Stats -->
+      
       <div class="stock-stats">
         <div class="stat-row">
           <span class="stat-label">Stock inicial</span>
@@ -97,14 +97,14 @@
     </div>
   </div>
 
-  <!-- Download Modal -->
+  
   <app-download-modal
     [isOpen]="isDownloadModalOpen"
     (closeModal)="closeDownloadModal()"
     (download)="onDownload($event)">
   </app-download-modal>
 
-  <!-- Register Exit Modal -->
+  
   <app-register-exit-modal
     [isOpen]="isRegisterExitModalOpen"
     [productData]="product"

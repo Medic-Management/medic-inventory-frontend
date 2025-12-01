@@ -34,8 +34,10 @@ export class EntradasComponent implements OnInit {
   }
 
   loadProductos() {
-    this.productService.getAllProducts().subscribe({
+    this.productService.getProductsWithInventory().subscribe({
       next: (products) => {
+        console.log('Productos cargados:', products);
+        console.log('Cantidad de productos:', products.length);
         this.productos = products;
       },
       error: (error) => {

@@ -1,10 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AutoRestockService, RestockResponse } from '../../services/auto-restock';
 import { ConfirmationModalComponent } from '../../components/confirmation-modal/confirmation-modal';
-import { UiPathService, EmailRequest } from '../../services/uipath.service';
 
 @Component({
   selector: 'app-restock-detail',
@@ -13,11 +12,10 @@ import { UiPathService, EmailRequest } from '../../services/uipath.service';
   templateUrl: './restock-detail.html',
   styleUrl: './restock-detail.scss',
 })
-export class RestockDetailComponent implements OnInit {
+export class RestockDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private restockService = inject(AutoRestockService);
-  private uipathService = inject(UiPathService);
 
   restockId?: number;
   isEditMode = false;
@@ -56,10 +54,8 @@ export class RestockDetailComponent implements OnInit {
         next: (response: RestockResponse) => {
           console.log('Restock detail loaded:', response);
 
-          // Store supplier email for UiPath
           this.supplierEmail = response.supplierEmail;
 
-          // Map API response to UI data
           this.restockData = {
             id: response.id,
             processType: 'Envío de solicitud de reabastecimiento',
@@ -130,20 +126,43 @@ Clínica Vestida de Sol - Área de Farmacia.`;
   }
 
   saveChanges() {
-    console.log('Saving changes:', this.restockData);
-    // Note: Currently there's no direct endpoint to update notes
-    // This would require a new endpoint in the backend
-    this.isEditMode = false;
+    if (this.restockId) {
+      console.log('Saving email content changes:', this.restockData);
+
+      this.restockService.updateEmailContent(
+        this.restockId,
+        this.restockData.emailSubject,
+        this.restockData.emailBody
+      ).subscribe({
+        next: (response: RestockResponse) => {
+          console.log('Email content updated:', response);
+          this.successMessage = 'Contenido del email actualizado exitosamente';
+          this.isEditMode = false;
+
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+        },
+        error: (err: any) => {
+          console.error('Error updating email content:', err);
+          this.error = 'Error al actualizar el contenido del email';
+
+          setTimeout(() => {
+            this.error = '';
+          }, 3000);
+        }
+      });
+    } else {
+      this.isEditMode = false;
+    }
   }
 
   cancelEdit() {
     this.isEditMode = false;
-    // Reload original data
     this.loadRestockDetail();
   }
 
   viewFullEmail() {
-    // Create a simple popup with email content
     const emailWindow = window.open('', 'Email', 'width=600,height=400');
     if (emailWindow) {
       emailWindow.document.write(`
@@ -173,20 +192,20 @@ Clínica Vestida de Sol - Área de Farmacia.`;
       this.restockService.updateRestockStatus(this.restockId, 'DELIVERED').subscribe({
         next: (response) => {
           console.log('Status updated:', response);
-          this.router.navigate(['/inventory']);
+          this.router.navigate(['/inventario']);
         },
         error: (error) => {
           console.error('Error updating status:', error);
-          this.router.navigate(['/inventory']);
+          this.router.navigate(['/inventario']);
         }
       });
     } else {
-      this.router.navigate(['/inventory']);
+      this.router.navigate(['/inventario']);
     }
   }
 
   goBack() {
-    this.router.navigate(['/inventory']);
+    this.router.navigate(['/inventario']);
   }
 
   openSendEmailModal() {
@@ -199,67 +218,74 @@ Clínica Vestida de Sol - Área de Farmacia.`;
 
   confirmSendEmail() {
     if (this.restockId) {
-      // Clear previous messages
       this.error = '';
       this.successMessage = '';
       this.sendingEmail = true;
 
-      // Prepare email data for UiPath
-      const emailData: EmailRequest = {
-        destinatario: this.supplierEmail,
-        asunto: this.restockData.emailSubject,
-        cuerpo: this.restockData.emailBody,
-        productoNombre: this.restockData.productName,
-        cantidadSolicitada: this.restockData.requestedQuantity,
-        stockActual: this.restockData.currentStock
-      };
+      console.log('Queuing email for UiPath to send...');
 
-      console.log('Sending email via UiPath:', emailData);
+      this.restockService.markEmailAsPending(this.restockId!).subscribe({
+        next: (response: RestockResponse) => {
+          console.log('Email queued successfully:', response);
 
-      // Step 1: Call UiPath to send the email
-      this.uipathService.enviarCorreo(emailData).subscribe({
-        next: (uipathResponse) => {
-          console.log('UiPath email response:', uipathResponse);
+          this.successMessage = 'Solicitud agregada a la cola. UiPath enviará el correo automáticamente en unos segundos.';
+          this.sendingEmail = false;
+          this.isConfirmationModalOpen = false;
 
-          if (uipathResponse.exito) {
-            // Step 2: If UiPath successfully sent the email, mark it as sent in the backend
-            this.restockService.markEmailSent(this.restockId!).subscribe({
-              next: (response) => {
-                console.log('Email marked as sent in backend:', response);
-                // Update UI
-                this.restockData.emailSent = true;
-                this.restockData.status = 'Correo enviado correctamente (OK)';
-                this.successMessage = 'Correo enviado exitosamente por UiPath';
-                this.sendingEmail = false;
-                this.isConfirmationModalOpen = false;
-              },
-              error: (error) => {
-                console.error('Error marking email as sent:', error);
-                this.error = 'Email enviado por UiPath, pero error al actualizar estado en BD';
-                this.sendingEmail = false;
-                this.isConfirmationModalOpen = false;
-              }
-            });
-          } else {
-            // UiPath reported failure
-            this.error = `Error de UiPath: ${uipathResponse.mensaje}`;
-            this.sendingEmail = false;
-          }
+          this.startPollingEmailStatus();
         },
-        error: (error) => {
-          console.error('Error calling UiPath API:', error);
-
-          // Check if error is due to UiPath not being available
-          if (error.status === 0 || error.status === 404) {
-            this.error = 'No se pudo conectar con UiPath. Asegúrate de que UiPath Studio esté ejecutándose en http://localhost:8090';
-          } else {
-            this.error = `Error al enviar correo: ${error.message || 'Error desconocido'}`;
-          }
-
+        error: (err: any) => {
+          console.error('Error queuing email:', err);
+          this.error = 'Error al agregar solicitud a la cola de envío';
           this.sendingEmail = false;
           this.isConfirmationModalOpen = false;
         }
       });
     }
   }
+
+  private pollingInterval: any;
+  private pollingAttempts = 0;
+  private maxPollingAttempts = 60;
+
+  startPollingEmailStatus() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+    }
+
+    this.pollingAttempts = 0;
+
+    this.pollingInterval = setInterval(() => {
+      this.pollingAttempts++;
+
+      if (this.pollingAttempts > this.maxPollingAttempts) {
+        clearInterval(this.pollingInterval);
+        this.successMessage = '';
+        console.log('Polling timeout - email may still be pending');
+        return;
+      }
+
+      this.restockService.getRestockById(this.restockId!).subscribe({
+        next: (data) => {
+          if (data.emailSent) {
+            clearInterval(this.pollingInterval);
+            this.restockData.emailSent = true;
+            this.restockData.status = this.getStatusText(data.status, data.emailSent);
+            this.successMessage = '✓ Correo enviado exitosamente por UiPath';
+            this.loadRestockDetail();
+          }
+        },
+        error: (err: any) => {
+          console.error('Error polling email status:', err);
+        }
+      });
+    }, 1000);
+  }
+
+  ngOnDestroy() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+    }
+  }
 }
+

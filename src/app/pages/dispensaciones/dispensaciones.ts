@@ -73,8 +73,7 @@ export class DispensacionesComponent implements OnInit {
       this.lotes = [];
       this.formData.loteId = 0;
 
-      // Obtener lotes disponibles del producto
-      this.http.get<any[]>(`https://unburglarized-claude-dovetailed.ngrok-free.dev/api/products/${this.formData.productoId}/lotes-disponibles`)
+      this.http.get<any[]>(`https:
         .subscribe({
           next: (lotes) => {
             this.lotes = lotes;
@@ -118,7 +117,6 @@ export class DispensacionesComponent implements OnInit {
       return;
     }
 
-    // Verificar que no exceda el stock disponible
     const loteSeleccionado = this.lotes.find(l => l.id === this.formData.loteId);
     if (loteSeleccionado && this.formData.cantidad > loteSeleccionado.stockDisponible) {
       this.errorMessage = `La cantidad excede el stock disponible (${loteSeleccionado.stockDisponible} unidades)`;
@@ -130,7 +128,7 @@ export class DispensacionesComponent implements OnInit {
         this.successMessage = `Dispensación registrada exitosamente. ${response.cantidad} unidades de ${response.productoNombre}`;
         this.errorMessage = '';
         this.resetForm();
-        this.loadMisDispensaciones(); // Recargar la lista
+        this.loadMisDispensaciones();
         setTimeout(() => {
           this.showForm = false;
           this.successMessage = '';

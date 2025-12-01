@@ -14,7 +14,7 @@
       }
 
       <form class="dispensacion-form" (ngSubmit)="onSubmit()">
-        <!-- Lote Selection -->
+        
         <div class="form-group">
           <label for="lote">Lote *</label>
           <select
@@ -33,7 +33,7 @@
           </select>
         </div>
 
-        <!-- Cantidad -->
+        
         <div class="form-group">
           <label for="cantidad">Cantidad *</label>
           <input
@@ -48,7 +48,7 @@
           />
         </div>
 
-        <!-- Documento Referencia -->
+        
         <div class="form-group">
           <label for="documento">Documento de Referencia</label>
           <input
@@ -61,7 +61,7 @@
           />
         </div>
 
-        <!-- Motivo -->
+        
         <div class="form-group">
           <label for="motivo">Motivo / Observaciones</label>
           <textarea
@@ -74,7 +74,7 @@
           ></textarea>
         </div>
 
-        <!-- Action Buttons -->
+        
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" (click)="onClose()" [disabled]="isSubmitting">
             Cancelar

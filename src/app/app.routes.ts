@@ -16,6 +16,7 @@ import { ProveedoresComponent } from './pages/proveedores/proveedores';
 import { UmbralesComponent } from './pages/umbrales/umbrales';
 import { DispensacionesComponent } from './pages/dispensaciones/dispensaciones';
 import { MlPredictionsComponent } from './pages/ml-predictions/ml-predictions';
+import { AlertasComponent } from './pages/alertas/alertas';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -28,6 +29,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'inventario', component: InventoryComponent },
+      { path: 'alertas', component: AlertasComponent },
       { path: 'dispensaciones', component: DispensacionesComponent, data: { roles: ['Farmaceutico', 'JefeDeFarmacia', 'Administrador'] } },
       { path: 'reportes', component: ReportsComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
       { path: 'ordenes', component: OrdersComponent, data: { roles: ['AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },

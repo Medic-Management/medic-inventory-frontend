@@ -71,7 +71,21 @@ export class InventoryComponent implements OnInit {
 
   allMedications: Medication[] = [];
   medications: Medication[] = [];
+  paginatedMedications: Medication[] = [];
   userRole: string = '';
+
+  stats = {
+    totalCategories: 0,
+    totalMedications: 0,
+    totalUnits: 0,
+    topRotatedCount: 0,
+    criticalStock: 0,
+    outOfStock: 0
+  };
+
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 0;
 
   constructor(private router: Router) {
     const currentUser = localStorage.getItem('currentUser');
@@ -104,6 +118,8 @@ export class InventoryComponent implements OnInit {
           statusText: this.getStatusText(this.mapStatus(p.status))
         }));
         this.medications = [...this.allMedications];
+        this.calculateStats();
+        this.updatePagination();
         this.loading = false;
         console.log('Productos cargados:', this.medications.length);
       },
@@ -112,6 +128,23 @@ export class InventoryComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  calculateStats() {
+    this.stats.totalCategories = new Set(this.allMedications.map(m => m.name.split(' ')[0])).size;
+
+    this.stats.totalMedications = this.allMedications.length;
+
+    this.stats.totalUnits = this.allMedications.reduce((sum, m) => sum + m.quantity, 0);
+
+    this.stats.topRotatedCount = Math.min(5, this.allMedications.length);
+
+    // Critical stock count (status = 'critical' or 'low-stock')
+    this.stats.criticalStock = this.allMedications.filter(m =>
+      m.status === 'critical' || m.status === 'low-stock'
+    ).length;
+
+    this.stats.outOfStock = this.allMedications.filter(m => m.quantity === 0).length;
   }
 
   formatDate(dateStr: string): string {
@@ -161,8 +194,6 @@ export class InventoryComponent implements OnInit {
     console.log('Product saved:', productData);
     this.isModalOpen = false;
 
-    // Navegar a la página de detalles del producto
-    // Generamos un ID temporal para el producto
     const newProductId = this.medications.length + 1;
 
     this.router.navigate(['/producto', newProductId], {
@@ -194,7 +225,6 @@ export class InventoryComponent implements OnInit {
   applyFilters(filters: FilterOptions) {
     this.activeFilters = filters;
     this.medications = this.allMedications.filter(med => {
-      // Filter by availability status
       if (filters.inStock || filters.lowStock || filters.critical || filters.outOfStock) {
         const statusMatch =
           (filters.inStock && med.status === 'in-stock') ||
@@ -204,7 +234,6 @@ export class InventoryComponent implements OnInit {
         if (!statusMatch) return false;
       }
 
-      // Filter by price range
       if (filters.priceMin !== null || filters.priceMax !== null) {
         const price = parseFloat(med.price.replace('S/ ', ''));
         if (filters.priceMin !== null && price < filters.priceMin) return false;
@@ -213,6 +242,8 @@ export class InventoryComponent implements OnInit {
 
       return true;
     });
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   openDownloadModal() {
@@ -241,7 +272,6 @@ export class InventoryComponent implements OnInit {
       this.exportService.exportToPDF(exportData, filename);
     }
 
-    // Mostrar modal de éxito
     this.successMessage = 'Se descargó correctamente la lista de inventario.';
     this.isSuccessModalOpen = true;
   }
@@ -266,7 +296,6 @@ export class InventoryComponent implements OnInit {
       const product = this.medications.find(m => m.id === this.selectedProductForRestock);
 
       if (product) {
-        // Calculate requested quantity to reach safe stock level
         const requestedQuantity = Math.max(
           product.alertValue * 3 - product.quantity,
           product.alertValue * 2
@@ -274,7 +303,7 @@ export class InventoryComponent implements OnInit {
 
         const restockRequest = {
           productId: product.id,
-          supplierId: 1, // Default supplier (from backend initialization)
+          supplierId: 1,
           requestedQuantity: requestedQuantity,
           notes: `Solicitud automática - Stock crítico (${product.quantity} unidades)`
         };
@@ -283,11 +312,9 @@ export class InventoryComponent implements OnInit {
           next: (response) => {
             console.log('Restock request created:', response);
 
-            // Mostrar éxito y redirigir a detalles
             this.successMessage = 'Solicitud de reabastecimiento enviada correctamente.';
             this.isSuccessModalOpen = true;
 
-            // Navegar a la página de detalles después de un breve delay
             setTimeout(() => {
               this.router.navigate(['/reabastecimiento', response.id]);
             }, 2000);
@@ -308,7 +335,6 @@ export class InventoryComponent implements OnInit {
   }
 
   openStockAlertModal(medication: Medication) {
-    // Set alert data for modal
     this.alertData = {
       productId: medication.id,
       productName: medication.name,
@@ -320,10 +346,8 @@ export class InventoryComponent implements OnInit {
       systemSuggestion: `Reabastecer antes de ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' })}`
     };
 
-    // Store current medication for later use
     this.selectedProductForRestock = medication.id;
 
-    // Open alert modal
     this.isAlertModalOpen = true;
   }
 
@@ -340,11 +364,30 @@ export class InventoryComponent implements OnInit {
   }
 
   onDispensationCompleted() {
-    // Reload the inventory after successful dispensation
     this.loadProducts();
 
-    // Show success message
     this.successMessage = 'Dispensación registrada exitosamente. El inventario se ha actualizado.';
     this.isSuccessModalOpen = true;
+  }
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.medications.length / this.itemsPerPage);
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.paginatedMedications = this.medications.slice(start, end);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
   }
 }

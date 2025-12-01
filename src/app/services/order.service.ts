@@ -60,7 +60,6 @@ export class OrderService {
     return this.http.put<Order>(`${this.apiUrl}/${id}/status`, { status });
   }
 
-  // Registrar salida de medicamento
   registerDispatch(productId: number, quantity: number, notes?: string): Observable<Order> {
     const dispatchOrder: CreateOrderRequest = {
       type: 'DISPATCH',

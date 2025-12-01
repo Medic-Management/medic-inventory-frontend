@@ -90,7 +90,6 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     this.productService.getProductsWithInventory().subscribe({
       next: (products: any[]) => {
-        // Get top medications (by quantity)
         const sortedByQuantity = [...products]
           .filter(p => p.cantidad > 0)
           .sort((a, b) => b.cantidad - a.cantidad)

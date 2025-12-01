@@ -1,8 +1,8 @@
 <div class="reports-page">
   <div class="reports-grid">
-    <!-- Left Column -->
+    
     <div class="left-column">
-      <!-- Overview Section -->
+      
       <div class="section-card overview-section">
         <h2 class="section-title">Resumen General</h2>
 
@@ -45,7 +45,7 @@
         }
       </div>
 
-      <!-- Profit & Revenue Chart -->
+      
       <div class="section-card chart-section">
         <div class="chart-header">
           <h2 class="section-title">Ganancias e Ingresos</h2>
@@ -59,21 +59,21 @@
 
         <div class="chart-container">
           @if (datosGrafico.length > 0) {
-            <!-- Simple line chart visualization -->
+            
             <svg class="revenue-chart" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
-              <!-- Grid lines -->
+              
               <line x1="60" y1="250" x2="750" y2="250" stroke="#e5e7eb" stroke-width="1"/>
               <line x1="60" y1="190" x2="750" y2="190" stroke="#e5e7eb" stroke-width="1"/>
               <line x1="60" y1="130" x2="750" y2="130" stroke="#e5e7eb" stroke-width="1"/>
               <line x1="60" y1="70" x2="750" y2="70" stroke="#e5e7eb" stroke-width="1"/>
 
-              <!-- Y-axis labels (dinámicos) -->
+              
               <text x="20" y="254" fill="#9ca3af" font-size="12">0</text>
               <text x="20" y="194" fill="#9ca3af" font-size="12">{{ (getMaxValue() * 0.33).toFixed(0) }}</text>
               <text x="20" y="134" fill="#9ca3af" font-size="12">{{ (getMaxValue() * 0.66).toFixed(0) }}</text>
               <text x="20" y="74" fill="#9ca3af" font-size="12">{{ getMaxValue().toFixed(0) }}</text>
 
-              <!-- Revenue line (blue) - DINÁMICO -->
+              
               <polyline
                 [attr.points]="getLinePoints('ingresos')"
                 fill="none"
@@ -83,7 +83,7 @@
                 stroke-linejoin="round"
               />
 
-              <!-- Despachos line (gray) - DINÁMICO -->
+              
               <polyline
                 [attr.points]="getLinePoints('despachos')"
                 fill="none"
@@ -93,7 +93,7 @@
                 stroke-linejoin="round"
               />
 
-              <!-- X-axis labels (dinámicos) -->
+              
               @for (dato of datosGrafico; track dato.mes; let i = $index) {
                 <text
                   [attr.x]="80 + (i * (670 / (datosGrafico.length - 1)))"
@@ -106,7 +106,7 @@
               }
             </svg>
 
-            <!-- Legend -->
+            
             <div class="chart-legend">
               <div class="legend-item">
                 <span class="legend-color blue"></span>
@@ -123,7 +123,7 @@
         </div>
       </div>
 
-      <!-- Best Selling Product -->
+      
       <div class="section-card">
         <div class="section-header-flex">
           <h2 class="section-title">Productos más vendidos</h2>
@@ -163,9 +163,9 @@
       </div>
     </div>
 
-    <!-- Right Column -->
+    
     <div class="right-column">
-      <!-- Best Selling Category -->
+      
       <div class="section-card">
         <h2 class="section-title">Categorías más vendidas</h2>
 

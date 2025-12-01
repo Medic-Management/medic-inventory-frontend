@@ -13,15 +13,14 @@ export class ExportService {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Inventario');
 
-    // Adjust column widths
     const maxWidth = data.reduce((w, r) => Math.max(w, JSON.stringify(r).length), 10);
     worksheet['!cols'] = [
-      { wch: 30 }, // Nombre
-      { wch: 15 }, // Precio
-      { wch: 12 }, // Cantidad
-      { wch: 15 }, // Valor alerta
-      { wch: 18 }, // Fecha vencimiento
-      { wch: 15 }  // Disponibilidad
+      { wch: 30 },
+      { wch: 15 },
+      { wch: 12 },
+      { wch: 15 },
+      { wch: 18 },
+      { wch: 15 }
     ];
 
     XLSX.writeFile(workbook, `${filename}.xlsx`);
@@ -30,15 +29,12 @@ export class ExportService {
   exportToPDF(data: any[], filename: string): void {
     const doc = new jsPDF();
 
-    // Title
     doc.setFontSize(18);
     doc.text('Inventario de Medicamentos', 14, 20);
 
-    // Date
     doc.setFontSize(11);
     doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-PE')}`, 14, 28);
 
-    // Table
     const tableData = data.map(item => [
       item.nombre,
       item.precio,

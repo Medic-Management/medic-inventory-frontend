@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <!-- Success/Error Messages -->
+  
   @if (successMessage) {
     <div class="alert alert-success" style="margin: 1rem 0; padding: 1rem; background: #d1fae5; border: 1px solid #10b981; border-radius: 8px; color: #065f46; display: flex; align-items: center; gap: 0.5rem;">
       <i class="fas fa-check-circle" style="font-size: 20px;"></i>
@@ -44,7 +44,7 @@
   }
 
   <div class="content-grid">
-    <!-- Left Column -->
+    
     <div class="left-column">
       <div class="section-card">
         <h2 class="section-title with-underline">Descripción</h2>
@@ -113,7 +113,7 @@
       </div>
     </div>
 
-    <!-- Right Column -->
+    
     <div class="right-column">
       <div class="product-image-card">
         @if (restockData.productImage) {
@@ -163,7 +163,7 @@
     </div>
   </div>
 
-  <!-- Confirmation Modal -->
+  
   <app-confirmation-modal
     [isOpen]="isConfirmationModalOpen"
     [message]="'¿Confirmar el envío del correo al proveedor?'"

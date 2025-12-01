@@ -155,6 +155,23 @@
     }
   }
 
+  select {
+    cursor: pointer;
+    color: #1f2937 !important;
+    background-color: white !important;
+
+    option {
+      color: #000000 !important;
+      background-color: #ffffff !important;
+      padding: 8px;
+      font-weight: 500;
+    }
+
+    option:hover {
+      background-color: #f3f4f6 !important;
+    }
+  }
+
   textarea {
     resize: vertical;
     font-family: inherit;

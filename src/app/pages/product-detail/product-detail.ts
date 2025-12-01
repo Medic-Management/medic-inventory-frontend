@@ -49,8 +49,6 @@ export class ProductDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    // Aquí se cargaría el producto desde el servicio
-    // basado en el ID de la ruta
     const productData = history.state.product;
     if (productData) {
       this.product = {
@@ -115,11 +113,9 @@ export class ProductDetailComponent implements OnInit {
     this.dispensacionService.registrarDispensacion(request).subscribe({
       next: (response) => {
         console.log('Dispensación registrada:', response);
-        // Actualizar stock localmente
         this.product.remainingStock = Math.max(0, this.product.remainingStock - exitData.quantity);
         this.product.quantity = this.product.remainingStock;
 
-        // Redirigir al inventario
         setTimeout(() => {
           this.router.navigate(['/inventario']);
         }, 500);

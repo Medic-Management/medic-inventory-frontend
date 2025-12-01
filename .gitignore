@@ -1,2 +1,6 @@
-"src/nul" 
-"nul" 
+node_modules/
+.angular/
+dist/
+.idea/
+*.log
+.env

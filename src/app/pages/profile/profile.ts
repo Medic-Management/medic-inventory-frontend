@@ -27,7 +27,6 @@ export class ProfileComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // Cargar datos del usuario desde localStorage o servicio
     const userStr = localStorage.getItem('currentUser');
     if (userStr) {
       const user = JSON.parse(userStr);
@@ -41,7 +40,6 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmit() {
-    // Validar si se está cambiando la contraseña
     if (this.passwordData.currentPassword) {
       if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
         alert('Las contraseñas no coinciden');
@@ -53,11 +51,9 @@ export class ProfileComponent implements OnInit {
       }
     }
 
-    // Aquí iría la llamada al backend
     console.log('Actualizando perfil:', this.profileData);
     console.log('Actualizando contraseña:', this.passwordData.currentPassword ? 'Sí' : 'No');
 
-    // Actualizar localStorage temporalmente
     const userStr = localStorage.getItem('currentUser');
     if (userStr) {
       const user = JSON.parse(userStr);
@@ -68,7 +64,6 @@ export class ProfileComponent implements OnInit {
 
     alert('Perfil actualizado correctamente');
 
-    // Limpiar campos de contraseña
     this.passwordData = {
       currentPassword: '',
       newPassword: '',
