@@ -314,11 +314,19 @@
         }
       </div>
 
-      
+
       <div class="section-card">
         <div class="section-header-flex">
           <h2 class="section-title">Stock Crítico</h2>
-          <a href="/inventario" class="link-primary">Ver Todo</a>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn btn-outline-small" (click)="descargarReporteAlertas()" title="Descargar Reporte Consolidado de Alertas">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 12L3 7h3V1h4v6h3l-5 5zm7 2H1v2h14v-2z"/>
+              </svg>
+              Reporte
+            </button>
+            <a href="/inventario" class="link-primary">Ver Todo</a>
+          </div>
         </div>
         @if (criticalProducts.length === 0) {
           <div class="critical-stock-item">

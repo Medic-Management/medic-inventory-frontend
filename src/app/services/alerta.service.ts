@@ -37,4 +37,13 @@ export class AlertaService {
   resolverAlerta(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/resolver`, {});
   }
+
+  /**
+   * HU-03 Escenario 2: Descargar reporte consolidado de alertas
+   */
+  descargarReporteConsolidado(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/reporte-consolidado`, {
+      responseType: 'blob'
+    });
+  }
 }

@@ -278,4 +278,27 @@ export class DashboardComponent implements OnInit {
     const match = sugerencia.match(/Cobertura:\s*(\d+)\s*días/);
     return match ? parseInt(match[1]) : 0;
   }
+
+  /**
+   * HU-03 Escenario 2: Descargar reporte consolidado de alertas
+   */
+  descargarReporteAlertas() {
+    this.alertaService.descargarReporteConsolidado().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reporte-alertas-${new Date().toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        console.log('Reporte de alertas descargado exitosamente');
+      },
+      error: (error) => {
+        console.error('Error descargando reporte de alertas:', error);
+        alert('Error al descargar el reporte de alertas');
+      }
+    });
+  }
 }
