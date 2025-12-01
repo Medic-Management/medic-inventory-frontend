@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
     };
 
     console.log('[LOGIN] Enviando request de login...');
-    this.http.post<any>('/api/auth/login', loginData)
+    this.http.post<any>('http://172.200.21.101:8080/api/auth/login', loginData)
       .subscribe({
         next: (response) => {
           console.log('[LOGIN] Response recibida:', response);

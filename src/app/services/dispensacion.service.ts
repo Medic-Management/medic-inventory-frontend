@@ -28,7 +28,7 @@ export interface DispensacionResponse {
   providedIn: 'root'
 })
 export class DispensacionService {
-  private apiUrl = '/api/dispensaciones';
+  private apiUrl = 'http://172.200.21.101:8080/api/dispensaciones';
 
   constructor(private http: HttpClient) {}
 

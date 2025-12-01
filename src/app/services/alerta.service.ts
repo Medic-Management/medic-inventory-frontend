@@ -22,7 +22,7 @@ export interface AlertaResponse {
   providedIn: 'root'
 })
 export class AlertaService {
-  private apiUrl = '/api/alertas';
+  private apiUrl = 'http://172.200.21.101:8080/api/alertas';
 
   constructor(private http: HttpClient) { }
 

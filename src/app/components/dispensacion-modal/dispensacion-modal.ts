@@ -55,7 +55,7 @@ export class DispensacionModalComponent implements OnChanges {
     this.formData.loteId = 0;
     this.errorMessage = '';
 
-    this.http.get<Lote[]>(`/api/lotes/producto/${this.productId}`)
+    this.http.get<Lote[]>(`http://172.200.21.101:8080/api/lotes/producto/${this.productId}`)
       .subscribe({
         next: (lotes) => {
           this.lotes = lotes;

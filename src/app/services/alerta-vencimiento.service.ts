@@ -17,7 +17,7 @@ export interface AlertaVencimientoResponse {
   providedIn: 'root'
 })
 export class AlertaVencimientoService {
-  private apiUrl = '/api/alertas-vencimiento';
+  private apiUrl = 'http://172.200.21.101:8080/api/alertas-vencimiento';
 
   constructor(private http: HttpClient) { }
 

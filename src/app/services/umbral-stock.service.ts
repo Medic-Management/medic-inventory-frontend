@@ -25,7 +25,7 @@ export interface UmbralStockResponse {
   providedIn: 'root'
 })
 export class UmbralStockService {
-  private apiUrl = '/api/umbrales';
+  private apiUrl = 'http://172.200.21.101:8080/api/umbrales';
 
   constructor(private http: HttpClient) { }
 
