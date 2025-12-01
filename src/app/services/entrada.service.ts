@@ -37,4 +37,11 @@ export class EntradaService {
   registrarEntrada(request: EntradaRequest): Observable<EntradaResponse> {
     return this.http.post<EntradaResponse>(this.apiUrl, request);
   }
+
+  // HU-01: Descargar comprobante PDF de entrada
+  descargarComprobante(entradaId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${entradaId}/comprobante`, {
+      responseType: 'blob'
+    });
+  }
 }

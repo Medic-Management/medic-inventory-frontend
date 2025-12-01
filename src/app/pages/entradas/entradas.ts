@@ -19,6 +19,7 @@ export class EntradasComponent implements OnInit {
   showForm = false;
   successMessage = '';
   errorMessage = '';
+  lastEntradaId: number | null = null;
 
   formData: EntradaRequest = {
     productoId: 0,
@@ -75,18 +76,38 @@ export class EntradasComponent implements OnInit {
 
     this.entradaService.registrarEntrada(this.formData).subscribe({
       next: (response) => {
-        this.successMessage = `Entrada registrada exitosamente. Stock anterior: ${response.stockAnterior}, Stock nuevo: ${response.stockNuevo}`;
+        this.lastEntradaId = response.id;
+        this.successMessage = `Entrada registrada exitosamente. ID: ${response.id}, Stock anterior: ${response.stockAnterior}, Stock nuevo: ${response.stockNuevo}`;
         this.errorMessage = '';
         this.resetForm();
         setTimeout(() => {
           this.showForm = false;
           this.successMessage = '';
-        }, 3000);
+          this.lastEntradaId = null;
+        }, 5000);
       },
       error: (error) => {
         this.errorMessage = 'Error al registrar la entrada. Por favor intente nuevamente.';
         this.successMessage = '';
         console.error('Error:', error);
+      }
+    });
+  }
+
+  // HU-01: Descargar comprobante PDF de entrada
+  descargarComprobante(entradaId: number) {
+    this.entradaService.descargarComprobante(entradaId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `comprobante-entrada-${entradaId}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Error descargando comprobante:', error);
+        this.errorMessage = 'Error al descargar el comprobante';
       }
     });
   }
