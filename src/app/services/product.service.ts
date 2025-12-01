@@ -23,7 +23,7 @@ export interface Product {
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'http://172.200.21.101:8080/api/products';
+  private apiUrl = '/api/products';
 
   constructor(private http: HttpClient) {}
 

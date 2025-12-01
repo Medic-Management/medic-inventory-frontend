@@ -12,7 +12,7 @@ import {
   providedIn: 'root'
 })
 export class MlPredictionService {
-  private apiUrl = 'http://172.200.21.101:8080/api/ml';
+  private apiUrl = '/api/ml';
 
   constructor(private http: HttpClient) {}
 

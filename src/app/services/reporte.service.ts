@@ -75,7 +75,7 @@ export interface ReporteResponse {
   providedIn: 'root'
 })
 export class ReporteService {
-  private apiUrl = 'http://172.200.21.101:8080/api/reportes';
+  private apiUrl = '/api/reportes';
 
   constructor(private http: HttpClient) { }
 

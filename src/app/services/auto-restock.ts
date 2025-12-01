@@ -31,7 +31,7 @@ export interface RestockResponse {
   providedIn: 'root'
 })
 export class AutoRestockService {
-  private apiUrl = 'http://172.200.21.101:8080/api';
+  private apiUrl = '/api';
 
   constructor(private http: HttpClient) {}
 
