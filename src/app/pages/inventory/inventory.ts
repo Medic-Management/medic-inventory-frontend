@@ -51,6 +51,8 @@ export class InventoryComponent implements OnInit {
   isConfirmationModalOpen = false;
   isAlertModalOpen = false;
   isDispensacionModalOpen = false;
+  isEditModalOpen = false;
+  isDeleteModalOpen = false;
   activeFilters: FilterOptions | null = null;
   loading = false;
 
@@ -58,6 +60,16 @@ export class InventoryComponent implements OnInit {
   selectedProductForRestock?: number;
   selectedProductId?: number;
   selectedProductName?: string;
+
+  editProductData: any = {
+    id: 0,
+    codigo: '',
+    nombre: '',
+    notas: ''
+  };
+
+  deleteProductId?: number;
+  deleteProductName?: string;
 
   alertData: any = {
     productName: '',
@@ -388,6 +400,80 @@ export class InventoryComponent implements OnInit {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.updatePagination();
+    }
+  }
+
+  openEditModal(medication: Medication) {
+    this.productService.getProductById(medication.id).subscribe({
+      next: (product) => {
+        this.editProductData = {
+          id: product.id,
+          codigo: product.codigo,
+          nombre: product.nombre,
+          notas: product.notas || ''
+        };
+        this.isEditModalOpen = true;
+      },
+      error: (error) => {
+        console.error('Error loading product:', error);
+        alert('Error al cargar el producto');
+      }
+    });
+  }
+
+  closeEditModal() {
+    this.isEditModalOpen = false;
+    this.editProductData = {
+      id: 0,
+      codigo: '',
+      nombre: '',
+      notas: ''
+    };
+  }
+
+  onEditSubmit() {
+    this.productService.updateProduct(this.editProductData.id, this.editProductData).subscribe({
+      next: () => {
+        this.successMessage = 'Producto actualizado exitosamente';
+        this.isSuccessModalOpen = true;
+        this.closeEditModal();
+        this.loadProducts();
+      },
+      error: (error) => {
+        console.error('Error updating product:', error);
+        alert('Error al actualizar el producto');
+      }
+    });
+  }
+
+  confirmDelete(medication: Medication) {
+    this.deleteProductId = medication.id;
+    this.deleteProductName = medication.name;
+    this.isDeleteModalOpen = true;
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+    this.deleteProductId = undefined;
+    this.deleteProductName = undefined;
+  }
+
+  executeDelete() {
+    if (this.deleteProductId) {
+      this.productService.deleteProduct(this.deleteProductId).subscribe({
+        next: () => {
+          this.successMessage = 'Producto eliminado exitosamente';
+          this.isSuccessModalOpen = true;
+          this.closeDeleteModal();
+          this.loadProducts();
+        },
+        error: (error) => {
+          console.error('Error deleting product:', error);
+          const errorMsg = error.error?.message || 'Error al eliminar el producto. Verifique que no tenga movimientos asociados.';
+          alert(errorMsg);
+          this.closeDeleteModal();
+        }
+      });
     }
   }
 }
