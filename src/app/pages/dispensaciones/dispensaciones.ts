@@ -73,7 +73,7 @@ export class DispensacionesComponent implements OnInit {
       this.lotes = [];
       this.formData.loteId = 0;
 
-      this.http.get<any[]>(`https:
+      this.http.get<any[]>(`http://172.200.21.101:8080/api/lotes/producto/${this.selectedProduct.id}`)
         .subscribe({
           next: (lotes) => {
             this.lotes = lotes;
