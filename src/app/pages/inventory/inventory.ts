@@ -460,6 +460,7 @@ export class InventoryComponent implements OnInit {
     this.deleteProductName = undefined;
   }
 
+  // HU-12 Escenario 3: Eliminar producto con validación de movimientos
   executeDelete() {
     if (this.deleteProductId) {
       this.productService.deleteProduct(this.deleteProductId).subscribe({
@@ -471,7 +472,13 @@ export class InventoryComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting product:', error);
-          const errorMsg = error.error?.message || 'Error al eliminar el producto. Verifique que no tenga movimientos asociados.';
+          // HU-12: Mostrar mensaje específico del backend
+          let errorMsg = 'Error al eliminar el producto.';
+          if (error.status === 409 || error.status === 400) {
+            errorMsg = error.error?.message || 'El medicamento está en uso y no se puede eliminar.';
+          } else if (error.status === 404) {
+            errorMsg = 'Producto no encontrado.';
+          }
           alert(errorMsg);
           this.closeDeleteModal();
         }
