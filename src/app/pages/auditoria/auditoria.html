@@ -1,0 +1,139 @@
+<div class="auditoria-page">
+  <div class="page-header">
+    <h1>Bitácora de Auditoría</h1>
+    <button class="btn btn-secondary" (click)="toggleFilters()">
+      {{ showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros' }}
+    </button>
+  </div>
+
+  @if (showFilters) {
+    <div class="filters-card">
+      <h2>Filtros de Búsqueda</h2>
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label for="usuario">Usuario</label>
+          <select id="usuario" [(ngModel)]="filters.usuarioId" name="usuarioId">
+            <option [value]="undefined">Todos</option>
+            @for (usuario of usuarios; track usuario.id) {
+              <option [value]="usuario.id">{{ usuario.nombreCompleto }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="accion">Acción</label>
+          <select id="accion" [(ngModel)]="filters.accion" name="accion">
+            <option [value]="undefined">Todas</option>
+            @for (accion of acciones; track accion) {
+              <option [value]="accion">{{ accion }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="entidadTipo">Tipo de Entidad</label>
+          <select id="entidadTipo" [(ngModel)]="filters.entidadTipo" name="entidadTipo">
+            <option [value]="undefined">Todas</option>
+            @for (tipo of entidadTipos; track tipo) {
+              <option [value]="tipo">{{ tipo }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="fechaDesde">Fecha Desde</label>
+          <input
+            type="datetime-local"
+            id="fechaDesde"
+            [(ngModel)]="filters.fechaDesde"
+            name="fechaDesde" />
+        </div>
+
+        <div class="filter-group">
+          <label for="fechaHasta">Fecha Hasta</label>
+          <input
+            type="datetime-local"
+            id="fechaHasta"
+            [(ngModel)]="filters.fechaHasta"
+            name="fechaHasta" />
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn btn-secondary" (click)="clearFilters()">
+          Limpiar Filtros
+        </button>
+        <button class="btn btn-primary" (click)="applyFilters()">
+          Aplicar Filtros
+        </button>
+      </div>
+    </div>
+  }
+
+  <div class="audit-logs-card">
+    <h2>Registros de Auditoría</h2>
+
+    @if (loading) {
+      <div class="loading-state">
+        <p>Cargando registros...</p>
+      </div>
+    } @else if (auditLogs.length === 0) {
+      <div class="empty-state">
+        <p>No hay registros de auditoría</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha/Hora</th>
+              <th>Usuario</th>
+              <th>Acción</th>
+              <th>Entidad</th>
+              <th>Descripción</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (log of auditLogs; track log.id) {
+              <tr>
+                <td>{{ log.id }}</td>
+                <td>{{ formatDate(log.fechaHora) }}</td>
+                <td>{{ log.usuarioNombre }}</td>
+                <td>
+                  <span class="accion-badge" [ngClass]="getAccionClass(log.accion)">
+                    {{ log.accion }}
+                  </span>
+                </td>
+                <td>
+                  @if (log.entidadTipo) {
+                    {{ log.entidadTipo }} #{{ log.entidadId }}
+                  } @else {
+                    -
+                  }
+                </td>
+                <td class="descripcion-cell">{{ log.descripcion || '-' }}</td>
+                <td>{{ log.ipAddress || '-' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-info">
+        <p>Total de registros: <strong>{{ auditLogs.length }}</strong></p>
+      </div>
+    }
+  </div>
+
+  <div class="info-card">
+    <h3>Acerca de la Auditoría</h3>
+    <ul>
+      <li>Se registran todas las acciones críticas del sistema</li>
+      <li>Los registros incluyen: usuario, acción, fecha/hora, IP y detalles</li>
+      <li>Use los filtros para encontrar registros específicos</li>
+      <li>Los datos de auditoría no pueden ser modificados o eliminados</li>
+    </ul>
+  </div>
+</div>
