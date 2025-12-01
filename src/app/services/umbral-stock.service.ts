@@ -8,6 +8,7 @@ export interface UmbralStockRequest {
   minimo: number;
   puntoPedido?: number;
   stockSeguridad?: number;
+  umbralCoberturaDias?: number; // HU-17: Días mínimos de cobertura
 }
 
 export interface UmbralStockResponse {
@@ -19,6 +20,7 @@ export interface UmbralStockResponse {
   minimo: number;
   puntoPedido: number;
   stockSeguridad: number;
+  umbralCoberturaDias: number; // HU-17: Días mínimos de cobertura
 }
 
 @Injectable({

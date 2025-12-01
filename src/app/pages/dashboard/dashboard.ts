@@ -3,6 +3,7 @@ import { NgClass } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { AlertaService, AlertaResponse } from '../../services/alerta.service';
 import { AlertaVencimientoService, AlertaVencimientoResponse } from '../../services/alerta-vencimiento.service';
+import { AlertaCoberturaService, AlertaCoberturaResponse, ResumenCobertura } from '../../services/alerta-cobertura.service';
 import { ReporteService, DatoGraficoMensualDTO, MetricasDashboardDTO } from '../../services/reporte.service';
 import { MlPredictionService } from '../../services/ml-prediction.service';
 import { ResumenPredicciones, PrediccionPicoDemanda } from '../../models/ml-prediction.interface';
@@ -24,6 +25,7 @@ export class DashboardComponent implements OnInit {
   private productService = inject(ProductService);
   private alertaService = inject(AlertaService);
   private alertaVencimientoService = inject(AlertaVencimientoService);
+  private alertaCoberturaService = inject(AlertaCoberturaService);
   private reporteService = inject(ReporteService);
   private mlService = inject(MlPredictionService);
 
@@ -58,6 +60,15 @@ export class DashboardComponent implements OnInit {
   alertas: AlertaResponse[] = [];
   alertasVencimiento: AlertaVencimientoResponse[] = [];
 
+  // HU-17: Coverage Alerts
+  alertasCobertura: AlertaCoberturaResponse[] = [];
+  resumenCobertura: ResumenCobertura = {
+    totalAlertas: 0,
+    alertasAltas: 0,
+    alertasMedias: 0,
+    alertasBajas: 0
+  };
+
   // ML Predictions
   prediccionesML: ResumenPredicciones | null = null;
   top10RiesgoQuiebre: PrediccionPicoDemanda[] = [];
@@ -69,6 +80,7 @@ export class DashboardComponent implements OnInit {
     this.loadGraficoMensual();
     this.loadAlertas();
     this.loadAlertasVencimiento();
+    this.loadAlertasCobertura();
     this.loadMLPredictions();
   }
 
@@ -165,6 +177,28 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // HU-17: Cargar alertas de cobertura
+  loadAlertasCobertura() {
+    this.alertaCoberturaService.getAlertasCoberturaActivas().subscribe({
+      next: (alertas) => {
+        this.alertasCobertura = alertas.slice(0, 5); // Top 5 para dashboard
+        console.log('Alertas cobertura loaded:', alertas.length);
+      },
+      error: (error) => {
+        console.error('Error loading alertas cobertura:', error);
+      }
+    });
+
+    this.alertaCoberturaService.getResumenCobertura().subscribe({
+      next: (resumen) => {
+        this.resumenCobertura = resumen;
+      },
+      error: (error) => {
+        console.error('Error loading resumen cobertura:', error);
+      }
+    });
+  }
+
   formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -231,5 +265,17 @@ export class DashboardComponent implements OnInit {
     if (this.confianzaPronostico >= 70) return 'ALTA';
     if (this.confianzaPronostico >= 50) return 'MEDIA';
     return 'BAJA';
+  }
+
+  // HU-17: Helper methods for coverage alerts
+  getNivelCoberturaClass(nivel: string): string {
+    if (nivel === 'ALTA') return 'badge-red';
+    if (nivel === 'MEDIA') return 'badge-orange';
+    return 'badge-yellow';
+  }
+
+  extractDiasCobertura(sugerencia: string): number {
+    const match = sugerencia.match(/Cobertura:\s*(\d+)\s*días/);
+    return match ? parseInt(match[1]) : 0;
   }
 }

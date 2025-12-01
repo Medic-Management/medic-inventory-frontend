@@ -374,6 +374,57 @@
         }
       </div>
 
+      <!-- HU-17: Widget de Alertas de Cobertura -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Alertas de Cobertura 📅</h2>
+          <div class="resumen-badges">
+            @if (resumenCobertura.totalAlertas > 0) {
+              <span class="badge badge-red">{{ resumenCobertura.alertasAltas }} Alta</span>
+              <span class="badge badge-orange">{{ resumenCobertura.alertasMedias }} Media</span>
+              <span class="badge badge-yellow">{{ resumenCobertura.alertasBajas }} Baja</span>
+            }
+          </div>
+        </div>
+        @if (alertasCobertura.length === 0) {
+          <div class="critical-stock-item">
+            <div class="product-info">
+              <p class="product-stock">✅ Todos los productos tienen cobertura adecuada</p>
+            </div>
+          </div>
+        }
+        @for (alerta of alertasCobertura; track alerta.id) {
+          <div class="critical-stock-item">
+            <div class="product-image">
+              <div class="product-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4zm0 28c-6.627 0-12-5.373-12-12S13.373 8 20 8s12 5.373 12 12-5.373 12-12 12zm-1-18h2v8h-2zm0 10h2v2h-2z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="product-info">
+              <h4>{{ alerta.productoNombre }}</h4>
+              <p class="product-stock">
+                <strong>Cobertura: {{ extractDiasCobertura(alerta.sugerencia) }} días</strong>
+                | Stock: {{ alerta.stockActual }} unidades
+              </p>
+              <p class="product-stock" style="font-size: 12px; color: #6b7280;">
+                {{ alerta.sedeNombre }} | Umbral: {{ alerta.nivelAlerta }} días
+              </p>
+              <span class="badge" [ngClass]="getNivelCoberturaClass(alerta.nivel)">
+                Prioridad {{ alerta.nivel }}
+              </span>
+            </div>
+          </div>
+        }
+        @if (alertasCobertura.length > 0) {
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <p style="font-size: 12px; color: #6b7280; text-align: center;">
+              💡 Las alertas se generan cuando los días de cobertura están por debajo del umbral configurado
+            </p>
+          </div>
+        }
+      </div>
 
       <div class="section-card">
         <div class="section-header-flex">

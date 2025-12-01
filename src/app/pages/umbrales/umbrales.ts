@@ -26,7 +26,8 @@ export class UmbralesComponent implements OnInit {
     productoId: 0,
     minimo: 0,
     puntoPedido: 0,
-    stockSeguridad: 0
+    stockSeguridad: 0,
+    umbralCoberturaDias: 15  // HU-17: Default 15 días
   };
 
   ngOnInit() {
@@ -67,7 +68,8 @@ export class UmbralesComponent implements OnInit {
       productoId: umbral.productoId,
       minimo: umbral.minimo,
       puntoPedido: umbral.puntoPedido || 0,
-      stockSeguridad: umbral.stockSeguridad || 0
+      stockSeguridad: umbral.stockSeguridad || 0,
+      umbralCoberturaDias: umbral.umbralCoberturaDias || 15  // HU-17
     };
   }
 
@@ -77,7 +79,8 @@ export class UmbralesComponent implements OnInit {
       productoId: 0,
       minimo: 0,
       puntoPedido: 0,
-      stockSeguridad: 0
+      stockSeguridad: 0,
+      umbralCoberturaDias: 15  // HU-17: Default 15 días
     };
   }
 
