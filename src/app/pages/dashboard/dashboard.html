@@ -373,6 +373,84 @@
           </div>
         }
       </div>
+
+
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Pronóstico de Consumo (ML)</h2>
+          <div class="confianza-badge" [ngClass]="getConfianzaClass()">
+            Confianza: {{ getConfianzaLabel() }} ({{ confianzaPronostico }}%)
+          </div>
+        </div>
+        @if (mlLoading) {
+          <div class="loading-state">
+            <p>Cargando pronósticos...</p>
+          </div>
+        } @else if (!prediccionesML) {
+          <div class="empty-state">
+            <p>No hay datos de pronóstico disponibles. Verifique que el servicio ML esté activo.</p>
+          </div>
+        } @else {
+          <div class="ml-stats-row">
+            <div class="ml-stat-item">
+              <p class="ml-stat-value">{{ prediccionesML.picos_demanda.totalProductos }}</p>
+              <p class="ml-stat-label">Productos Analizados</p>
+            </div>
+            <div class="ml-stat-item">
+              <p class="ml-stat-value">{{ prediccionesML.picos_demanda.productosConPico }}</p>
+              <p class="ml-stat-label">Con Pico Proyectado</p>
+            </div>
+            <div class="ml-stat-item">
+              <p class="ml-stat-value">{{ prediccionesML.riesgo_vencimiento.productosEnRiesgo }}</p>
+              <p class="ml-stat-label">Riesgo Vencimiento</p>
+            </div>
+          </div>
+          <a href="/predicciones-ml" class="link-primary" style="display: block; text-align: right; margin-top: 12px;">
+            Ver Análisis Completo
+          </a>
+        }
+      </div>
+
+
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Panel de Riesgo de Quiebre (Top 10)</h2>
+          <a href="/predicciones-ml" class="link-primary">Ver Todos</a>
+        </div>
+        @if (mlLoading) {
+          <div class="loading-state">
+            <p>Cargando panel de riesgo...</p>
+          </div>
+        } @else if (top10RiesgoQuiebre.length === 0) {
+          <div class="empty-state">
+            <p>No hay productos con riesgo de quiebre proyectado</p>
+          </div>
+        } @else {
+          @for (producto of top10RiesgoQuiebre; track producto.codigo_producto) {
+            <div class="critical-stock-item riesgo-item">
+              <div class="product-image">
+                <div class="product-placeholder">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                    <path d="M20 2L4 8v12c0 9.94 6.88 19.25 16 21.5 9.12-2.25 16-11.56 16-21.5V8L20 2zm-2 27l-6-6 1.41-1.41L18 26.17l8.59-8.59L28 19l-10 10z"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="product-info">
+                <h4>{{ producto.nombre_producto }}</h4>
+                <p class="product-stock">
+                  Probabilidad de Pico: <strong>{{ getProbabilidadPorcentaje(producto.probabilidadPico) }}%</strong>
+                </p>
+                <p class="product-stock">
+                  Demanda Proyectada: <strong>{{ producto.demandaProyectada }} unidades</strong>
+                </p>
+                <span class="badge" [ngClass]="getNivelRiesgoClass(producto.nivelRiesgo)">
+                  Riesgo {{ producto.nivelRiesgo }}
+                </span>
+              </div>
+            </div>
+          }
+        }
+      </div>
     </div>
   </div>
 </div>

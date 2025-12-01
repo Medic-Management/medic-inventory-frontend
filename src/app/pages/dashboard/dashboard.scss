@@ -392,6 +392,18 @@
     color: #dc2626;
     border: 1px solid #fca5a5;
   }
+
+  &.badge-orange {
+    background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+    color: #c2410c;
+    border: 1px solid #fb923c;
+  }
+
+  &.badge-yellow {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border: 1px solid #fbbf24;
+  }
 }
 
 // Links and Buttons
@@ -434,9 +446,95 @@
   }
 }
 
+// ML Prediction Widgets
+.confianza-badge {
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  border: 2px solid;
+
+  &.confianza-alta {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border-color: #6ee7b7;
+  }
+
+  &.confianza-media {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border-color: #fbbf24;
+  }
+
+  &.confianza-baja {
+    background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+    color: #991b1b;
+    border-color: #f87171;
+  }
+}
+
+.ml-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ml-stat-item {
+  text-align: center;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.03) 0%, rgba(16, 185, 129, 0.03) 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(5, 150, 105, 0.15);
+
+  .ml-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 4px 0;
+  }
+
+  .ml-stat-label {
+    font-size: 11px;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  color: #9ca3af;
+  font-size: 13px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.riesgo-item {
+  border-left: 4px solid transparent;
+  transition: all 0.3s;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.02) 0%, rgba(16, 185, 129, 0.02) 100%);
+    border-left-color: #059669;
+  }
+}
+
 // Responsive
 @media (max-width: 1200px) {
   .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ml-stats-row {
     grid-template-columns: 1fr;
   }
 }
