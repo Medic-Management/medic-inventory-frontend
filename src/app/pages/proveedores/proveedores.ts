@@ -21,7 +21,9 @@ export class ProveedoresComponent implements OnInit {
   formData: SupplierRequest = {
     nombre: '',
     email: '',
-    telefono: ''
+    telefono: '',
+    leadTimeDays: undefined,
+    moq: undefined
   };
 
   ngOnInit() {
@@ -50,7 +52,9 @@ export class ProveedoresComponent implements OnInit {
     this.formData = {
       nombre: supplier.nombre,
       email: supplier.email,
-      telefono: supplier.telefono
+      telefono: supplier.telefono,
+      leadTimeDays: supplier.leadTimeDays,
+      moq: supplier.moq
     };
   }
 
@@ -58,7 +62,9 @@ export class ProveedoresComponent implements OnInit {
     this.formData = {
       nombre: '',
       email: '',
-      telefono: ''
+      telefono: '',
+      leadTimeDays: undefined,
+      moq: undefined
     };
   }
 

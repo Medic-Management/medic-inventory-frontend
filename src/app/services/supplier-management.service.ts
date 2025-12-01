@@ -6,6 +6,8 @@ export interface SupplierRequest {
   nombre: string;
   email: string;
   telefono: string;
+  leadTimeDays?: number;
+  moq?: number;
 }
 
 export interface SupplierResponse {
@@ -13,6 +15,8 @@ export interface SupplierResponse {
   nombre: string;
   email: string;
   telefono: string;
+  leadTimeDays?: number;
+  moq?: number;
   activo: boolean;
 }
 

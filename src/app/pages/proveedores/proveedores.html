@@ -21,6 +21,16 @@
             <label>Teléfono</label>
             <input type="text" [(ngModel)]="formData.telefono" name="telefono" />
           </div>
+          <div class="form-group">
+            <label>Lead Time (días)</label>
+            <input type="number" [(ngModel)]="formData.leadTimeDays" name="leadTimeDays" min="0" placeholder="Ej: 7" />
+            <small>Días que tarda el proveedor en entregar el pedido</small>
+          </div>
+          <div class="form-group">
+            <label>MOQ (Cantidad Mínima de Pedido)</label>
+            <input type="number" [(ngModel)]="formData.moq" name="moq" min="0" placeholder="Ej: 100" />
+            <small>Cantidad mínima que requiere el proveedor por pedido</small>
+          </div>
           <div class="form-actions">
             <button type="button" class="btn btn-secondary" (click)="showForm = false">Cancelar</button>
             <button type="submit" class="btn btn-primary">{{ isEdit ? 'Actualizar' : 'Crear' }}</button>
@@ -38,6 +48,8 @@
           <th>Nombre</th>
           <th>Email</th>
           <th>Teléfono</th>
+          <th>Lead Time (días)</th>
+          <th>MOQ</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
@@ -49,6 +61,8 @@
             <td>{{ proveedor.nombre }}</td>
             <td>{{ proveedor.email || 'N/A' }}</td>
             <td>{{ proveedor.telefono || 'N/A' }}</td>
+            <td>{{ proveedor.leadTimeDays || 'N/A' }}</td>
+            <td>{{ proveedor.moq || 'N/A' }}</td>
             <td>
               <span class="badge" [ngClass]="proveedor.activo ? 'badge-success' : 'badge-danger'">
                 {{ proveedor.activo ? 'Activo' : 'Inactivo' }}
