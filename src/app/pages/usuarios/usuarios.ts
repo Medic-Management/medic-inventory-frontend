@@ -96,10 +96,21 @@ export class UsuariosComponent implements OnInit {
     }
   }
 
+  // HU-13 Escenario 2: Deshabilitar usuario con validación de último administrador
   toggleStatus(userId: number) {
     this.userService.toggleUserStatus(userId).subscribe({
       next: () => this.loadUsuarios(),
-      error: (error) => alert('Error al cambiar estado')
+      error: (error) => {
+        console.error('Error al cambiar estado:', error);
+        // HU-13: Mostrar mensaje específico del backend
+        let errorMsg = 'Error al cambiar estado del usuario.';
+        if (error.status === 409) {
+          errorMsg = error.error?.message || 'No se puede deshabilitar el único administrador activo del sistema.';
+        } else if (error.status === 400) {
+          errorMsg = error.error?.message || 'Error al procesar la solicitud.';
+        }
+        alert(errorMsg);
+      }
     });
   }
 
