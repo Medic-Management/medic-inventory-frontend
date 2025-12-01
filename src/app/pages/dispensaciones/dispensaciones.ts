@@ -153,4 +153,21 @@ export class DispensacionesComponent implements OnInit {
       minute: '2-digit'
     });
   }
+
+  descargarComprobante(dispensacionId: number) {
+    this.dispensacionService.descargarComprobante(dispensacionId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `comprobante-dispensacion-${dispensacionId}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Error descargando comprobante:', error);
+        this.errorMessage = 'Error al descargar el comprobante';
+      }
+    });
+  }
 }

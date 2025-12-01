@@ -120,6 +120,7 @@
               <th>Fecha</th>
               <th>Documento Ref.</th>
               <th>Motivo</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -132,6 +133,11 @@
                 <td>{{ formatDate(disp.ocurrioEn) }}</td>
                 <td>{{ disp.documentoReferencia || '-' }}</td>
                 <td>{{ disp.motivo || '-' }}</td>
+                <td>
+                  <button class="btn-action btn-pdf" (click)="descargarComprobante(disp.id)" title="Descargar comprobante PDF">
+                    <i class="fas fa-file-pdf"></i> PDF
+                  </button>
+                </td>
               </tr>
             }
           </tbody>

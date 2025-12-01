@@ -39,4 +39,10 @@ export class DispensacionService {
   obtenerMisDispensaciones(): Observable<DispensacionResponse[]> {
     return this.http.get<DispensacionResponse[]>(`${this.apiUrl}/mis-dispensaciones`);
   }
+
+  descargarComprobante(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/comprobante`, {
+      responseType: 'blob'
+    });
+  }
 }

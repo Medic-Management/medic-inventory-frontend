@@ -140,6 +140,34 @@
   }
 }
 
+.btn-action {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &.btn-pdf {
+    background-color: #dc2626;
+    color: white;
+
+    &:hover {
+      background-color: #b91c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
 .dispensaciones-list {
   background: white;
   border-radius: 12px;
