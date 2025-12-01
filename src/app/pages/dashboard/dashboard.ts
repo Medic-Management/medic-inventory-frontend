@@ -222,7 +222,7 @@ export class DashboardComponent implements OnInit {
           .sort((a, b) => {
             if (a.nivelRiesgo === 'ALTO' && b.nivelRiesgo !== 'ALTO') return -1;
             if (a.nivelRiesgo !== 'ALTO' && b.nivelRiesgo === 'ALTO') return 1;
-            return b.probabilidadPico - a.probabilidadPico;
+            return b.probabilidad - a.probabilidad;
           })
           .slice(0, 10);
 
@@ -230,7 +230,7 @@ export class DashboardComponent implements OnInit {
         const totalPredicciones = resumen.picos_demanda.predicciones.length;
         if (totalPredicciones > 0) {
           const promedioConfianza = resumen.picos_demanda.predicciones.reduce(
-            (sum, pred) => sum + pred.probabilidadPico, 0
+            (sum, pred) => sum + pred.probabilidad, 0
           ) / totalPredicciones;
           this.confianzaPronostico = Math.round(promedioConfianza * 100);
         }

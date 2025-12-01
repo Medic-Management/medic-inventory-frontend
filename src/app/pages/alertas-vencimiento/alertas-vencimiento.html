@@ -51,10 +51,10 @@
     } @else {
       <div class="alertas-grid">
         @for (alerta of alertasFiltradas; track alerta.loteId) {
-          <div class="alerta-card" [ngClass]="getNivelClass(alerta.nivelAlerta)">
+          <div class="alerta-card" [ngClass]="getNivelClass(alerta.nivel)">
             <div class="alerta-header">
-              <span class="badge" [ngClass]="getNivelClass(alerta.nivelAlerta)">
-                {{ getNivelTexto(alerta.nivelAlerta) }}
+              <span class="badge" [ngClass]="getNivelClass(alerta.nivel)">
+                {{ getNivelTexto(alerta.nivel) }}
               </span>
               <span class="dias-restantes">{{ getUrgenciaTexto(alerta.diasRestantes) }}</span>
             </div>
@@ -75,12 +75,12 @@
 
                 <div class="detail-item">
                   <i class="fas fa-cubes"></i>
-                  <span><strong>Stock disponible:</strong> {{ alerta.cantidadDisponible }} unidades</span>
+                  <span><strong>Stock disponible:</strong> {{ alerta.cantidadTotal }} unidades</span>
                 </div>
 
                 <div class="detail-item">
                   <i class="fas fa-building"></i>
-                  <span><strong>Sede:</strong> {{ alerta.sedeNombre }}</span>
+                  <span><strong>Producto ID:</strong> {{ alerta.productoId }}</span>
                 </div>
               </div>
             </div>

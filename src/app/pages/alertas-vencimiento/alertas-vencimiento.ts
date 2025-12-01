@@ -39,7 +39,7 @@ export class AlertasVencimientoComponent implements OnInit {
     if (this.filtroNivel === 'TODOS') {
       return this.alertas;
     }
-    return this.alertas.filter(a => a.nivelAlerta === this.filtroNivel);
+    return this.alertas.filter(a => a.nivel === this.filtroNivel);
   }
 
   onFiltroChange() {

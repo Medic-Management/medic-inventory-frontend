@@ -477,7 +477,7 @@
             <p>No hay productos con riesgo de quiebre proyectado</p>
           </div>
         } @else {
-          @for (producto of top10RiesgoQuiebre; track producto.codigo_producto) {
+          @for (producto of top10RiesgoQuiebre; track producto.productoId) {
             <div class="critical-stock-item riesgo-item">
               <div class="product-image">
                 <div class="product-placeholder">
@@ -487,12 +487,12 @@
                 </div>
               </div>
               <div class="product-info">
-                <h4>{{ producto.nombre_producto }}</h4>
+                <h4>{{ producto.nombre }}</h4>
                 <p class="product-stock">
-                  Probabilidad de Pico: <strong>{{ getProbabilidadPorcentaje(producto.probabilidadPico) }}%</strong>
+                  Probabilidad de Pico: <strong>{{ getProbabilidadPorcentaje(producto.probabilidad) }}%</strong>
                 </p>
                 <p class="product-stock">
-                  Demanda Proyectada: <strong>{{ producto.demandaProyectada }} unidades</strong>
+                  {{ producto.recomendacion }}
                 </p>
                 <span class="badge" [ngClass]="getNivelRiesgoClass(producto.nivelRiesgo)">
                   Riesgo {{ producto.nivelRiesgo }}

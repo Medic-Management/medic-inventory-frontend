@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { NgClass, CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AddProductModalComponent } from '../../components/add-product-modal/add-product-modal';
 import { FilterModalComponent, FilterOptions } from '../../components/filter-modal/filter-modal';
@@ -28,6 +29,7 @@ interface Medication {
   imports: [
     NgClass,
     CommonModule,
+    FormsModule,
     AddProductModalComponent,
     FilterModalComponent,
     DownloadModalComponent,
