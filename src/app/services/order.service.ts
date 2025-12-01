@@ -40,7 +40,7 @@ export interface CreateOrderRequest {
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/orders';
+  private apiUrl = 'http://172.200.21.101:8080/api/orders';
 
   constructor(private http: HttpClient) {}
 

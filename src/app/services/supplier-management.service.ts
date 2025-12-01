@@ -20,7 +20,7 @@ export interface SupplierResponse {
   providedIn: 'root'
 })
 export class SupplierManagementService {
-  private apiUrl = 'https://unburglarized-claude-dovetailed.ngrok-free.dev/api/suppliers';
+  private apiUrl = 'http://172.200.21.101:8080/api/suppliers';
 
   constructor(private http: HttpClient) { }
 
