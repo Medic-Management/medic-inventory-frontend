@@ -27,7 +27,8 @@ export class EntradasComponent implements OnInit {
     fechaVencimiento: '',
     cantidad: 0,
     documentoReferencia: '',
-    observaciones: ''
+    observaciones: '',
+    confirmarVencimientoCercano: false
   };
 
   ngOnInit() {
@@ -63,7 +64,8 @@ export class EntradasComponent implements OnInit {
       fechaVencimiento: '',
       cantidad: 0,
       documentoReferencia: '',
-      observaciones: ''
+      observaciones: '',
+      confirmarVencimientoCercano: false
     };
   }
 
@@ -87,9 +89,32 @@ export class EntradasComponent implements OnInit {
         }, 5000);
       },
       error: (error) => {
-        this.errorMessage = 'Error al registrar la entrada. Por favor intente nuevamente.';
+        console.error('Error completo:', error);
+
+        // HU-01 Escenario 2: Manejar advertencia de vencimiento cercano
+        if (error.error?.message && error.error.message.includes('VENCIMIENTO_CERCANO')) {
+          const mensaje = error.error.message.replace('VENCIMIENTO_CERCANO: ', '');
+          if (confirm(mensaje)) {
+            // Usuario confirmó, reenviar con confirmación
+            this.formData.confirmarVencimientoCercano = true;
+            this.onSubmit(); // Reintentar con confirmación
+            return;
+          } else {
+            this.errorMessage = 'Registro cancelado por el usuario';
+            return;
+          }
+        }
+
+        // HU-01 Escenario 3: Manejar error de lote duplicado
+        if (error.error?.message && error.error.message.includes('LOTE_DUPLICADO')) {
+          this.errorMessage = error.error.message.replace('LOTE_DUPLICADO: ', '');
+          this.successMessage = '';
+          return;
+        }
+
+        // Error genérico
+        this.errorMessage = error.error?.message || 'Error al registrar la entrada. Por favor intente nuevamente.';
         this.successMessage = '';
-        console.error('Error:', error);
       }
     });
   }

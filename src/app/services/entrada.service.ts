@@ -9,6 +9,8 @@ export interface EntradaRequest {
   cantidad: number;
   documentoReferencia: string;
   observaciones?: string;
+  // HU-01 Escenario 2: Campo para confirmar registro de lote próximo a vencer
+  confirmarVencimientoCercano?: boolean;
 }
 
 export interface EntradaResponse {
