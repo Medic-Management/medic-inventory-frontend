@@ -13,6 +13,14 @@
         </div>
       }
 
+      <!-- HU-11 Escenario 2: Mensaje FEFO -->
+      @if (lotes.length > 0) {
+        <div class="alert alert-info" style="background-color: #e0f2fe; border-left: 4px solid #0ea5e9; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
+          <strong>💡 Sugerencia FEFO:</strong> Los lotes están ordenados por fecha de vencimiento.
+          Se recomienda usar el primero (vence más pronto) para evitar pérdidas.
+        </div>
+      }
+
       <form class="dispensacion-form" (ngSubmit)="onSubmit()">
         
         <div class="form-group">
@@ -25,9 +33,9 @@
             [disabled]="loadingLotes"
             required>
             <option [value]="0">{{ loadingLotes ? 'Cargando lotes...' : 'Seleccione un lote' }}</option>
-            @for (lote of lotes; track lote.id) {
+            @for (lote of lotes; track lote.id; let idx = $index) {
               <option [value]="lote.id">
-                {{ lote.codigoProductoProv }} - Vence: {{ lote.fechaVencimiento }} (Stock: {{ lote.stockDisponible }})
+                {{ idx === 0 ? '🏆 RECOMENDADO - ' : '' }}{{ lote.codigoLote }} - Vence: {{ lote.fechaVencimiento }} ({{ lote.diasHastaVencimiento }} días) - Stock: {{ lote.cantidadDisponible }}
               </option>
             }
           </select>

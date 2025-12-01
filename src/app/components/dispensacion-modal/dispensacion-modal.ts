@@ -4,11 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { DispensacionService, DispensacionRequest } from '../../services/dispensacion.service';
 
-interface Lote {
+// HU-11: Interfaz para lotes ordenados por FEFO
+interface LoteResponse {
   id: number;
-  codigoProductoProv: string;
+  productoId: number;
+  productoNombre: string;
+  codigoLote: string;
   fechaVencimiento: string;
-  stockDisponible: number;
+  cantidadDisponible: number;
+  diasHastaVencimiento: number;
+  estado: string;
+  precioUnitario: number;
 }
 
 @Component({
@@ -27,7 +33,7 @@ export class DispensacionModalComponent implements OnChanges {
   private http = inject(HttpClient);
   private dispensacionService = inject(DispensacionService);
 
-  lotes: Lote[] = [];
+  lotes: LoteResponse[] = [];
   loadingLotes = false;
   errorMessage = '';
   isSubmitting = false;
@@ -47,6 +53,7 @@ export class DispensacionModalComponent implements OnChanges {
     }
   }
 
+  // HU-11 Escenario 2: Cargar lotes ordenados por FEFO (First Expired, First Out)
   loadLotes() {
     if (!this.productId) return;
 
@@ -55,11 +62,13 @@ export class DispensacionModalComponent implements OnChanges {
     this.formData.loteId = 0;
     this.errorMessage = '';
 
-    this.http.get<Lote[]>(`http://172.200.21.101:8080/api/lotes/producto/${this.productId}`)
+    // Endpoint FEFO: retorna lotes ordenados por fecha de vencimiento (más próximo primero)
+    this.http.get<LoteResponse[]>(`http://172.200.21.101:8080/api/lotes/producto/${this.productId}/fefo`)
       .subscribe({
         next: (lotes) => {
-          this.lotes = lotes;
+          this.lotes = lotes.filter(l => l.cantidadDisponible > 0); // Solo lotes con stock
           this.loadingLotes = false;
+          console.log('Lotes FEFO cargados:', this.lotes);
         },
         error: (error) => {
           console.error('Error loading lotes:', error);
@@ -67,6 +76,11 @@ export class DispensacionModalComponent implements OnChanges {
           this.loadingLotes = false;
         }
       });
+  }
+
+  // HU-11 Escenario 2: Determinar si un lote es el sugerido por FEFO (el primero)
+  esPrimerLote(lote: LoteResponse): boolean {
+    return this.lotes.length > 0 && this.lotes[0].id === lote.id;
   }
 
   onClose() {
@@ -95,8 +109,8 @@ export class DispensacionModalComponent implements OnChanges {
     }
 
     const loteSeleccionado = this.lotes.find(l => l.id === this.formData.loteId);
-    if (loteSeleccionado && this.formData.cantidad > loteSeleccionado.stockDisponible) {
-      this.errorMessage = `La cantidad excede el stock disponible (${loteSeleccionado.stockDisponible} unidades)`;
+    if (loteSeleccionado && this.formData.cantidad > loteSeleccionado.cantidadDisponible) {
+      this.errorMessage = `La cantidad excede el stock disponible (${loteSeleccionado.cantidadDisponible} unidades)`;
       return;
     }
 
