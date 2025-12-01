@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditLogService, AuditLogResponse, AuditLogFilter } from '../../services/audit-log.service';
 import { UserManagementService } from '../../services/user-management.service';
+import { ExportService } from '../../services/export';
 
 @Component({
   selector: 'app-auditoria',
@@ -14,6 +15,7 @@ import { UserManagementService } from '../../services/user-management.service';
 export class AuditoriaComponent implements OnInit {
   private auditLogService = inject(AuditLogService);
   private userService = inject(UserManagementService);
+  private exportService = inject(ExportService);
 
   auditLogs: AuditLogResponse[] = [];
   usuarios: any[] = [];
@@ -125,5 +127,38 @@ export class AuditoriaComponent implements OnInit {
       return 'accion-status';
     }
     return 'accion-other';
+  }
+
+  // HU-14: Exportar bitácora a Excel o PDF
+  exportToExcel() {
+    const exportData = this.auditLogs.map(log => ({
+      'ID': log.id,
+      'Fecha/Hora': this.formatDate(log.fechaHora),
+      'Usuario': log.usuarioNombre || '-',
+      'Acción': log.accion,
+      'Tipo Entidad': log.entidadTipo || '-',
+      'ID Entidad': log.entidadId || '-',
+      'Descripción': log.descripcion || '-',
+      'Dirección IP': log.ipAddress || '-'
+    }));
+
+    const filename = `bitacora-auditoria-${new Date().toISOString().split('T')[0]}`;
+    this.exportService.exportToExcel(exportData, filename);
+  }
+
+  exportToPDF() {
+    const exportData = this.auditLogs.map(log => ({
+      'ID': log.id,
+      'Fecha/Hora': this.formatDate(log.fechaHora),
+      'Usuario': log.usuarioNombre || '-',
+      'Acción': log.accion,
+      'Tipo Entidad': log.entidadTipo || '-',
+      'ID Entidad': log.entidadId || '-',
+      'Descripción': log.descripcion || '-',
+      'Dirección IP': log.ipAddress || '-'
+    }));
+
+    const filename = `bitacora-auditoria-${new Date().toISOString().split('T')[0]}`;
+    this.exportService.exportToPDF(exportData, filename);
   }
 }

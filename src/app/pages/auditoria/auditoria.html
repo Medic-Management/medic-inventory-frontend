@@ -1,9 +1,18 @@
 <div class="auditoria-page">
   <div class="page-header">
     <h1>Bitácora de Auditoría</h1>
-    <button class="btn btn-secondary" (click)="toggleFilters()">
-      {{ showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros' }}
-    </button>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="toggleFilters()">
+        {{ showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros' }}
+      </button>
+      <!-- HU-14: Botones de exportación -->
+      <button class="btn btn-success" (click)="exportToExcel()" [disabled]="auditLogs.length === 0">
+        📊 Exportar Excel
+      </button>
+      <button class="btn btn-danger" (click)="exportToPDF()" [disabled]="auditLogs.length === 0">
+        📄 Exportar PDF
+      </button>
+    </div>
   </div>
 
   @if (showFilters) {
