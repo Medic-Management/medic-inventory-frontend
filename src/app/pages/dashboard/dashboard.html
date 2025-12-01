@@ -440,6 +440,68 @@
         }
       </div>
 
+      <!-- HU-07: Sugerencias de Pedido -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">💡 Sugerencias de Pedido</h2>
+        </div>
+        @if (sugerenciasLoading) {
+          <div class="critical-stock-item">
+            <div class="product-info">
+              <p class="product-stock">⏳ Calculando sugerencias...</p>
+            </div>
+          </div>
+        }
+        @if (!sugerenciasLoading && sugerenciasPedido.length === 0) {
+          <div class="critical-stock-item">
+            <div class="product-info">
+              <p class="product-stock">✅ No hay pedidos sugeridos en este momento</p>
+            </div>
+          </div>
+        }
+        @for (sugerencia of sugerenciasPedido; track sugerencia.productoId) {
+          <div class="critical-stock-item sugerencia-item">
+            <div class="product-image">
+              <div class="product-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 2L4 8v12c0 9.94 6.88 19.25 16 21.5 9.12-2.25 16-11.56 16-21.5V8L20 2zm-2 27l-6-6 1.41-1.41L18 26.17l8.59-8.59L28 19l-10 10z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="product-info">
+              <h4>{{ sugerencia.productoNombre }}</h4>
+              <p class="product-stock">
+                <strong>Cantidad sugerida: {{ sugerencia.cantidadSugerida }} unidades</strong>
+              </p>
+              <p class="product-stock" style="font-size: 12px; color: #6b7280;">
+                {{ sugerencia.justificacion }}
+              </p>
+              <p class="product-stock" style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+                Proveedor: {{ sugerencia.proveedorNombre }}
+              </p>
+              <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+                <span class="badge" [ngClass]="getCriticidadClass(sugerencia.criticidad)">
+                  {{ sugerencia.criticidad }}
+                </span>
+                <button
+                  class="btn btn-outline-small"
+                  (click)="crearBorradorDesdeSugerencia(sugerencia)"
+                  title="Crear borrador de pedido">
+                  📝 Crear Pedido
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+        @if (sugerenciasPedido.length > 0) {
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <p style="font-size: 12px; color: #6b7280; text-align: center;">
+              💡 Sugerencias basadas en stock mínimo, pronóstico y umbrales configurados
+            </p>
+          </div>
+        }
+      </div>
+
       <div class="section-card">
         <div class="section-header-flex">
           <h2 class="section-title">Pronóstico de Consumo (ML)</h2>

@@ -1,11 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { AlertaService, AlertaResponse } from '../../services/alerta.service';
 import { AlertaVencimientoService, AlertaVencimientoResponse } from '../../services/alerta-vencimiento.service';
 import { AlertaCoberturaService, AlertaCoberturaResponse, ResumenCobertura } from '../../services/alerta-cobertura.service';
 import { ReporteService, DatoGraficoMensualDTO, MetricasDashboardDTO } from '../../services/reporte.service';
 import { MlPredictionService } from '../../services/ml-prediction.service';
+import { SugerenciaService, SugerenciaPedido } from '../../services/sugerencia.service';
 import { ResumenPredicciones, PrediccionPicoDemanda } from '../../models/ml-prediction.interface';
 
 interface TopMedication {
@@ -28,9 +30,12 @@ export class DashboardComponent implements OnInit {
   private alertaCoberturaService = inject(AlertaCoberturaService);
   private reporteService = inject(ReporteService);
   private mlService = inject(MlPredictionService);
+  private sugerenciaService = inject(SugerenciaService);
+  private router = inject(Router);
 
   loading = false;
   mlLoading = false;
+  sugerenciasLoading = false;
   stats: MetricasDashboardDTO = {
     totalProductos: 0,
     productosStockCritico: 0,
@@ -74,6 +79,9 @@ export class DashboardComponent implements OnInit {
   top10RiesgoQuiebre: PrediccionPicoDemanda[] = [];
   confianzaPronostico = 0;
 
+  // HU-07: Sugerencias de Pedido
+  sugerenciasPedido: SugerenciaPedido[] = [];
+
   ngOnInit() {
     this.loadDashboardData();
     this.loadMetricas();
@@ -82,6 +90,7 @@ export class DashboardComponent implements OnInit {
     this.loadAlertasVencimiento();
     this.loadAlertasCobertura();
     this.loadMLPredictions();
+    this.loadSugerenciasPedido();
   }
 
   loadMetricas() {
@@ -298,6 +307,46 @@ export class DashboardComponent implements OnInit {
       error: (error) => {
         console.error('Error descargando reporte de alertas:', error);
         alert('Error al descargar el reporte de alertas');
+      }
+    });
+  }
+
+  // HU-07: Sugerencias de Pedido
+  loadSugerenciasPedido() {
+    this.sugerenciasLoading = true;
+    this.sugerenciaService.obtenerSugerenciasPedido().subscribe({
+      next: (sugerencias) => {
+        this.sugerenciasPedido = sugerencias;
+        this.sugerenciasLoading = false;
+        console.log('Sugerencias de pedido cargadas:', sugerencias.length);
+      },
+      error: (error) => {
+        console.error('Error cargando sugerencias de pedido:', error);
+        this.sugerenciasLoading = false;
+      }
+    });
+  }
+
+  getCriticidadClass(criticidad: string): string {
+    if (criticidad === 'ALTA') return 'badge-red';
+    if (criticidad === 'MEDIA') return 'badge-orange';
+    return 'badge-yellow';
+  }
+
+  crearBorradorDesdeSugerencia(sugerencia: SugerenciaPedido) {
+    if (!confirm(`¿Crear borrador de pedido para ${sugerencia.productoNombre}?`)) {
+      return;
+    }
+
+    this.sugerenciaService.crearBorradorDesdeSugerencia(sugerencia).subscribe({
+      next: (borrador) => {
+        console.log('Borrador creado:', borrador);
+        alert(`Borrador creado exitosamente para ${sugerencia.productoNombre}. Redirigiendo...`);
+        this.router.navigate(['/solicitudes-compra']);
+      },
+      error: (error) => {
+        console.error('Error creando borrador:', error);
+        alert('Error al crear borrador: ' + (error.error?.message || 'Error desconocido'));
       }
     });
   }
