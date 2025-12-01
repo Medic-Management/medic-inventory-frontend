@@ -53,4 +53,31 @@ export class SolicitudCompraService {
   marcarEmailEnviado(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/marcar-email-enviado`, {});
   }
+
+  // HU-08: Editar borrador
+  editarBorrador(id: number, request: SolicitudCompraRequest): Observable<SolicitudCompraResponse> {
+    return this.http.put<SolicitudCompraResponse>(`${this.apiUrl}/${id}/editar`, request);
+  }
+
+  // HU-08: Aprobar borrador
+  aprobarBorrador(id: number): Observable<SolicitudCompraResponse> {
+    return this.http.put<SolicitudCompraResponse>(`${this.apiUrl}/${id}/aprobar`, {});
+  }
+
+  // HU-09: Registrar fallo
+  registrarFalloEnvio(id: number, motivo: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/registrar-fallo?motivo=${encodeURIComponent(motivo)}`, {});
+  }
+
+  // HU-09/HU-19: Reenviar pedido
+  reenviarPedido(id: number): Observable<SolicitudCompraResponse> {
+    return this.http.put<SolicitudCompraResponse>(`${this.apiUrl}/${id}/reenviar`, {});
+  }
+
+  // HU-04: Generar pedido automático
+  generarPedidoAutomatico(productoId: number, proveedorId: number, cantidad: number,
+                         stockActual: number, nivelAlerta: number): Observable<SolicitudCompraResponse> {
+    const params = `?productoId=${productoId}&proveedorId=${proveedorId}&cantidad=${cantidad}&stockActual=${stockActual}&nivelAlerta=${nivelAlerta}`;
+    return this.http.post<SolicitudCompraResponse>(`${this.apiUrl}/generar-automatico${params}`, {});
+  }
 }
