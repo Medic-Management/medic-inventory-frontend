@@ -137,7 +137,7 @@
               <th>ID Producto</th>
               <th>Categoría</th>
               <th>Cantidad Restante</th>
-              <th>Facturación</th>
+              <!-- <th>Facturación</th> -->
               <th>Incremento</th>
             </tr>
           </thead>
@@ -149,13 +149,13 @@
                   <td>{{ product.id }}</td>
                   <td>{{ product.categoria }}</td>
                   <td>{{ product.cantidadRestante }} Unidades</td>
-                  <td>{{ formatCurrency(product.facturacion) }}</td>
+                  <!-- <td>{{ formatCurrency(product.facturacion) }}</td> -->
                   <td class="increase-value">{{ formatPercentage(product.porcentajeIncremento) }}</td>
                 </tr>
               }
             } @else {
               <tr>
-                <td colspan="6">Cargando productos...</td>
+                <td colspan="5">Cargando productos...</td>
               </tr>
             }
           </tbody>
@@ -173,7 +173,7 @@
           <thead>
             <tr>
               <th>Categoría</th>
-              <th>Facturación</th>
+              <!-- <th>Facturación</th> -->
               <th>Incremento</th>
             </tr>
           </thead>
@@ -182,13 +182,13 @@
               @for (category of reporte.categoriasMasVendidas; track category.nombre) {
                 <tr>
                   <td>{{ category.nombre }}</td>
-                  <td>{{ formatCurrency(category.facturacion) }}</td>
+                  <!-- <td>{{ formatCurrency(category.facturacion) }}</td> -->
                   <td class="increase-value">{{ formatPercentage(category.porcentajeIncremento) }}</td>
                 </tr>
               }
             } @else {
               <tr>
-                <td colspan="3">Cargando categorías...</td>
+                <td colspan="2">Cargando categorías...</td>
               </tr>
             }
           </tbody>

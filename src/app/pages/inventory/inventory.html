@@ -58,7 +58,7 @@
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Precio de compra</th>
+            <!-- <th>Precio de compra</th> -->
             <th>Cantidad</th>
             <th>Valor de alerta</th>
             <th>Fecha de vencimiento</th>
@@ -70,7 +70,7 @@
           @for (medication of paginatedMedications; track medication.id) {
             <tr>
               <td class="medication-name">{{ medication.name }}</td>
-              <td>{{ medication.price }}</td>
+              <!-- <td>{{ medication.price }}</td> -->
               <td>{{ medication.quantity }} cajas</td>
               <td>{{ medication.alertValue }} cajas</td>
               <td>{{ medication.expirationDate }}</td>
