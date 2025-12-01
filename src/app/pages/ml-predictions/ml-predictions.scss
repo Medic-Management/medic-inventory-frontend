@@ -164,6 +164,97 @@
   }
 }
 
+// HU-06 Escenario 2: Confianza del pronóstico
+.confianza-container {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.confianza-badge {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid;
+  transition: all 0.3s ease;
+
+  &.confianza-alta {
+    background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+    color: #059669;
+    border-color: #6ee7b7;
+  }
+
+  &.confianza-media {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+    color: #d97706;
+    border-color: #fcd34d;
+  }
+
+  &.confianza-baja {
+    background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+    color: #dc2626;
+    border-color: #fca5a5;
+  }
+}
+
+.confianza-warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+  border: 2px solid #fcd34d;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  animation: slideIn 0.5s ease;
+
+  h3 {
+    color: #d97706;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    color: #78350f;
+    font-size: 14px;
+    margin: 0 0 16px 0;
+    line-height: 1.6;
+  }
+
+  ul {
+    color: #78350f;
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0 0 16px 0;
+    padding-left: 24px;
+
+    li {
+      margin-bottom: 8px;
+
+      strong {
+        color: #b45309;
+      }
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+  border: 2px solid #fcd34d;
+  color: #78350f;
+}
+
 // Tabs
 .tabs-container {
   display: flex;

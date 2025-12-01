@@ -24,6 +24,7 @@ export class MlPredictionsComponent implements OnInit {
   totalProductos = 0;
   productosConPico = 0;
   productosEnRiesgo = 0;
+  confianzaPronostico = 0;
 
   selectedTab: 'demanda' | 'vencimiento' = 'demanda';
   selectedNivel: 'TODOS' | 'ALTO' | 'MEDIO' | 'BAJO' = 'TODOS';
@@ -47,6 +48,9 @@ export class MlPredictionsComponent implements OnInit {
         this.productosEnRiesgo = resumen.riesgo_vencimiento.productosEnRiesgo;
 
         this.totalProductos = resumen.picos_demanda.totalProductos;
+
+        // HU-06 Escenario 2: Calcular confianza del pronóstico
+        this.calcularConfianza();
 
         this.loading = false;
       },
@@ -92,5 +96,38 @@ export class MlPredictionsComponent implements OnInit {
 
   recargar(): void {
     this.cargarPredicciones();
+  }
+
+  // HU-06 Escenario 2: Calcular confianza del pronóstico basado en probabilidades
+  calcularConfianza(): void {
+    const todasPredicciones = [...this.picosDemanda];
+
+    if (todasPredicciones.length === 0) {
+      this.confianzaPronostico = 0;
+      return;
+    }
+
+    // Calcular confianza promedio basada en probabilidades
+    const promedioConfianza = todasPredicciones.reduce(
+      (sum, pred) => sum + pred.probabilidad, 0
+    ) / todasPredicciones.length;
+
+    this.confianzaPronostico = Math.round(promedioConfianza * 100);
+  }
+
+  getConfianzaLabel(): string {
+    if (this.confianzaPronostico >= 70) return 'ALTA';
+    if (this.confianzaPronostico >= 50) return 'MEDIA';
+    return 'BAJA';
+  }
+
+  getConfianzaClass(): string {
+    if (this.confianzaPronostico >= 70) return 'confianza-alta';
+    if (this.confianzaPronostico >= 50) return 'confianza-media';
+    return 'confianza-baja';
+  }
+
+  mostrarAdvertenciaConfianza(): boolean {
+    return this.confianzaPronostico < 50;
   }
 }

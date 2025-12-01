@@ -48,7 +48,27 @@
       </div>
     </div>
 
-    
+    <!-- HU-06 Escenario 2: Indicador de confianza del pronóstico -->
+    <div class="confianza-container">
+      <div class="confianza-badge" [ngClass]="getConfianzaClass()">
+        📊 Confianza del Pronóstico: <strong>{{ getConfianzaLabel() }} ({{ confianzaPronostico }}%)</strong>
+      </div>
+    </div>
+
+    <!-- HU-06 Escenario 2: Advertencia cuando confianza es baja -->
+    <div *ngIf="mostrarAdvertenciaConfianza()" class="alert alert-warning confianza-warning">
+      <h3>⚠️ Advertencia: Confianza Baja en el Pronóstico</h3>
+      <p><strong>La confianza del pronóstico es BAJA ({{ confianzaPronostico }}%)</strong>. Esto puede deberse a:</p>
+      <ul>
+        <li>📉 <strong>Datos históricos insuficientes:</strong> Se requiere al menos 3 meses de datos para pronósticos confiables.</li>
+        <li>📊 <strong>Alta variabilidad en el consumo:</strong> Patrones irregulares dificultan las predicciones.</li>
+        <li>🔄 <strong>Cambios recientes en la demanda:</strong> Eventos atípicos afectan la precisión del modelo.</li>
+        <li>📅 <strong>Productos nuevos:</strong> Medicamentos sin historial suficiente para análisis.</li>
+      </ul>
+      <p><strong>💡 Recomendación:</strong> Utilice estas predicciones como referencia complementaria. Para decisiones críticas, considere también el criterio experto y la tendencia manual observada.</p>
+    </div>
+
+
     <div class="tabs-container">
       <button
         class="tab"
