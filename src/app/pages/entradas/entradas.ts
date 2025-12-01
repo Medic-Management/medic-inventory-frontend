@@ -112,6 +112,13 @@ export class EntradasComponent implements OnInit {
           return;
         }
 
+        // HU-04 Escenario 3: Manejar error de stock máximo excedido
+        if (error.error?.message && error.error.message.includes('STOCK_MAXIMO_EXCEDIDO')) {
+          this.errorMessage = error.error.message.replace('STOCK_MAXIMO_EXCEDIDO: ', '');
+          this.successMessage = '';
+          return;
+        }
+
         // Error genérico
         this.errorMessage = error.error?.message || 'Error al registrar la entrada. Por favor intente nuevamente.';
         this.successMessage = '';
