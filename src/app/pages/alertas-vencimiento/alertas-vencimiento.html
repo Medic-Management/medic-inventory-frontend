@@ -1,0 +1,97 @@
+<div class="alertas-vencimiento-page">
+  <div class="page-header">
+    <h1>Alertas de Vencimiento de Lotes</h1>
+    <button class="btn btn-refresh" (click)="loadAlertas()" [disabled]="loading">
+      <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+      {{ loading ? 'Actualizando...' : 'Actualizar' }}
+    </button>
+  </div>
+
+  <div class="info-banner">
+    <i class="fas fa-info-circle"></i>
+    <span>Las alertas se generan automáticamente para lotes que vencen en los próximos 90 días. Se recomienda seguir el principio <strong>FEFO (First Expired, First Out)</strong> para minimizar pérdidas.</span>
+  </div>
+
+  <div class="alertas-container">
+    <div class="filter-header">
+      <h2>
+        @if (filtroNivel === 'TODOS') {
+          Todas las Alertas ({{ alertas.length }})
+        } @else {
+          Alertas {{ getNivelTexto(filtroNivel) }} ({{ alertasFiltradas.length }})
+        }
+      </h2>
+      <div class="filtros">
+        <label for="filtroNivel">Filtrar por nivel:</label>
+        <select id="filtroNivel" [(ngModel)]="filtroNivel" (change)="onFiltroChange()" class="filtro-select">
+          <option value="TODOS">Todas</option>
+          <option value="CRITICO">Críticas (&lt;30 días)</option>
+          <option value="ALERTA">Alertas (&lt;60 días)</option>
+          <option value="ADVERTENCIA">Advertencias (&lt;90 días)</option>
+        </select>
+      </div>
+    </div>
+
+    @if (loading) {
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando alertas de vencimiento...</p>
+      </div>
+    } @else if (alertasFiltradas.length === 0) {
+      <div class="empty-state">
+        <i class="fas fa-check-circle"></i>
+        <p>
+          @if (filtroNivel === 'TODOS') {
+            No hay lotes próximos a vencer
+          } @else {
+            No hay alertas de nivel {{ getNivelTexto(filtroNivel) }}
+          }
+        </p>
+      </div>
+    } @else {
+      <div class="alertas-grid">
+        @for (alerta of alertasFiltradas; track alerta.loteId) {
+          <div class="alerta-card" [ngClass]="getNivelClass(alerta.nivelAlerta)">
+            <div class="alerta-header">
+              <span class="badge" [ngClass]="getNivelClass(alerta.nivelAlerta)">
+                {{ getNivelTexto(alerta.nivelAlerta) }}
+              </span>
+              <span class="dias-restantes">{{ getUrgenciaTexto(alerta.diasRestantes) }}</span>
+            </div>
+
+            <div class="alerta-body">
+              <h3 class="producto-nombre">{{ alerta.productoNombre }}</h3>
+
+              <div class="alerta-details">
+                <div class="detail-item">
+                  <i class="fas fa-box"></i>
+                  <span><strong>Lote:</strong> {{ alerta.codigoLote }}</span>
+                </div>
+
+                <div class="detail-item">
+                  <i class="fas fa-calendar-alt"></i>
+                  <span><strong>Vencimiento:</strong> {{ formatFechaVencimiento(alerta.fechaVencimiento) }}</span>
+                </div>
+
+                <div class="detail-item">
+                  <i class="fas fa-cubes"></i>
+                  <span><strong>Stock disponible:</strong> {{ alerta.cantidadDisponible }} unidades</span>
+                </div>
+
+                <div class="detail-item">
+                  <i class="fas fa-building"></i>
+                  <span><strong>Sede:</strong> {{ alerta.sedeNombre }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="alerta-footer">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>Priorizar dispensación siguiendo FEFO</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
