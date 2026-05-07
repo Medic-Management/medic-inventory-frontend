@@ -63,7 +63,7 @@ export class DispensacionModalComponent implements OnChanges {
     this.errorMessage = '';
 
     // Endpoint FEFO: retorna lotes ordenados por fecha de vencimiento (más próximo primero)
-    this.http.get<LoteResponse[]>(`http://10.0.0.4:8080/api/lotes/producto/${this.productId}/fefo`)
+    this.http.get<LoteResponse[]>(`http://172.200.21.101:8080/api/lotes/producto/${this.productId}/fefo`)
       .subscribe({
         next: (lotes) => {
           this.lotes = lotes.filter(l => l.cantidadDisponible > 0); // Solo lotes con stock

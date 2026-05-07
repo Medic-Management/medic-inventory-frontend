@@ -29,7 +29,7 @@ export interface UmbralStockResponse {
   providedIn: 'root'
 })
 export class UmbralStockService {
-  private apiUrl = 'http://10.0.0.4:8080/api/umbrales';
+  private apiUrl = 'http://172.200.21.101:8080/api/umbrales';
 
   constructor(private http: HttpClient) { }
 

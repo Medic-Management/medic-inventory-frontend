@@ -39,7 +39,7 @@ export interface ResumenCobertura {
   providedIn: 'root'
 })
 export class AlertaCoberturaService {
-  private apiUrl = 'http://10.0.0.4:8080/api/alertas-cobertura';
+  private apiUrl = 'http://172.200.21.101:8080/api/alertas-cobertura';
 
   constructor(private http: HttpClient) { }
 

@@ -30,7 +30,7 @@ export interface SolicitudCompraResponse {
   providedIn: 'root'
 })
 export class SolicitudCompraService {
-  private apiUrl = 'http://10.0.0.4:8080/api/solicitudes-compra';
+  private apiUrl = 'http://172.200.21.101:8080/api/solicitudes-compra';
 
   constructor(private http: HttpClient) { }
 

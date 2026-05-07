@@ -18,7 +18,7 @@ export interface LoteResponse {
   providedIn: 'root'
 })
 export class LoteService {
-  private apiUrl = 'http://10.0.0.4:8080/api/lotes';
+  private apiUrl = 'http://172.200.21.101:8080/api/lotes';
 
   constructor(private http: HttpClient) { }
 

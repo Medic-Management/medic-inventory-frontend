@@ -26,7 +26,7 @@ export interface AuditLogFilter {
   providedIn: 'root'
 })
 export class AuditLogService {
-  private apiUrl = 'http://10.0.0.4:8080/api/audit-logs';
+  private apiUrl = 'http://172.200.21.101:8080/api/audit-logs';
 
   constructor(private http: HttpClient) {}
 

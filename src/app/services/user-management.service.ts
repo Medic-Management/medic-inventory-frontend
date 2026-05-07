@@ -28,7 +28,7 @@ export interface RoleResponse {
   providedIn: 'root'
 })
 export class UserManagementService {
-  private apiUrl = 'http://10.0.0.4:8080/api/users';
+  private apiUrl = 'http://172.200.21.101:8080/api/users';
 
   constructor(private http: HttpClient) { }
 
