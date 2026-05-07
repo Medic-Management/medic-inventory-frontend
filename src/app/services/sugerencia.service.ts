@@ -18,7 +18,7 @@ export interface SugerenciaPedido {
   providedIn: 'root'
 })
 export class SugerenciaService {
-  private apiUrl = 'http://172.200.21.101:8080/api/sugerencias';
+  private apiUrl = 'http://10.0.0.4:8080/api/sugerencias';
 
   constructor(private http: HttpClient) { }
 

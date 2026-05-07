@@ -24,7 +24,7 @@ export interface SupplierResponse {
   providedIn: 'root'
 })
 export class SupplierManagementService {
-  private apiUrl = 'http://172.200.21.101:8080/api/suppliers';
+  private apiUrl = 'http://10.0.0.4:8080/api/suppliers';
 
   constructor(private http: HttpClient) { }
 

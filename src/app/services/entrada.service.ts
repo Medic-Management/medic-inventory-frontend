@@ -32,7 +32,7 @@ export interface EntradaResponse {
   providedIn: 'root'
 })
 export class EntradaService {
-  private apiUrl = 'http://172.200.21.101:8080/api/entradas';
+  private apiUrl = 'http://10.0.0.4:8080/api/entradas';
 
   constructor(private http: HttpClient) { }
 
