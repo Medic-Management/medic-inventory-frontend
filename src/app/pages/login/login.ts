@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -50,7 +51,7 @@ export class LoginComponent implements OnInit {
     };
 
     console.log('[LOGIN] Enviando request de login...');
-    this.http.post<any>('http://172.200.21.101:8080/api/auth/login', loginData)
+    this.http.post<any>(`${environment.apiUrl}/auth/login`, loginData)
       .subscribe({
         next: (response) => {
           console.log('[LOGIN] Response recibida:', response);

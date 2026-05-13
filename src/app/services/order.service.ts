@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -40,7 +41,7 @@ export interface CreateOrderRequest {
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'http://172.200.21.101:8080/api/orders';
+  private apiUrl = `${environment.apiUrl}/orders';
 
   constructor(private http: HttpClient) {}
 

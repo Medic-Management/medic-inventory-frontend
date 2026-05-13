@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface AlertaResponse {
   id: number;
@@ -22,7 +23,7 @@ export interface AlertaResponse {
   providedIn: 'root'
 })
 export class AlertaService {
-  private apiUrl = 'http://172.200.21.101:8080/api/alertas';
+  private apiUrl = `${environment.apiUrl}/alertas`;
 
   constructor(private http: HttpClient) { }
 

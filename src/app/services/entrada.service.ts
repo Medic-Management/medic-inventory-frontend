@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -32,7 +33,7 @@ export interface EntradaResponse {
   providedIn: 'root'
 })
 export class EntradaService {
-  private apiUrl = 'http://172.200.21.101:8080/api/entradas';
+  private apiUrl = `${environment.apiUrl}/entradas';
 
   constructor(private http: HttpClient) { }
 

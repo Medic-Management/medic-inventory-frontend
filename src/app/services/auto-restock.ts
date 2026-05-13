@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface RestockRequestDto {
   productId: number;
@@ -31,7 +32,7 @@ export interface RestockResponse {
   providedIn: 'root'
 })
 export class AutoRestockService {
-  private apiUrl = 'http://172.200.21.101:8080/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

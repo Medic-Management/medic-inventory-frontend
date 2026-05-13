@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { DispensacionService, DispensacionRequest } from '../../services/dispensacion.service';
+import { environment } from '../../../environments/environment';
 
 // HU-11: Interfaz para lotes ordenados por FEFO
 interface LoteResponse {
@@ -63,7 +64,7 @@ export class DispensacionModalComponent implements OnChanges {
     this.errorMessage = '';
 
     // Endpoint FEFO: retorna lotes ordenados por fecha de vencimiento (más próximo primero)
-    this.http.get<LoteResponse[]>(`http://172.200.21.101:8080/api/lotes/producto/${this.productId}/fefo`)
+    this.http.get<LoteResponse[]>(`${environment.apiUrl}/lotes/producto/${this.productId}/fefo`)
       .subscribe({
         next: (lotes) => {
           this.lotes = lotes.filter(l => l.cantidadDisponible > 0); // Solo lotes con stock

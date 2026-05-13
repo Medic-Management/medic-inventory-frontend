@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -18,7 +19,7 @@ export interface SugerenciaPedido {
   providedIn: 'root'
 })
 export class SugerenciaService {
-  private apiUrl = 'http://172.200.21.101:8080/api/sugerencias';
+  private apiUrl = `${environment.apiUrl}/sugerencias';
 
   constructor(private http: HttpClient) { }
 

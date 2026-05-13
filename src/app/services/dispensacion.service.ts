@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface DispensacionRequest {
   productoId: number;
@@ -28,7 +29,7 @@ export interface DispensacionResponse {
   providedIn: 'root'
 })
 export class DispensacionService {
-  private apiUrl = 'http://172.200.21.101:8080/api/dispensaciones';
+  private apiUrl = `${environment.apiUrl}/dispensaciones`;
 
   constructor(private http: HttpClient) {}
 

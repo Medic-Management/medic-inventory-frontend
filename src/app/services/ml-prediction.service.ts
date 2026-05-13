@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -12,7 +13,7 @@ import {
   providedIn: 'root'
 })
 export class MlPredictionService {
-  private apiUrl = 'http://172.200.21.101:8080/api/ml';
+  private apiUrl = `${environment.apiUrl}/ml';
 
   constructor(private http: HttpClient) {}
 

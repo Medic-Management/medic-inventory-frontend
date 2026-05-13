@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -18,7 +19,7 @@ export interface LoteResponse {
   providedIn: 'root'
 })
 export class LoteService {
-  private apiUrl = 'http://172.200.21.101:8080/api/lotes';
+  private apiUrl = `${environment.apiUrl}/lotes';
 
   constructor(private http: HttpClient) { }
 

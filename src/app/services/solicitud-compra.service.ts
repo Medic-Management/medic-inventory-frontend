@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -30,7 +31,7 @@ export interface SolicitudCompraResponse {
   providedIn: 'root'
 })
 export class SolicitudCompraService {
-  private apiUrl = 'http://172.200.21.101:8080/api/solicitudes-compra';
+  private apiUrl = `${environment.apiUrl}/solicitudes-compra';
 
   constructor(private http: HttpClient) { }
 

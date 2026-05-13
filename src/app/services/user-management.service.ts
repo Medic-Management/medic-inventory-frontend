@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -28,7 +29,7 @@ export interface RoleResponse {
   providedIn: 'root'
 })
 export class UserManagementService {
-  private apiUrl = 'http://172.200.21.101:8080/api/users';
+  private apiUrl = `${environment.apiUrl}/users';
 
   constructor(private http: HttpClient) { }
 
