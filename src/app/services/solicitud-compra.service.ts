@@ -25,18 +25,25 @@ export interface SolicitudCompraResponse {
   solicitadoPorId: number;
   solicitadoPorNombre: string;
   creadaEn: string;
+  actualizadaEn?: string;
+  generadoAutomaticamente?: boolean;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class SolicitudCompraService {
-  private apiUrl = `${environment.apiUrl}/solicitudes-compra';
+  private apiUrl = `${environment.apiUrl}/solicitudes-compra`;
 
   constructor(private http: HttpClient) { }
 
   obtenerSolicitudes(): Observable<SolicitudCompraResponse[]> {
     return this.http.get<SolicitudCompraResponse[]>(this.apiUrl);
+  }
+
+  // CP011: Obtener pedidos aprobados para recepción de mercadería
+  obtenerPedidosAprobados(): Observable<SolicitudCompraResponse[]> {
+    return this.http.get<SolicitudCompraResponse[]>(`${this.apiUrl}/aprobados`);
   }
 
   obtenerSolicitudPorId(id: number): Observable<SolicitudCompraResponse> {
@@ -80,5 +87,35 @@ export class SolicitudCompraService {
                          stockActual: number, nivelAlerta: number): Observable<SolicitudCompraResponse> {
     const params = `?productoId=${productoId}&proveedorId=${proveedorId}&cantidad=${cantidad}&stockActual=${stockActual}&nivelAlerta=${nivelAlerta}`;
     return this.http.post<SolicitudCompraResponse>(`${this.apiUrl}/generar-automatico${params}`, {});
+  }
+
+  // CP010: Confirmar acuse de recibo
+  confirmarAcuseRecibo(id: number): Observable<SolicitudCompraResponse> {
+    return this.http.post<SolicitudCompraResponse>(`${this.apiUrl}/${id}/confirmar-acuse`, {});
+  }
+
+  // CP010: Obtener solicitudes sin confirmar (> 48 horas)
+  obtenerSolicitudesSinConfirmar(): Observable<SolicitudCompraResponse[]> {
+    return this.http.get<SolicitudCompraResponse[]>(`${this.apiUrl}/sin-confirmar`);
+  }
+
+  // CP010: Obtener solicitudes enviadas (estado SENT)
+  obtenerSolicitudesEnviadas(): Observable<SolicitudCompraResponse[]> {
+    return this.http.get<SolicitudCompraResponse[]>(`${this.apiUrl}/enviadas`);
+  }
+
+  // CP009: Obtener solicitudes aprobadas (pendientes de envío)
+  obtenerSolicitudesAprobadas(): Observable<SolicitudCompraResponse[]> {
+    return this.http.get<SolicitudCompraResponse[]>(`${this.apiUrl}/aprobadas`);
+  }
+
+  // CP009: Enviar pedido individual al proveedor
+  enviarAlProveedor(id: number): Observable<SolicitudCompraResponse> {
+    return this.http.post<SolicitudCompraResponse>(`${this.apiUrl}/${id}/enviar-al-proveedor`, {});
+  }
+
+  // CP009: Enviar TODAS las solicitudes aprobadas
+  enviarTodasAlProveedor(): Observable<{message: string, cantidad: number}> {
+    return this.http.post<{message: string, cantidad: number}>(`${this.apiUrl}/enviar-todas-al-proveedor`, {});
   }
 }

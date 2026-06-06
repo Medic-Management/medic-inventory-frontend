@@ -13,13 +13,19 @@ export interface SugerenciaPedido {
   cantidadSugerida: number;
   justificacion: string;
   criticidad: string; // ALTA, MEDIA, BAJA
+
+  // CP007: Información complementaria para análisis operativo
+  consumoPromedioMensual: number;
+  tendencia: string; // CRECIENTE, ESTABLE, DECRECIENTE
+  diasParaAgotamiento: number;
+  fechaEstimadaReposicion: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class SugerenciaService {
-  private apiUrl = `${environment.apiUrl}/sugerencias';
+  private apiUrl = `${environment.apiUrl}/sugerencias`;
 
   constructor(private http: HttpClient) { }
 

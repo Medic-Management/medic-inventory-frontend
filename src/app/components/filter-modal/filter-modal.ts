@@ -8,8 +8,8 @@ export interface FilterOptions {
   critical: boolean;
   outOfStock: boolean;
   category: string;
-  priceMin: number | null;
-  priceMax: number | null;
+  stockMin: number | null;
+  stockMax: number | null;
   expirationRange: string;
   supplier: string;
 }
@@ -32,8 +32,8 @@ export class FilterModalComponent {
     critical: false,
     outOfStock: false,
     category: '',
-    priceMin: null,
-    priceMax: null,
+    stockMin: null,
+    stockMax: null,
     expirationRange: '',
     supplier: ''
   };
@@ -49,8 +49,8 @@ export class FilterModalComponent {
       critical: false,
       outOfStock: false,
       category: '',
-      priceMin: null,
-      priceMax: null,
+      stockMin: null,
+      stockMax: null,
       expirationRange: '',
       supplier: ''
     };

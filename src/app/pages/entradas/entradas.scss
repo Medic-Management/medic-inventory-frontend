@@ -22,6 +22,10 @@
   align-items: center;
   margin-bottom: 32px;
 
+  > div:first-child {
+    flex: 1;
+  }
+
   h1 {
     font-size: 28px;
     font-weight: 700;
@@ -29,8 +33,15 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 0;
+    margin: 0 0 8px 0;
     letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0;
+    font-weight: 500;
   }
 }
 
@@ -127,6 +138,37 @@
     background-clip: text;
     margin: 0 0 24px 0;
     letter-spacing: -0.5px;
+  }
+
+  .info-box {
+    background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+    border-left: 4px solid #0284c7;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    .info-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    strong {
+      color: #0369a1;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    p {
+      color: #075985;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+    }
   }
 }
 
@@ -329,6 +371,156 @@
   }
 }
 
+// CP011: Estilos para lista de pedidos aprobados
+.pedidos-aprobados-card {
+  background: white;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 24px 0;
+    letter-spacing: -0.5px;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #6b7280;
+
+  p {
+    margin: 8px 0;
+    font-size: 14px;
+  }
+
+  .text-muted {
+    color: #9ca3af;
+    font-size: 13px;
+  }
+}
+
+.pedidos-list {
+  display: grid;
+  gap: 16px;
+}
+
+.pedido-card {
+  background: linear-gradient(135deg, rgba(249, 250, 251, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: #059669;
+    box-shadow: 0 4px 20px rgba(5, 150, 105, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #059669;
+    margin: 0;
+  }
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &.badge-sent {
+    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+
+  &.badge-confirmed {
+    background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+    color: #059669;
+    border: 1px solid #6ee7b7;
+  }
+
+  &.badge-in_transit {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+    color: #d97706;
+    border: 1px solid #fcd34d;
+  }
+}
+
+.pedido-body {
+  margin-bottom: 16px;
+}
+
+.pedido-info {
+  display: grid;
+  gap: 8px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+
+    strong {
+      color: #1f2937;
+      font-weight: 600;
+    }
+  }
+}
+
+.pedido-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.pedido-seleccionado-info {
+  background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+  border: 1px solid #6ee7b7;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #047857;
+    font-weight: 500;
+  }
+}
+
 @media (max-width: 768px) {
   .entradas-page {
     padding: 16px;
@@ -342,5 +534,19 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  .pedido-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pedido-actions {
+    justify-content: stretch;
+
+    .btn {
+      flex: 1;
+    }
   }
 }

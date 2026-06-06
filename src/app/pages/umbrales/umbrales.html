@@ -14,7 +14,7 @@
             <select [(ngModel)]="formData.productoId" name="productoId" required [disabled]="isEdit">
               <option value="0">Seleccione un producto</option>
               @for (producto of productos; track producto.id) {
-                <option [value]="producto.id">{{ producto.nombre || producto.codigo }}</option>
+                <option [value]="producto.id">{{ producto.name }}</option>
               }
             </select>
           </div>

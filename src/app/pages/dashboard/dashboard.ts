@@ -333,6 +333,31 @@ export class DashboardComponent implements OnInit {
     return 'badge-yellow';
   }
 
+  // CP007: Helpers para mostrar información complementaria
+  getTendenciaIcon(tendencia: string): string {
+    if (tendencia === 'CRECIENTE') return '↗️';
+    if (tendencia === 'DECRECIENTE') return '↘️';
+    return '→';
+  }
+
+  getTendenciaClass(tendencia: string): string {
+    if (tendencia === 'CRECIENTE') return 'tendencia-creciente';
+    if (tendencia === 'DECRECIENTE') return 'tendencia-decreciente';
+    return 'tendencia-estable';
+  }
+
+  formatearFechaEstimada(fecha: string): string {
+    if (!fecha) return '-';
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  getDiasAgotamientoClass(dias: number): string {
+    if (dias <= 7) return 'dias-critico';
+    if (dias <= 15) return 'dias-advertencia';
+    return 'dias-normal';
+  }
+
   crearBorradorDesdeSugerencia(sugerencia: SugerenciaPedido) {
     if (!confirm(`¿Crear borrador de pedido para ${sugerencia.productoNombre}?`)) {
       return;

@@ -69,7 +69,12 @@
         <tbody>
           @for (medication of paginatedMedications; track medication.id) {
             <tr>
-              <td class="medication-name">{{ medication.name }}</td>
+              <td class="medication-name">
+                {{ medication.name }}
+                <span *ngIf="medication.bloqueado" class="badge-blocked" title="Producto bloqueado: {{medication.motivoBloqueo}}">
+                  🔒 BLOQUEADO
+                </span>
+              </td>
               <!-- <td>{{ medication.price }}</td> -->
               <td>{{ medication.quantity }} cajas</td>
               <td>{{ medication.alertValue }} cajas</td>
@@ -86,7 +91,12 @@
               </td>
               <td *ngIf="hasAccess(['Farmaceutico', 'JefeDeFarmacia', 'Administrador'])">
                 <div class="action-buttons">
-                  <button class="btn-action btn-dispensar" (click)="openDispensacionModal(medication)" title="Dispensar medicamento">
+                  <!-- CP021: Ocultar botón dispensar si producto está bloqueado -->
+                  <button
+                    *ngIf="!medication.bloqueado"
+                    class="btn-action btn-dispensar"
+                    (click)="openDispensacionModal(medication)"
+                    title="Dispensar medicamento">
                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm1 8a1 1 0 100 2h6a1 1 0 100-2H7zm0 4a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
                     </svg>
@@ -97,6 +107,21 @@
                       <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                     </svg>
                     Editar
+                  </button>
+                  <!-- CP021: Botón de Bloquear/Desbloquear -->
+                  <button
+                    *ngIf="hasAccess(['Administrador', 'JefeDeFarmacia'])"
+                    class="btn-action"
+                    [ngClass]="medication.bloqueado ? 'btn-unlock' : 'btn-block'"
+                    (click)="openBloqueoModal(medication)"
+                    [title]="medication.bloqueado ? 'Desbloquear producto' : 'Bloquear por retiro sanitario'">
+                    <svg *ngIf="!medication.bloqueado" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <svg *ngIf="medication.bloqueado" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z"/>
+                    </svg>
+                    {{ medication.bloqueado ? 'Desbloquear' : 'Bloquear' }}
                   </button>
                   <button *ngIf="hasAccess(['Administrador'])" class="btn-action btn-delete" (click)="confirmDelete(medication)" title="Eliminar producto">
                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
@@ -196,6 +221,34 @@
             <label>Notas:</label>
             <textarea [(ngModel)]="editProductData.notas" name="notas" rows="3"></textarea>
           </div>
+
+          <!-- CP012: Stock Level Configuration -->
+          <div class="stock-levels-section">
+            <h3>Niveles de Stock (CP012)</h3>
+            <div class="stock-levels-grid">
+              <div class="form-group">
+                <label>Nivel Mínimo: *</label>
+                <input type="number" [(ngModel)]="editProductData.minimo" name="minimo" min="0" required />
+                <small>Stock mínimo antes de alerta crítica</small>
+              </div>
+              <div class="form-group">
+                <label>Punto de Pedido:</label>
+                <input type="number" [(ngModel)]="editProductData.puntoPedido" name="puntoPedido" min="0" />
+                <small>Nivel para generar pedido automático</small>
+              </div>
+              <div class="form-group">
+                <label>Stock Máximo:</label>
+                <input type="number" [(ngModel)]="editProductData.stockMaximo" name="stockMaximo" min="0" />
+                <small>Capacidad máxima de almacenamiento</small>
+              </div>
+              <div class="form-group">
+                <label>Stock de Seguridad:</label>
+                <input type="number" [(ngModel)]="editProductData.stockSeguridad" name="stockSeguridad" min="0" />
+                <small>Stock adicional para imprevistos</small>
+              </div>
+            </div>
+          </div>
+
           <div class="modal-actions">
             <button type="button" class="btn btn-secondary" (click)="closeEditModal()">Cancelar</button>
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -222,4 +275,13 @@
       </div>
     </div>
   </div>
+
+  <!-- CP021: Modal de Bloqueo -->
+  <app-bloqueo-modal
+    [isOpen]="isBloqueoModalOpen"
+    [productName]="bloqueoProductName || ''"
+    [isBlocked]="bloqueoIsBlocked"
+    (close)="closeBloqueoModal()"
+    (confirm)="onConfirmBloqueo($event)">
+  </app-bloqueo-modal>
 </div>

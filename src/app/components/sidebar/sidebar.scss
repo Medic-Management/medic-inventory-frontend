@@ -119,6 +119,13 @@
       transition: opacity 0.2s ease, width 0.3s ease;
     }
 
+    // CP010: Badge de notificaciones
+    .notification-badge {
+      margin-left: auto;
+      font-size: 16px;
+      animation: ring 2s infinite;
+    }
+
     &:hover {
       background: linear-gradient(90deg, rgba(5, 150, 105, 0.08) 0%, rgba(243, 244, 246, 0.5) 100%);
       color: #059669;

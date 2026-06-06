@@ -12,6 +12,8 @@ import { DispensacionModalComponent } from '../../components/dispensacion-modal/
 import { ExportService } from '../../services/export';
 import { AutoRestockService } from '../../services/auto-restock';
 import { ProductService } from '../../services/product.service';
+import { UmbralStockService } from '../../services/umbral-stock.service';
+import { BloqueoModalComponent } from '../../components/bloqueo-modal/bloqueo-modal';
 
 interface Medication {
   id: number;
@@ -22,6 +24,10 @@ interface Medication {
   expirationDate: string;
   status: 'critical' | 'in-stock' | 'low-stock';
   statusText: string;
+  // CP021: Campos de bloqueo
+  bloqueado?: boolean;
+  motivoBloqueo?: string;
+  bloqueadoEn?: string;
 }
 
 @Component({
@@ -36,7 +42,8 @@ interface Medication {
     SuccessModalComponent,
     ConfirmationModalComponent,
     StockAlertModalComponent,
-    DispensacionModalComponent
+    DispensacionModalComponent,
+    BloqueoModalComponent
   ],
   templateUrl: './inventory.html',
   styleUrl: './inventory.scss',
@@ -45,6 +52,7 @@ export class InventoryComponent implements OnInit {
   private exportService = inject(ExportService);
   private restockService = inject(AutoRestockService);
   private productService = inject(ProductService);
+  private umbralStockService = inject(UmbralStockService);
 
   isModalOpen = false;
   isFilterModalOpen = false;
@@ -55,6 +63,7 @@ export class InventoryComponent implements OnInit {
   isDispensacionModalOpen = false;
   isEditModalOpen = false;
   isDeleteModalOpen = false;
+  isBloqueoModalOpen = false; // CP021
   activeFilters: FilterOptions | null = null;
   loading = false;
 
@@ -67,11 +76,23 @@ export class InventoryComponent implements OnInit {
     id: 0,
     codigo: '',
     nombre: '',
-    notas: ''
+    notas: '',
+    quantity: 0,
+    alertValue: 10,
+    umbralId: null,
+    minimo: 10,
+    puntoPedido: 20,
+    stockMaximo: null,
+    stockSeguridad: null
   };
 
   deleteProductId?: number;
   deleteProductName?: string;
+
+  // CP021: Variables para modal de bloqueo
+  bloqueoProductId?: number;
+  bloqueoProductName?: string;
+  bloqueoIsBlocked = false;
 
   alertData: any = {
     productName: '',
@@ -129,7 +150,11 @@ export class InventoryComponent implements OnInit {
           alertValue: p.alertValue || 10,
           expirationDate: this.formatDate(p.fechaVencimiento),
           status: this.mapStatus(p.status),
-          statusText: this.getStatusText(this.mapStatus(p.status))
+          statusText: this.getStatusText(this.mapStatus(p.status)),
+          // CP021: Campos de bloqueo
+          bloqueado: p.bloqueado,
+          motivoBloqueo: p.motivoBloqueo,
+          bloqueadoEn: p.bloqueadoEn
         }));
         this.medications = [...this.allMedications];
         this.calculateStats();
@@ -248,10 +273,42 @@ export class InventoryComponent implements OnInit {
         if (!statusMatch) return false;
       }
 
-      if (filters.priceMin !== null || filters.priceMax !== null) {
-        const price = parseFloat(med.price.replace('S/ ', ''));
-        if (filters.priceMin !== null && price < filters.priceMin) return false;
-        if (filters.priceMax !== null && price > filters.priceMax) return false;
+      // CP012: Filter by stock level instead of price
+      if (filters.stockMin !== null || filters.stockMax !== null) {
+        if (filters.stockMin !== null && med.quantity < filters.stockMin) return false;
+        if (filters.stockMax !== null && med.quantity > filters.stockMax) return false;
+      }
+
+      // CP013: Filter by expiration date
+      if (filters.expirationRange) {
+        if (med.expirationDate === 'N/A') {
+          return false;
+        }
+
+        // Parse date from DD/MM/YY format
+        const parts = med.expirationDate.split('/');
+        if (parts.length === 3) {
+          const day = parseInt(parts[0]);
+          const month = parseInt(parts[1]) - 1;
+          const year = parseInt('20' + parts[2]); // Convert YY to YYYY
+          const expirationDate = new Date(year, month, day);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          if (filters.expirationRange === 'expired') {
+            // Show only expired products
+            if (expirationDate >= today) return false;
+          } else {
+            // Show products expiring within X days
+            const daysUntilExpiration = parseInt(filters.expirationRange);
+            const futureDate = new Date(today);
+            futureDate.setDate(today.getDate() + daysUntilExpiration);
+
+            if (expirationDate < today || expirationDate > futureDate) {
+              return false;
+            }
+          }
+        }
       }
 
       return true;
@@ -407,13 +464,35 @@ export class InventoryComponent implements OnInit {
 
   openEditModal(medication: Medication) {
     this.productService.getProductById(medication.id).subscribe({
-      next: (product) => {
+      next: (product: any) => {
         this.editProductData = {
           id: product.id,
-          codigo: product.codigo,
-          nombre: product.nombre,
-          notas: product.notas || ''
+          codigo: product.codigo || '',
+          nombre: product.name || medication.name,
+          notas: product.observations || '',
+          quantity: product.quantity || medication.quantity || 0,
+          alertValue: product.alertValue || medication.alertValue || 10,
+          umbralId: null,
+          minimo: 10,
+          puntoPedido: 20,
+          stockMaximo: null,
+          stockSeguridad: null
         };
+
+        // CP012: Load stock levels (umbral) - sede_id = 1 is default
+        this.umbralStockService.getUmbralByProductoAndSede(medication.id, 1).subscribe({
+          next: (umbral) => {
+            this.editProductData.umbralId = umbral.id;
+            this.editProductData.minimo = umbral.minimo;
+            this.editProductData.puntoPedido = umbral.puntoPedido;
+            this.editProductData.stockMaximo = umbral.stockMaximo;
+            this.editProductData.stockSeguridad = umbral.stockSeguridad;
+          },
+          error: (error) => {
+            console.log('No umbral found for this product, will create new one');
+          }
+        });
+
         this.isEditModalOpen = true;
       },
       error: (error) => {
@@ -429,17 +508,73 @@ export class InventoryComponent implements OnInit {
       id: 0,
       codigo: '',
       nombre: '',
-      notas: ''
+      notas: '',
+      quantity: 0,
+      alertValue: 10,
+      umbralId: null,
+      minimo: 10,
+      puntoPedido: 20,
+      stockMaximo: null,
+      stockSeguridad: null
     };
   }
 
   onEditSubmit() {
-    this.productService.updateProduct(this.editProductData.id, this.editProductData).subscribe({
+    // Transform data to match ProductRequest format
+    const productRequest = {
+      codigo: this.editProductData.codigo,
+      name: this.editProductData.nombre, // Backend expects 'name' not 'nombre'
+      quantity: this.editProductData.quantity,
+      alertValue: this.editProductData.alertValue,
+      observations: this.editProductData.notas
+    };
+
+    // First update the product
+    this.productService.updateProduct(this.editProductData.id, productRequest).subscribe({
       next: () => {
-        this.successMessage = 'Producto actualizado exitosamente';
-        this.isSuccessModalOpen = true;
-        this.closeEditModal();
-        this.loadProducts();
+        // CP012: Then update or create umbral stock
+        const umbralRequest = {
+          sedeId: 1, // Default sede
+          productoId: this.editProductData.id,
+          minimo: this.editProductData.minimo,
+          puntoPedido: this.editProductData.puntoPedido,
+          stockSeguridad: this.editProductData.stockSeguridad,
+          stockMaximo: this.editProductData.stockMaximo
+        };
+
+        if (this.editProductData.umbralId) {
+          // Update existing umbral
+          this.umbralStockService.updateUmbral(this.editProductData.umbralId, umbralRequest).subscribe({
+            next: () => {
+              this.successMessage = 'Producto y niveles de stock actualizados exitosamente (CP012)';
+              this.isSuccessModalOpen = true;
+              this.closeEditModal();
+              this.loadProducts();
+            },
+            error: (error) => {
+              console.error('Error updating umbral:', error);
+              this.successMessage = 'Producto actualizado, pero error al actualizar niveles de stock';
+              this.isSuccessModalOpen = true;
+              this.loadProducts();
+            }
+          });
+        } else {
+          // Create new umbral
+          this.umbralStockService.createUmbral(umbralRequest).subscribe({
+            next: () => {
+              this.successMessage = 'Producto y niveles de stock creados exitosamente (CP012)';
+              this.isSuccessModalOpen = true;
+              this.closeEditModal();
+              this.loadProducts();
+            },
+            error: (error) => {
+              console.error('Error creating umbral:', error);
+              this.successMessage = 'Producto actualizado, pero error al crear niveles de stock';
+              this.isSuccessModalOpen = true;
+              this.loadProducts();
+            }
+          });
+        }
       },
       error: (error) => {
         console.error('Error updating product:', error);
@@ -481,6 +616,62 @@ export class InventoryComponent implements OnInit {
           }
           alert(errorMsg);
           this.closeDeleteModal();
+        }
+      });
+    }
+  }
+
+  // CP021: Abrir modal de bloqueo
+  openBloqueoModal(medication: Medication) {
+    this.bloqueoProductId = medication.id;
+    this.bloqueoProductName = medication.name;
+    this.bloqueoIsBlocked = medication.bloqueado || false;
+    this.isBloqueoModalOpen = true;
+  }
+
+  // CP021: Cerrar modal de bloqueo
+  closeBloqueoModal() {
+    this.isBloqueoModalOpen = false;
+    this.bloqueoProductId = undefined;
+    this.bloqueoProductName = undefined;
+    this.bloqueoIsBlocked = false;
+  }
+
+  // CP021: Confirmar bloqueo/desbloqueo
+  onConfirmBloqueo(motivo: string) {
+    if (!this.bloqueoProductId) return;
+
+    const userStr = localStorage.getItem('currentUser');
+    const userId = userStr ? JSON.parse(userStr).userId : 1;
+
+    if (this.bloqueoIsBlocked) {
+      // Desbloquear
+      this.productService.desbloquearProducto(this.bloqueoProductId).subscribe({
+        next: () => {
+          this.successMessage = 'Producto desbloqueado exitosamente';
+          this.isSuccessModalOpen = true;
+          this.closeBloqueoModal();
+          this.loadProducts();
+        },
+        error: (error) => {
+          console.error('Error desbloqueando producto:', error);
+          alert(error.error?.message || 'Error al desbloquear el producto');
+          this.closeBloqueoModal();
+        }
+      });
+    } else {
+      // Bloquear
+      this.productService.bloquearProducto(this.bloqueoProductId, motivo, userId).subscribe({
+        next: () => {
+          this.successMessage = 'Producto bloqueado exitosamente por retiro sanitario';
+          this.isSuccessModalOpen = true;
+          this.closeBloqueoModal();
+          this.loadProducts();
+        },
+        error: (error) => {
+          console.error('Error bloqueando producto:', error);
+          alert(error.error?.message || 'Error al bloquear el producto');
+          this.closeBloqueoModal();
         }
       });
     }

@@ -1,8 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { EntradaService, EntradaRequest } from '../../services/entrada.service';
 import { ProductService } from '../../services/product.service';
+import { SolicitudCompraService, SolicitudCompraResponse } from '../../services/solicitud-compra.service';
 
 @Component({
   selector: 'app-entradas',
@@ -14,12 +16,17 @@ import { ProductService } from '../../services/product.service';
 export class EntradasComponent implements OnInit {
   private entradaService = inject(EntradaService);
   private productService = inject(ProductService);
+  private solicitudService = inject(SolicitudCompraService);
+  private router = inject(Router);
 
   productos: any[] = [];
+  pedidosAprobados: SolicitudCompraResponse[] = [];
   showForm = false;
+  showPedidosList = true;
   successMessage = '';
   errorMessage = '';
   lastEntradaId: number | null = null;
+  pedidoSeleccionado: SolicitudCompraResponse | null = null;
 
   formData: EntradaRequest = {
     productoId: 0,
@@ -33,6 +40,7 @@ export class EntradasComponent implements OnInit {
 
   ngOnInit() {
     this.loadProductos();
+    this.loadPedidosAprobados();
   }
 
   loadProductos() {
@@ -79,14 +87,23 @@ export class EntradasComponent implements OnInit {
     this.entradaService.registrarEntrada(this.formData).subscribe({
       next: (response) => {
         this.lastEntradaId = response.id;
-        this.successMessage = `Entrada registrada exitosamente. ID: ${response.id}, Stock anterior: ${response.stockAnterior}, Stock nuevo: ${response.stockNuevo}`;
+        const productoNombre = this.productos.find(p => p.id === this.formData.productoId)?.nombre || 'Producto';
+
+        // CP014: Mostrar mensaje y navegar al inventario
+        alert(`✅ Entrada registrada exitosamente (CP014)\n\n` +
+              `Producto: ${productoNombre}\n` +
+              `Lote: ${response.codigoLote}\n` +
+              `Cantidad: ${response.cantidad} unidades\n` +
+              `Stock anterior: ${response.stockAnterior}\n` +
+              `Stock nuevo: ${response.stockNuevo}\n\n` +
+              `Redirigiendo al módulo de Inventario...`);
+
         this.errorMessage = '';
         this.resetForm();
-        setTimeout(() => {
-          this.showForm = false;
-          this.successMessage = '';
-          this.lastEntradaId = null;
-        }, 5000);
+        this.showForm = false;
+
+        // CP014: Navegar al inventario para ver el medicamento recién ingresado
+        this.router.navigate(['/inventario']);
       },
       error: (error) => {
         console.error('Error completo:', error);
@@ -142,5 +159,42 @@ export class EntradasComponent implements OnInit {
         this.errorMessage = 'Error al descargar el comprobante';
       }
     });
+  }
+
+  // CP011: Cargar pedidos aprobados para recepción
+  loadPedidosAprobados() {
+    this.solicitudService.obtenerPedidosAprobados().subscribe({
+      next: (pedidos) => {
+        console.log('Pedidos aprobados cargados:', pedidos);
+        this.pedidosAprobados = pedidos;
+      },
+      error: (error) => {
+        console.error('Error loading pedidos aprobados:', error);
+      }
+    });
+  }
+
+  // CP011: Seleccionar pedido y autorrellenar formulario
+  seleccionarPedido(pedido: SolicitudCompraResponse) {
+    this.pedidoSeleccionado = pedido;
+    this.showPedidosList = false;
+    this.showForm = true;
+
+    // Autorrellenar formulario
+    this.formData.productoId = pedido.productoId;
+    this.formData.cantidad = pedido.cantidadSolicitada;
+    this.formData.documentoReferencia = `PEDIDO-${pedido.id}`;
+    this.formData.observaciones = `Recepción de pedido #${pedido.id} - ${pedido.proveedorNombre}`;
+
+    this.successMessage = '';
+    this.errorMessage = '';
+  }
+
+  // CP011: Cancelar selección de pedido
+  cancelarSeleccionPedido() {
+    this.pedidoSeleccionado = null;
+    this.showPedidosList = true;
+    this.showForm = false;
+    this.resetForm();
   }
 }

@@ -76,7 +76,7 @@ export interface ReporteResponse {
   providedIn: 'root'
 })
 export class ReporteService {
-  private apiUrl = `${environment.apiUrl}/reportes';
+  private apiUrl = `${environment.apiUrl}/reportes`;
 
   constructor(private http: HttpClient) { }
 

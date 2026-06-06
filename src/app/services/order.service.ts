@@ -41,7 +41,7 @@ export interface CreateOrderRequest {
   providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = `${environment.apiUrl}/orders';
+  private apiUrl = `${environment.apiUrl}/orders`;
 
   constructor(private http: HttpClient) {}
 
@@ -73,5 +73,25 @@ export class OrderService {
       }]
     };
     return this.createOrder(dispatchOrder);
+  }
+
+  // CP020: Obtener órdenes aprobadas con fechas para calendario
+  getOrdersForCalendar(): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/calendario`);
+  }
+
+  // CP024: Obtener órdenes por estado
+  getOrdersByStatus(status: string): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/status/${status}`);
+  }
+
+  // CP024: Obtener órdenes activas (PENDING, CONFIRMED, IN_TRANSIT)
+  getActiveOrders(): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/active`);
+  }
+
+  // CP024: Actualizar orden completa
+  updateOrder(id: number, order: Partial<Order>): Observable<Order> {
+    return this.http.put<Order>(`${this.apiUrl}/${id}`, order);
   }
 }

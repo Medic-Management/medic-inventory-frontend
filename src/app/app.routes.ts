@@ -18,6 +18,11 @@ import { DispensacionesComponent } from './pages/dispensaciones/dispensaciones';
 import { MlPredictionsComponent } from './pages/ml-predictions/ml-predictions';
 import { AlertasComponent } from './pages/alertas/alertas';
 import { AuditoriaComponent } from './pages/auditoria/auditoria';
+import { LotesComponent } from './pages/lotes/lotes';
+import { CalendarioRecepcionesComponent } from './pages/calendario-recepciones/calendario-recepciones';
+import { PedidosSinConfirmarComponent } from './pages/pedidos-sin-confirmar/pedidos-sin-confirmar';
+import { PedidosAprobadosComponent } from './pages/pedidos-aprobados/pedidos-aprobados';
+import { ComprobantesComponent } from './pages/comprobantes/comprobantes';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -34,6 +39,9 @@ export const routes: Routes = [
       { path: 'dispensaciones', component: DispensacionesComponent, data: { roles: ['Farmaceutico', 'JefeDeFarmacia', 'Administrador'] } },
       { path: 'reportes', component: ReportsComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
       { path: 'ordenes', component: OrdersComponent, data: { roles: ['AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },
+      { path: 'calendario-recepciones', component: CalendarioRecepcionesComponent, data: { roles: ['AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },
+      { path: 'pedidos-aprobados', component: PedidosAprobadosComponent, data: { roles: ['AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },
+      { path: 'pedidos-sin-confirmar', component: PedidosSinConfirmarComponent, data: { roles: ['AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },
       { path: 'entradas', component: EntradasComponent, data: { roles: ['AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },
       { path: 'solicitudes', component: SolicitudesComponent, data: { roles: ['AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },
       { path: 'producto/:id', component: ProductDetailComponent },
@@ -41,7 +49,9 @@ export const routes: Routes = [
       { path: 'usuarios', component: UsuariosComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
       { path: 'proveedores', component: ProveedoresComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
       { path: 'umbrales', component: UmbralesComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
-      { path: 'auditoria', component: AuditoriaComponent, data: { roles: ['Administrador'] } },
+      { path: 'lotes', component: LotesComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
+      { path: 'auditoria', component: AuditoriaComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
+      { path: 'comprobantes', component: ComprobantesComponent, data: { roles: ['Farmaceutico', 'AuxiliarDeAlmacen', 'JefeDeFarmacia', 'Administrador'] } },
       { path: 'predicciones-ml', component: MlPredictionsComponent, data: { roles: ['JefeDeFarmacia', 'Administrador'] } },
       { path: 'perfil', component: ProfileComponent },
       { path: 'configuracion', component: SettingsComponent }

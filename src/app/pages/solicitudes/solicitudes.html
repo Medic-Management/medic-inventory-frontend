@@ -32,7 +32,7 @@
               required>
               <option value="0">Seleccione un producto</option>
               @for (producto of productos; track producto.id) {
-                <option [value]="producto.id">{{ producto.nombre || producto.codigo }}</option>
+                <option [value]="producto.id">{{ producto.name }}</option>
               }
             </select>
           </div>
@@ -188,7 +188,7 @@
                 required>
                 <option value="0">Seleccione un producto</option>
                 @for (producto of productos; track producto.id) {
-                  <option [value]="producto.id">{{ producto.nombre || producto.codigo }}</option>
+                  <option [value]="producto.id">{{ producto.name }}</option>
                 }
               </select>
             </div>

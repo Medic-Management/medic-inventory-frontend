@@ -41,6 +41,27 @@
           </select>
         </div>
 
+        <!-- CP025: Parámetros generales del sistema -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Moneda</h3>
+            <p>Moneda del sistema</p>
+          </div>
+          <select [(ngModel)]="settings.currency">
+            <option value="PEN">Soles (PEN)</option>
+            <option value="USD">Dólares (USD)</option>
+            <option value="EUR">Euros (EUR)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Correo del proveedor principal</h3>
+            <p>Email para envío automático de solicitudes RPA</p>
+          </div>
+          <input type="email" [(ngModel)]="settings.supplierEmail" placeholder="proveedor@ejemplo.com">
+        </div>
+
         <div class="setting-item">
           <div class="setting-info">
             <h3>Formato de fecha</h3>

@@ -1,0 +1,46 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isBlocked ? 'Desbloquear' : 'Bloquear' }} Medicamento</h2>
+      <button class="close-btn" (click)="onClose()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p class="product-name">{{ productName }}</p>
+
+      <div *ngIf="isBlocked" class="warning-message">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z" fill="#059669"/>
+        </svg>
+        <span>¿Está seguro que desea desbloquear este medicamento?</span>
+      </div>
+
+      <div *ngIf="!isBlocked" class="form-group">
+        <label for="motivo">Motivo de Bloqueo *</label>
+        <textarea
+          id="motivo"
+          [(ngModel)]="motivoBloqueo"
+          placeholder="Ejemplo: Retiro sanitario - Lote contaminado"
+          rows="4"
+          required
+        ></textarea>
+        <small class="help-text">
+          Especifique el motivo del retiro sanitario o bloqueo del medicamento
+        </small>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="onClose()">
+        Cancelar
+      </button>
+      <button
+        class="btn-confirm"
+        [class.btn-danger]="!isBlocked"
+        [class.btn-success]="isBlocked"
+        (click)="onConfirm()">
+        {{ isBlocked ? 'Desbloquear' : 'Bloquear' }}
+      </button>
+    </div>
+  </div>
+</div>

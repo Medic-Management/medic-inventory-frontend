@@ -1,8 +1,11 @@
 <div class="entradas-page">
   <div class="page-header">
-    <h1>Registro de Entradas de Mercancía</h1>
+    <div>
+      <h1>Entradas de Mercancía / Saldos Iniciales</h1>
+      <p class="subtitle">Registre nuevas entradas de mercancía o cargue saldos iniciales por medicamento y lote</p>
+    </div>
     <button class="btn btn-primary" (click)="toggleForm()">
-      {{ showForm ? 'Cancelar' : '+ Nueva Entrada' }}
+      {{ showForm ? 'Cancelar' : '+ Nueva Entrada / Saldo Inicial' }}
     </button>
   </div>
 
@@ -25,9 +28,65 @@
     </div>
   }
 
+  <!-- CP011: Lista de pedidos aprobados -->
+  @if (showPedidosList && !showForm) {
+    <div class="pedidos-aprobados-card">
+      <h2>📦 Pedidos Aprobados Pendientes de Recepción</h2>
+
+      @if (pedidosAprobados.length === 0) {
+        <div class="empty-state">
+          <p>No hay pedidos aprobados pendientes de recepción</p>
+          <p class="text-muted">Los pedidos aprobados y enviados aparecerán aquí</p>
+        </div>
+      } @else {
+        <div class="pedidos-list">
+          @for (pedido of pedidosAprobados; track pedido.id) {
+            <div class="pedido-card">
+              <div class="pedido-header">
+                <h3>Pedido #{{ pedido.id }}</h3>
+                <span class="badge badge-{{ pedido.estado.toLowerCase() }}">{{ pedido.estado }}</span>
+              </div>
+              <div class="pedido-body">
+                <div class="pedido-info">
+                  <p><strong>Producto:</strong> {{ pedido.productoNombre }}</p>
+                  <p><strong>Proveedor:</strong> {{ pedido.proveedorNombre }}</p>
+                  <p><strong>Cantidad:</strong> {{ pedido.cantidadSolicitada }} unidades</p>
+                  <p><strong>Fecha solicitud:</strong> {{ pedido.creadaEn | date:'dd/MM/yyyy HH:mm' }}</p>
+                  @if (pedido.notas) {
+                    <p><strong>Notas:</strong> {{ pedido.notas }}</p>
+                  }
+                </div>
+              </div>
+              <div class="pedido-actions">
+                <button class="btn btn-primary" (click)="seleccionarPedido(pedido)">
+                  <i class="fas fa-box-open"></i> Registrar Recepción
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
   @if (showForm) {
     <div class="form-card">
-      <h2>Registrar Nueva Entrada</h2>
+      @if (pedidoSeleccionado) {
+        <div class="pedido-seleccionado-info">
+          <h2>📦 Registrando recepción del Pedido #{{ pedidoSeleccionado.id }}</h2>
+          <p><strong>Producto:</strong> {{ pedidoSeleccionado.productoNombre }} | <strong>Proveedor:</strong> {{ pedidoSeleccionado.proveedorNombre }}</p>
+        </div>
+      } @else {
+        <h2>Registrar Nueva Entrada</h2>
+        <div class="info-box">
+          <span class="info-icon">ℹ️</span>
+          <div>
+            <strong>CP017: Saldos Iniciales</strong>
+            <p>Utilice este formulario para cargar saldos iniciales por medicamento y lote. Complete todos los campos requeridos y la cantidad inicial disponible.</p>
+          </div>
+        </div>
+      }
+
       <form (ngSubmit)="onSubmit()">
         <div class="form-grid">
           <div class="form-group">
@@ -36,6 +95,7 @@
               id="producto"
               [(ngModel)]="formData.productoId"
               name="productoId"
+              [disabled]="pedidoSeleccionado !== null"
               required>
               <option value="0">Seleccione un producto</option>
               @for (producto of productos; track producto.id) {
@@ -99,7 +159,7 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+          <button type="button" class="btn btn-secondary" (click)="pedidoSeleccionado ? cancelarSeleccionPedido() : toggleForm()">
             Cancelar
           </button>
           <button type="submit" class="btn btn-primary">
@@ -110,15 +170,15 @@
     </div>
   }
 
-  <div class="info-card">
-    <h3>Instrucciones</h3>
-    <ul>
-      <li>Seleccione el producto de la lista</li>
-      <li>Ingrese el código de lote del proveedor</li>
-      <li>Especifique la fecha de vencimiento</li>
-      <li>Ingrese la cantidad recibida</li>
-      <li>Opcionalmente agregue el número de factura u orden de compra</li>
-      <li>El sistema actualizará automáticamente el inventario</li>
-    </ul>
-  </div>
+  @if (!showForm && !showPedidosList) {
+    <div class="info-card">
+      <h3>Instrucciones</h3>
+      <ul>
+        <li>Seleccione un pedido aprobado de la lista o cree una nueva entrada manual</li>
+        <li>Si selecciona un pedido, el formulario se rellenará automáticamente</li>
+        <li>Complete los datos de lote y vencimiento</li>
+        <li>El sistema actualizará automáticamente el inventario</li>
+      </ul>
+    </div>
+  }
 </div>

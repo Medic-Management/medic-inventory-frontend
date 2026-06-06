@@ -25,7 +25,7 @@ export interface SupplierResponse {
   providedIn: 'root'
 })
 export class SupplierManagementService {
-  private apiUrl = `${environment.apiUrl}/suppliers';
+  private apiUrl = `${environment.apiUrl}/suppliers`;
 
   constructor(private http: HttpClient) { }
 

@@ -13,7 +13,7 @@ import {
   providedIn: 'root'
 })
 export class MlPredictionService {
-  private apiUrl = `${environment.apiUrl}/ml';
+  private apiUrl = `${environment.apiUrl}/ml`;
 
   constructor(private http: HttpClient) {}
 

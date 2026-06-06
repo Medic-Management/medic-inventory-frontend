@@ -1,0 +1,190 @@
+<div class="lotes-container">
+  <div class="page-header">
+    <h1>Gestión de Lotes</h1>
+    <p class="subtitle">HU-21: Bloqueo y desbloqueo de lotes de medicamentos</p>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+      <button class="close-btn" (click)="successMessage = ''">×</button>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+      <button class="close-btn" (click)="errorMessage = ''">×</button>
+    </div>
+  }
+
+  <div class="filters-section">
+    <label>Filtrar por estado:</label>
+    <select [(ngModel)]="filterEstado" (change)="onFilterChange()" class="filter-select">
+      <option value="todos">Todos los lotes</option>
+      <option value="activos">Activos</option>
+      <option value="bloqueados">Bloqueados</option>
+    </select>
+    <span class="count-badge">{{ filteredLotes.length }} lotes</span>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Cargando lotes...</p>
+    </div>
+  } @else {
+    @if (filteredLotes.length === 0) {
+      <div class="empty-state">
+        <p>No hay lotes {{ filterEstado === 'activos' ? 'activos' : filterEstado === 'bloqueados' ? 'bloqueados' : 'disponibles' }}</p>
+      </div>
+    } @else {
+      <div class="lotes-table-container">
+        <table class="lotes-table">
+          <thead>
+            <tr>
+              <th>Código Lote</th>
+              <th>Producto</th>
+              <th>Fecha Vencimiento</th>
+              <th>Días para vencer</th>
+              <th>Stock</th>
+              <th>Precio Unit.</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (lote of filteredLotes; track lote.id) {
+              <tr [class]="getVencimientoClass(lote)">
+                <td><strong>{{ lote.codigoLote }}</strong></td>
+                <td>{{ lote.productoNombre }}</td>
+                <td>{{ lote.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <span [class]="getVencimientoClass(lote)">
+                    @if (lote.diasHastaVencimiento < 0) {
+                      <strong>VENCIDO ({{ -lote.diasHastaVencimiento }} días)</strong>
+                    } @else {
+                      {{ lote.diasHastaVencimiento }} días
+                    }
+                  </span>
+                </td>
+                <td>{{ lote.cantidadDisponible }}</td>
+                <td>S/ {{ lote.precioUnitario | number:'1.2-2' }}</td>
+                <td>
+                  <span [class]="getEstadoClass(lote)" class="estado-badge">
+                    {{ lote.estado ? 'ACTIVO' : 'BLOQUEADO' }}
+                  </span>
+                </td>
+                <td class="actions-cell">
+                  @if (lote.estado) {
+                    <button 
+                      class="btn btn-block" 
+                      (click)="openBloqueoModal(lote)"
+                      title="Bloquear lote por retiro sanitario">
+                      🔒 Bloquear
+                    </button>
+                  } @else {
+                    <button 
+                      class="btn btn-unlock" 
+                      (click)="openDesbloqueoModal(lote)"
+                      title="Desbloquear lote y permitir dispensación">
+                      🔓 Desbloquear
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- Modal Bloqueo -->
+  @if (showBloqueoModal && loteSeleccionado) {
+    <div class="modal-overlay" (click)="closeBloqueoModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>🔒 Bloquear Lote</h2>
+          <button class="close-btn" (click)="closeBloqueoModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="lote-info">
+            <p><strong>Código Lote:</strong> {{ loteSeleccionado.codigoLote }}</p>
+            <p><strong>Producto:</strong> {{ loteSeleccionado.productoNombre }}</p>
+            <p><strong>Stock Disponible:</strong> {{ loteSeleccionado.cantidadDisponible }} unidades</p>
+          </div>
+          
+          <div class="form-group">
+            <label for="motivo-bloqueo">Motivo del bloqueo *</label>
+            <textarea 
+              id="motivo-bloqueo"
+              [(ngModel)]="motivo" 
+              rows="4" 
+              placeholder="Ej: Retiro sanitario DIGEMID por alerta sanitaria N° XXX-2024"
+              class="form-control"
+              required>
+            </textarea>
+          </div>
+
+          <div class="warning-box">
+            ⚠️ Al bloquear este lote, no podrá ser dispensado hasta que sea desbloqueado.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeBloqueoModal()">Cancelar</button>
+          <button 
+            class="btn btn-block" 
+            (click)="confirmarBloqueo()"
+            [disabled]="!motivo.trim() || isLoading">
+            {{ isLoading ? 'Bloqueando...' : 'Confirmar Bloqueo' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Desbloqueo -->
+  @if (showDesbloqueoModal && loteSeleccionado) {
+    <div class="modal-overlay" (click)="closeDesbloqueoModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>🔓 Desbloquear Lote</h2>
+          <button class="close-btn" (click)="closeDesbloqueoModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="lote-info">
+            <p><strong>Código Lote:</strong> {{ loteSeleccionado.codigoLote }}</p>
+            <p><strong>Producto:</strong> {{ loteSeleccionado.productoNombre }}</p>
+            <p><strong>Stock Disponible:</strong> {{ loteSeleccionado.cantidadDisponible }} unidades</p>
+          </div>
+          
+          <div class="form-group">
+            <label for="motivo-desbloqueo">Motivo del desbloqueo *</label>
+            <textarea 
+              id="motivo-desbloqueo"
+              [(ngModel)]="motivo" 
+              rows="4" 
+              placeholder="Ej: Levantamiento de alerta sanitaria según resolución DIGEMID N° YYY-2024"
+              class="form-control"
+              required>
+            </textarea>
+          </div>
+
+          <div class="success-box">
+            ✅ Al desbloquear este lote, volverá a estar disponible para dispensación siguiendo el sistema FEFO.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeDesbloqueoModal()">Cancelar</button>
+          <button 
+            class="btn btn-unlock" 
+            (click)="confirmarDesbloqueo()"
+            [disabled]="!motivo.trim() || isLoading">
+            {{ isLoading ? 'Desbloqueando...' : 'Confirmar Desbloqueo' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -311,6 +311,13 @@ input:focus, select:focus, textarea:focus {
   transform: scale(1.01);
 }
 
+/* Contraste por defecto para selects nativos (texto oscuro sobre blanco). */
+select,
+select option {
+  color: #1f2937;
+  background-color: #ffffff;
+}
+
 /* Link hover effect */
 a {
   text-decoration: none;

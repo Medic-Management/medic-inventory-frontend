@@ -1,37 +1,37 @@
 <div class="orders-page">
   <h1 class="page-title">Resumen de Órdenes</h1>
 
-  
+  <!-- CP024: Estadísticas con datos reales -->
   <div class="stats-grid">
     <div class="stat-card">
       <h3 class="stat-label">Total de Órdenes</h3>
-      <p class="stat-value">37</p>
-      <p class="stat-description">Últimos 7 días</p>
+      <p class="stat-value">{{ stats.totalOrders }}</p>
+      <p class="stat-description">Total registradas</p>
     </div>
 
     <div class="stat-card">
       <h3 class="stat-label">Total Recibido</h3>
       <div class="stat-split">
         <div>
-          <p class="stat-value">32</p>
-          <p class="stat-description">Últimos 7 días</p>
+          <p class="stat-value">{{ stats.totalReceived }}</p>
+          <p class="stat-description">Órdenes entregadas</p>
         </div>
         <div class="revenue">
-          <p class="stat-value">S/ 6,860</p>
+          <p class="stat-value">{{ formatCurrency(stats.receivedAmount) }}</p>
           <p class="stat-description">Ingresos</p>
         </div>
       </div>
     </div>
 
     <div class="stat-card">
-      <h3 class="stat-label">Total Devuelto</h3>
+      <h3 class="stat-label">Total Cancelado</h3>
       <div class="stat-split">
         <div>
-          <p class="stat-value">5</p>
-          <p class="stat-description">Últimos 7 días</p>
+          <p class="stat-value">{{ stats.totalCancelled }}</p>
+          <p class="stat-description">Órdenes canceladas</p>
         </div>
         <div class="cost">
-          <p class="stat-value">S/ 1,980</p>
+          <p class="stat-value">{{ formatCurrency(stats.cancelledAmount) }}</p>
           <p class="stat-description">Costo</p>
         </div>
       </div>
@@ -41,52 +41,84 @@
       <h3 class="stat-label">En Camino</h3>
       <div class="stat-split">
         <div>
-          <p class="stat-value">12</p>
-          <p class="stat-description">Ordenados</p>
+          <p class="stat-value">{{ stats.inTransit }}</p>
+          <p class="stat-description">Órdenes en tránsito</p>
         </div>
         <div class="cost">
-          <p class="stat-value">S/ 1,380</p>
+          <p class="stat-value">{{ formatCurrency(stats.inTransitAmount) }}</p>
           <p class="stat-description">Costo</p>
         </div>
       </div>
     </div>
   </div>
 
-  
+  <!-- CP024: Sección de órdenes con filtros funcionales -->
   <div class="orders-section">
     <div class="section-header">
       <h2 class="section-title">Órdenes</h2>
       <div class="section-actions">
-        <button class="btn btn-primary" (click)="openAddOrderModal()">Agregar Producto</button>
-        <button class="btn btn-secondary">Filtros</button>
-        <button class="btn btn-secondary">Historial de Órdenes</button>
+        <button class="btn btn-primary" (click)="openAddOrderModal()">Agregar Orden</button>
+        <button class="btn btn-secondary" (click)="openHistoryModal()">Historial de Órdenes</button>
       </div>
     </div>
 
-    
+    <!-- CP024: Filtros funcionales -->
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="statusFilter">Estado:</label>
+        <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="applyFilters()">
+          <option value="TODAS">Todas</option>
+          <option value="PENDING">Pendiente</option>
+          <option value="CONFIRMED">Confirmado</option>
+          <option value="IN_TRANSIT">En Camino</option>
+          <option value="DELIVERED">Entregado</option>
+          <option value="CANCELLED">Cancelado</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="searchInput">Buscar:</label>
+        <input
+          type="text"
+          id="searchInput"
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()"
+          placeholder="Número de orden o proveedor..."
+        />
+      </div>
+    </div>
+
+    <!-- CP024: Tabla con datos del backend -->
     <div class="table-container">
       <table class="orders-table">
         <thead>
           <tr>
-            <th>Productos</th>
-            <th>Valor de Orden</th>
-            <th>Cantidad</th>
-            <th>ID de Orden</th>
+            <th>Número de Orden</th>
+            <th>Proveedor</th>
+            <th>Valor Total</th>
+            <th>Cantidad Items</th>
+            <th>Fecha de Orden</th>
             <th>Entrega Esperada</th>
             <th>Estado</th>
           </tr>
         </thead>
         <tbody>
-          @for (order of orders; track order.id) {
+          @if (getPaginatedOrders().length === 0) {
             <tr>
-              <td>{{ order.product }}</td>
-              <td>{{ order.value }}</td>
-              <td>{{ order.quantity }}</td>
-              <td class="order-id">{{ order.orderId }}</td>
-              <td>{{ order.expectedDelivery }}</td>
+              <td colspan="7" class="no-data">No hay órdenes para mostrar</td>
+            </tr>
+          }
+          @for (order of getPaginatedOrders(); track order.id) {
+            <tr>
+              <td class="order-id">{{ order.orderNumber }}</td>
+              <td>{{ order.supplier?.nombre || '-' }}</td>
+              <td>{{ formatCurrency(order.totalAmount || 0) }}</td>
+              <td>{{ getTotalItems(order) }} unidades</td>
+              <td>{{ formatDate(order.orderDate) }}</td>
+              <td>{{ formatDate(order.deliveryDate) }}</td>
               <td>
-                <span class="status-badge" [ngClass]="order.status">
-                  {{ order.statusText }}
+                <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                  {{ getStatusText(order.status) }}
                 </span>
               </td>
             </tr>
@@ -95,11 +127,69 @@
       </table>
     </div>
 
-    
+    <!-- CP024: Paginación funcional -->
     <div class="pagination">
-      <button class="btn btn-outline">Anterior</button>
-      <span class="pagination-info">Página 1 de 10</span>
-      <button class="btn btn-outline">Siguiente</button>
+      <button class="btn btn-outline" (click)="previousPage()" [disabled]="currentPage === 1">
+        Anterior
+      </button>
+      <span class="pagination-info">Página {{ currentPage }} de {{ totalPages || 1 }}</span>
+      <button class="btn btn-outline" (click)="nextPage()" [disabled]="currentPage >= totalPages">
+        Siguiente
+      </button>
     </div>
   </div>
 </div>
+
+<!-- CP024: Modal de Historial -->
+@if (showHistoryModal) {
+  <div class="modal-overlay" (click)="closeHistoryModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Historial Completo de Órdenes</h2>
+        <button class="btn-close" (click)="closeHistoryModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="history-stats">
+          <div class="history-stat">
+            <span class="label">Total de Órdenes:</span>
+            <span class="value">{{ historyOrders.length }}</span>
+          </div>
+        </div>
+
+        <div class="history-table-container">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Fecha</th>
+                <th>Proveedor</th>
+                <th>Monto</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of historyOrders; track order.id) {
+                <tr>
+                  <td>{{ order.orderNumber }}</td>
+                  <td>{{ formatDate(order.orderDate) }}</td>
+                  <td>{{ order.supplier?.nombre || '-' }}</td>
+                  <td>{{ formatCurrency(order.totalAmount || 0) }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                      {{ getStatusText(order.status) }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeHistoryModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}

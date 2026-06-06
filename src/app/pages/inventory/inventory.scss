@@ -487,6 +487,44 @@
       box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
     }
   }
+
+  // CP021: Botón de bloquear
+  &.btn-block {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    color: white;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
+  }
+
+  // CP021: Botón de desbloquear
+  &.btn-unlock {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: white;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+    }
+  }
+}
+
+// CP021: Badge de producto bloqueado
+.badge-blocked {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #fecaca 0%, #fee2e2 100%);
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
 }
 
 // Modal styling
@@ -592,6 +630,55 @@
     color: #dc2626;
     font-weight: 500;
     margin-top: 10px;
+  }
+
+  // CP012: Stock Levels Section
+  .stock-levels-section {
+    margin-top: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-left: 4px solid #0284c7;
+    border-radius: 8px;
+
+    h3 {
+      color: #0369a1;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+
+    .stock-levels-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+
+      .form-group {
+        margin-bottom: 0;
+
+        label {
+          color: #075985;
+          font-weight: 600;
+        }
+
+        small {
+          display: block;
+          margin-top: 4px;
+          font-size: 12px;
+          color: #0369a1;
+          font-style: italic;
+        }
+
+        input {
+          background: white;
+          border: 1px solid #7dd3fc;
+
+          &:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+          }
+        }
+      }
+    }
   }
 }
 

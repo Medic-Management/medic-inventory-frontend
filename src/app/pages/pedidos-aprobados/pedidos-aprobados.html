@@ -1,0 +1,105 @@
+<div class="pedidos-aprobados-page">
+  <div class="page-header">
+    <h1>📤 Pedidos Aprobados - Envío Automático</h1>
+    <p class="subtitle">CP009: Enviar pedidos aprobados al proveedor mediante RPA - HU-09</p>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <div class="section-card">
+    <div class="section-header">
+      <div class="header-content">
+        <h2>🤖 Pedidos Listos para Envío RPA</h2>
+        <span class="badge badge-success">{{ pedidosAprobados.length }}</span>
+      </div>
+      <p class="section-description">
+        Pedidos en estado <strong>PENDING</strong> listos para envío al proveedor. El sistema utilizará <strong>UiPath (RPA)</strong> para automatizar el envío de correos.
+      </p>
+    </div>
+
+    <div class="action-bar" *ngIf="pedidosAprobados.length > 0">
+      <button
+        class="btn btn-primary btn-lg"
+        (click)="enviarTodos()"
+        [disabled]="enviandoTodos">
+        <span *ngIf="!enviandoTodos">🚀 Enviar Todos los Pedidos ({{ pedidosAprobados.length }})</span>
+        <span *ngIf="enviandoTodos">⏳ Procesando...</span>
+      </button>
+      <div class="info-text">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+        </svg>
+        <span>Se creará un trabajo RPA por cada pedido para que UiPath procese el envío automático</span>
+      </div>
+    </div>
+
+    @if (loading) {
+      <div class="loading-state">
+        <p>Cargando pedidos aprobados...</p>
+      </div>
+    } @else if (pedidosAprobados.length === 0) {
+      <div class="empty-state">
+        <p>✅ No hay pedidos aprobados pendientes de envío</p>
+        <p class="text-muted">Los pedidos aparecerán aquí cuando sean aprobados por el jefe de farmacia</p>
+      </div>
+    } @else {
+      <div class="pedidos-list">
+        @for (pedido of pedidosAprobados; track pedido.id) {
+          <div class="pedido-card">
+            <div class="pedido-header">
+              <div class="pedido-info">
+                <h3>Pedido #{{ pedido.id }}</h3>
+                <span class="badge badge-success">{{ pedido.estado }}</span>
+              </div>
+              <button class="btn btn-primary" (click)="enviarPedido(pedido)">
+                📧 Enviar al Proveedor
+              </button>
+            </div>
+
+            <div class="pedido-body">
+              <div class="info-row">
+                <span class="label">📦 Producto:</span>
+                <span class="value">{{ pedido.productoNombre }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">🏢 Proveedor:</span>
+                <span class="value">{{ pedido.proveedorNombre }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">📊 Cantidad:</span>
+                <span class="value">{{ pedido.cantidadSolicitada }} unidades</span>
+              </div>
+              <div class="info-row">
+                <span class="label">✅ Aprobado:</span>
+                <span class="value">{{ formatearFecha(pedido.creadaEn) }}</span>
+              </div>
+              @if (pedido.notas) {
+                <div class="info-row">
+                  <span class="label">📝 Notas:</span>
+                  <span class="value">{{ pedido.notas }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="rpa-info">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+              </svg>
+              <span>Al enviar, se creará un trabajo RPA que UiPath procesará automáticamente</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

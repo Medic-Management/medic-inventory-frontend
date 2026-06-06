@@ -1,0 +1,120 @@
+<div class="comprobantes-page">
+  <div class="page-header">
+    <h1>📄 Comprobantes de Movimientos</h1>
+    <p class="subtitle">CP023: Visualizar comprobantes digitales de salidas y entradas con filtros</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- CP023: Panel de filtros -->
+  <div class="filters-card">
+    <h2>🔍 Filtros de Búsqueda</h2>
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="tipoMovimiento">Tipo de Movimiento</label>
+        <select id="tipoMovimiento" [(ngModel)]="filtros.tipo" (change)="aplicarFiltros()">
+          <option value="TODOS">Todos los movimientos</option>
+          <option value="ENTRADA">Solo Entradas</option>
+          <option value="SALIDA">Solo Salidas</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="fechaDesde">Fecha Desde</label>
+        <input
+          type="date"
+          id="fechaDesde"
+          [(ngModel)]="filtros.fechaDesde"
+          (change)="aplicarFiltros()" />
+      </div>
+
+      <div class="filter-group">
+        <label for="fechaHasta">Fecha Hasta</label>
+        <input
+          type="date"
+          id="fechaHasta"
+          [(ngModel)]="filtros.fechaHasta"
+          (change)="aplicarFiltros()" />
+      </div>
+
+      <div class="filter-group">
+        <label for="nombreProducto">Producto</label>
+        <input
+          type="text"
+          id="nombreProducto"
+          [(ngModel)]="filtros.nombreProducto"
+          (input)="aplicarFiltros()"
+          placeholder="Buscar por nombre..." />
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn btn-secondary" (click)="limpiarFiltros()">
+        🔄 Limpiar Filtros
+      </button>
+      <span class="result-count">
+        {{ comprobantesFiltrados.length }} comprobante(s) encontrado(s)
+      </span>
+    </div>
+  </div>
+
+  <!-- Lista de comprobantes -->
+  @if (loading) {
+    <div class="loading-state">
+      <p>Cargando comprobantes...</p>
+    </div>
+  } @else if (comprobantesFiltrados.length === 0) {
+    <div class="empty-state">
+      <p>No se encontraron comprobantes con los filtros aplicados</p>
+      <p class="text-muted">Intente ajustar los filtros de búsqueda</p>
+    </div>
+  } @else {
+    <div class="comprobantes-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Producto</th>
+            <th>Lote</th>
+            <th>Cantidad</th>
+            <th>Responsable</th>
+            <th>Doc. Ref.</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (comp of comprobantesFiltrados; track comp.id) {
+            <tr>
+              <td>{{ comp.id }}</td>
+              <td>
+                <span class="badge badge-{{ comp.tipo.toLowerCase() }}">
+                  {{ comp.tipo === 'ENTRADA' ? '📥 ENTRADA' : '📤 SALIDA' }}
+                </span>
+              </td>
+              <td>{{ formatearFecha(comp.ocurrioEn) }}</td>
+              <td>{{ comp.productoNombre }}</td>
+              <td>{{ comp.codigoLote }}</td>
+              <td>{{ comp.cantidad }}</td>
+              <td>{{ comp.responsable }}</td>
+              <td>{{ comp.documentoReferencia || 'N/A' }}</td>
+              <td>
+                <button
+                  class="btn btn-pdf btn-sm"
+                  (click)="descargarComprobante(comp)"
+                  title="Descargar comprobante PDF">
+                  📄 PDF
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

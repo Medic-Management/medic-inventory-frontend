@@ -116,7 +116,8 @@
         </div>
       </div>
 
-      
+
+      <!-- HU-18: Flujo de Medicamentos -->
       <div class="section-card chart-section">
         <div class="chart-header">
           <h2 class="section-title">Flujo de Medicamentos</h2>
@@ -127,80 +128,223 @@
             Semanal
           </button>
         </div>
-        <div class="chart-placeholder">
-          <div class="chart-bars">
-            @for (month of chartData; track month.mes) {
-              <div class="bar-group">
-                <div class="bars">
-                  <div class="bar blue" [style.height.%]="(month.ingresos / 600)"></div>
-                  <div class="bar green" [style.height.%]="(month.despachos / 600)"></div>
+        @if (chartData.length === 0) {
+          <div class="empty-state" style="height: 280px; display: flex; flex-direction: column; justify-content: center;">
+            <p>📊 No hay movimientos registrados</p>
+            <p style="font-size: 11px; margin-top: 8px;">El gráfico se generará cuando haya ingresos y despachos registrados</p>
+          </div>
+        } @else {
+          <div class="chart-placeholder">
+            <div class="chart-bars">
+              @for (month of chartData; track month.mes) {
+                <div class="bar-group">
+                  <div class="bars">
+                    <div class="bar blue" [style.height.%]="(month.ingresos / 600)"></div>
+                    <div class="bar green" [style.height.%]="(month.despachos / 600)"></div>
+                  </div>
+                  <span class="bar-label">{{ month.mes }}</span>
                 </div>
-                <span class="bar-label">{{ month.mes }}</span>
+              }
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-color blue"></span>
+                <span>Ingresos</span>
               </div>
-            }
-          </div>
-          <div class="chart-legend">
-            <div class="legend-item">
-              <span class="legend-color blue"></span>
-              <span>Ingresos</span>
-            </div>
-            <div class="legend-item">
-              <span class="legend-color green"></span>
-              <span>Despachos</span>
+              <div class="legend-item">
+                <span class="legend-color green"></span>
+                <span>Despachos</span>
+              </div>
             </div>
           </div>
-        </div>
+        }
       </div>
 
-      
+
+      <!-- Stock Crítico - Movido desde columna derecha -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Stock Crítico</h2>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn btn-outline-small" (click)="descargarReporteAlertas()" title="Descargar Reporte Consolidado de Alertas">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 12L3 7h3V1h4v6h3l-5 5zm7 2H1v2h14v-2z"/>
+              </svg>
+              Reporte
+            </button>
+            <a href="/inventario" class="link-primary">Ver Todo</a>
+          </div>
+        </div>
+        @if (criticalProducts.length === 0) {
+          <div class="empty-state">
+            <p>✅ No hay productos en stock crítico</p>
+            <p style="font-size: 11px; margin-top: 8px;">El inventario está en niveles normales</p>
+          </div>
+        }
+        @for (product of criticalProducts; track product.id) {
+          <div class="critical-stock-item">
+            <div class="product-image">
+              <div class="product-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 2L4 8v12c0 9.94 6.88 19.25 16 21.5 9.12-2.25 16-11.56 16-21.5V8L20 2zm0 8c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0 20c-2.67 0-8-1.34-8-4v-2h16v2c0 2.66-5.33 4-8 4z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="product-info">
+              <h4>{{ product.nombre || product.codigo }}</h4>
+              <p class="product-stock">Cantidad restante: {{ product.cantidad }} unidades</p>
+              <span class="badge" [ngClass]="product.status === 'CRITICAL' ? 'badge-red' : 'badge-orange'">
+                {{ product.status === 'CRITICAL' ? 'Crítico' : 'Bajo' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Alertas de Vencimiento - Movido desde columna derecha -->
+      <div class="section-card">
+        <div class="section-header-flex">
+          <h2 class="section-title">Alertas de Vencimiento</h2>
+        </div>
+        @if (alertasVencimiento.length === 0) {
+          <div class="empty-state">
+            <p>✅ No hay lotes próximos a vencer</p>
+            <p style="font-size: 11px; margin-top: 8px;">Todos los lotes tienen fechas de vencimiento adecuadas</p>
+          </div>
+        }
+        @for (alerta of alertasVencimiento; track alerta.loteId) {
+          <div class="critical-stock-item">
+            <div class="product-image">
+              <div class="product-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 2C10.059 2 2 10.059 2 20s8.059 18 18 18 18-8.059 18-18S29.941 2 20 2zm0 32c-7.732 0-14-6.268-14-14S12.268 6 20 6s14 6.268 14 14-6.268 14-14 14zm-1-22h2v11h-2zm0 13h2v2h-2z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="product-info">
+              <h4>{{ alerta.productoNombre }}</h4>
+              <p class="product-stock">Lote: {{ alerta.codigoLote }} | Vence: {{ formatDate(alerta.fechaVencimiento) }}</p>
+              <p class="product-stock">Cantidad: {{ alerta.cantidadTotal }} unidades | {{ alerta.diasRestantes }} días restantes</p>
+              <span class="badge" [ngClass]="getNivelVencimientoClass(alerta.nivel)">
+                {{ alerta.nivel }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- HU-18: Medicamentos con Mayor Rotación -->
       <div class="section-card">
         <div class="section-header-flex">
           <h2 class="section-title">Medicamentos con Mayor Rotación</h2>
           <a href="#" class="link-primary">Ver Todo</a>
         </div>
-        <table class="simple-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Unidades Despachadas</th>
-              <th>Stock Restante</th>
-              <!-- <th>Precio</th> -->
-            </tr>
-          </thead>
-          <tbody>
-            @for (med of topMedications; track med.name) {
+        @if (loading) {
+          <div class="loading-state">
+            <p>Cargando datos de rotación...</p>
+          </div>
+        } @else if (topMedications.length === 0) {
+          <div class="empty-state">
+            <p>No hay datos suficientes para calcular rotación</p>
+            <p style="font-size: 11px; margin-top: 8px;">Se requieren productos con stock disponible para generar este reporte</p>
+          </div>
+        } @else {
+          <table class="simple-table">
+            <thead>
               <tr>
-                <td>{{ med.name }}</td>
-                <td>{{ med.dispatched }}</td>
-                <td>{{ med.remaining }}</td>
-                <!-- <td>{{ med.price }}</td> -->
+                <th>Nombre</th>
+                <th>Unidades Despachadas</th>
+                <th>Stock Restante</th>
+                <!-- <th>Precio</th> -->
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (med of topMedications; track med.name) {
+                <tr>
+                  <td>{{ med.name }}</td>
+                  <td>{{ med.dispatched }}</td>
+                  <td>{{ med.remaining }}</td>
+                  <!-- <td>{{ med.price }}</td> -->
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
       </div>
     </div>
 
     
     <div class="right-column">
-      
+      <!-- HU-05: KPI de Inventario -->
       <div class="section-card">
         <h2 class="section-title">Estado del Inventario</h2>
-        <div class="stats-column">
+
+        <!-- HU-05: Estado vacío cuando no hay datos de inventario -->
+        @if (stats.cantidadTotalStock === 0 && stats.totalProductos === 0) {
+          <div class="empty-state">
+            <p>📦 No hay productos en inventario</p>
+            <p style="font-size: 11px; margin-top: 8px;">Registre productos para visualizar los KPIs de inventario</p>
+          </div>
+        }
+
+        @if (stats.totalProductos > 0) {
+          <div class="stats-column">
+          <!-- HU-05 Escenario 1: Stock disponible -->
           <div class="stat-item-vertical">
-            <div class="stat-icon orange">
+            <div class="stat-icon" [ngClass]="stats.cantidadTotalStock === 0 ? 'stat-icon-warning' : ''">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4h16v3z"/>
               </svg>
             </div>
             <div class="stat-content">
               <p class="stat-value">{{ stats.cantidadTotalStock }}</p>
-              <p class="stat-label">Cantidad disponible</p>
+              <p class="stat-label">Stock disponible</p>
             </div>
           </div>
 
+          <!-- HU-05 Escenario 1: Stock bajo -->
+          <div class="stat-item-vertical" [class.stat-alert]="stats.productosStockBajo > 0">
+            <div class="stat-icon" [ngClass]="stats.productosStockBajo > 0 ? 'stat-icon-warning' : ''">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value" [class.stat-warning]="stats.productosStockBajo > 0">
+                {{ stats.productosStockBajo }}
+              </p>
+              <p class="stat-label">Stock bajo</p>
+              @if (stats.productosStockBajo > 0) {
+                <span class="badge badge-orange" style="margin-top: 4px; font-size: 10px;">
+                  ⚠️ Requiere atención
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- HU-05 Escenario 1: Stock crítico -->
+          <div class="stat-item-vertical" [class.stat-alert]="stats.productosStockCritico > 0">
+            <div class="stat-icon" [ngClass]="stats.productosStockCritico > 0 ? 'stat-icon-danger' : ''">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-value" [class.stat-danger]="stats.productosStockCritico > 0">
+                {{ stats.productosStockCritico }}
+              </p>
+              <p class="stat-label">Stock crítico</p>
+              @if (stats.productosStockCritico > 0) {
+                <span class="badge badge-red" style="margin-top: 4px; font-size: 10px;">
+                  🔴 Urgente
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- En tránsito -->
           <div class="stat-item-vertical">
-            <div class="stat-icon purple">
+            <div class="stat-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18 18.5a1.5 1.5 0 01-1.5-1.5 1.5 1.5 0 011.5-1.5 1.5 1.5 0 011.5 1.5 1.5 1.5 0 01-1.5 1.5zm1.5-9l1.96 2.5L17.5 17V9.5h2M6 18.5A1.5 1.5 0 014.5 17 1.5 1.5 0 016 15.5 1.5 1.5 0 017.5 17 1.5 1.5 0 016 18.5M20 8h-3V4H3c-1.11 0-2 .89-2 2v11h2a3 3 0 003 3 3 3 0 003-3h6a3 3 0 003 3 3 3 0 003-3h2v-5l-3-4z"/>
               </svg>
@@ -211,6 +355,7 @@
             </div>
           </div>
         </div>
+        }
       </div>
 
       
@@ -281,10 +426,9 @@
           <h2 class="section-title">Alertas Activas</h2>
         </div>
         @if (alertas.length === 0) {
-          <div class="critical-stock-item">
-            <div class="product-info">
-              <p class="product-stock">No hay alertas activas</p>
-            </div>
+          <div class="empty-state">
+            <p>✅ No hay alertas activas</p>
+            <p style="font-size: 11px; margin-top: 8px;">Todos los productos tienen stock adecuado</p>
           </div>
         }
         @for (alerta of alertas; track alerta.id) {
@@ -314,80 +458,6 @@
         }
       </div>
 
-
-      <div class="section-card">
-        <div class="section-header-flex">
-          <h2 class="section-title">Stock Crítico</h2>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <button class="btn btn-outline-small" (click)="descargarReporteAlertas()" title="Descargar Reporte Consolidado de Alertas">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 12L3 7h3V1h4v6h3l-5 5zm7 2H1v2h14v-2z"/>
-              </svg>
-              Reporte
-            </button>
-            <a href="/inventario" class="link-primary">Ver Todo</a>
-          </div>
-        </div>
-        @if (criticalProducts.length === 0) {
-          <div class="critical-stock-item">
-            <div class="product-info">
-              <p class="product-stock">No hay productos en stock crítico</p>
-            </div>
-          </div>
-        }
-        @for (product of criticalProducts; track product.id) {
-          <div class="critical-stock-item">
-            <div class="product-image">
-              <div class="product-placeholder">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
-                  <path d="M20 2L4 8v12c0 9.94 6.88 19.25 16 21.5 9.12-2.25 16-11.56 16-21.5V8L20 2zm0 8c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0 20c-2.67 0-8-1.34-8-4v-2h16v2c0 2.66-5.33 4-8 4z"/>
-                </svg>
-              </div>
-            </div>
-            <div class="product-info">
-              <h4>{{ product.nombre || product.codigo }}</h4>
-              <p class="product-stock">Cantidad restante: {{ product.cantidad }} unidades</p>
-              <span class="badge" [ngClass]="product.status === 'CRITICAL' ? 'badge-red' : 'badge-orange'">
-                {{ product.status === 'CRITICAL' ? 'Crítico' : 'Bajo' }}
-              </span>
-            </div>
-          </div>
-        }
-      </div>
-
-      
-      <div class="section-card">
-        <div class="section-header-flex">
-          <h2 class="section-title">Alertas de Vencimiento</h2>
-        </div>
-        @if (alertasVencimiento.length === 0) {
-          <div class="critical-stock-item">
-            <div class="product-info">
-              <p class="product-stock">No hay lotes próximos a vencer</p>
-            </div>
-          </div>
-        }
-        @for (alerta of alertasVencimiento; track alerta.loteId) {
-          <div class="critical-stock-item">
-            <div class="product-image">
-              <div class="product-placeholder">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
-                  <path d="M20 2C10.059 2 2 10.059 2 20s8.059 18 18 18 18-8.059 18-18S29.941 2 20 2zm0 32c-7.732 0-14-6.268-14-14S12.268 6 20 6s14 6.268 14 14-6.268 14-14 14zm-1-22h2v11h-2zm0 13h2v2h-2z"/>
-                </svg>
-              </div>
-            </div>
-            <div class="product-info">
-              <h4>{{ alerta.productoNombre }}</h4>
-              <p class="product-stock">Lote: {{ alerta.codigoLote }} | Vence: {{ formatDate(alerta.fechaVencimiento) }}</p>
-              <p class="product-stock">Cantidad: {{ alerta.cantidadTotal }} unidades | {{ alerta.diasRestantes }} días restantes</p>
-              <span class="badge" [ngClass]="getNivelVencimientoClass(alerta.nivel)">
-                {{ alerta.nivel }}
-              </span>
-            </div>
-          </div>
-        }
-      </div>
-
       <!-- HU-17: Widget de Alertas de Cobertura -->
       <div class="section-card">
         <div class="section-header-flex">
@@ -401,10 +471,9 @@
           </div>
         </div>
         @if (alertasCobertura.length === 0) {
-          <div class="critical-stock-item">
-            <div class="product-info">
-              <p class="product-stock">✅ Todos los productos tienen cobertura adecuada</p>
-            </div>
+          <div class="empty-state">
+            <p>✅ Todos los productos tienen cobertura adecuada</p>
+            <p style="font-size: 11px; margin-top: 8px;">Los días de cobertura están por encima de los umbrales configurados</p>
           </div>
         }
         @for (alerta of alertasCobertura; track alerta.id) {
@@ -453,10 +522,9 @@
           </div>
         }
         @if (!sugerenciasLoading && sugerenciasPedido.length === 0) {
-          <div class="critical-stock-item">
-            <div class="product-info">
-              <p class="product-stock">✅ No hay pedidos sugeridos en este momento</p>
-            </div>
+          <div class="empty-state">
+            <p>✅ No hay pedidos sugeridos en este momento</p>
+            <p style="font-size: 11px; margin-top: 8px;">El stock actual es suficiente según el consumo proyectado</p>
           </div>
         }
         @for (sugerencia of sugerenciasPedido; track sugerencia.productoId) {
@@ -476,10 +544,40 @@
               <p class="product-stock" style="font-size: 12px; color: #6b7280;">
                 {{ sugerencia.justificacion }}
               </p>
-              <p class="product-stock" style="font-size: 12px; color: #6b7280; margin-top: 4px;">
-                Proveedor: {{ sugerencia.proveedorNombre }}
-              </p>
-              <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+
+              <!-- CP007: Información complementaria -->
+              <div class="sugerencia-datos-complementarios">
+                <div class="dato-item">
+                  <span class="dato-label">📊 Consumo promedio:</span>
+                  <span class="dato-value">{{ sugerencia.consumoPromedioMensual }} unidades/mes</span>
+                </div>
+
+                <div class="dato-item">
+                  <span class="dato-label">{{ getTendenciaIcon(sugerencia.tendencia) }} Tendencia:</span>
+                  <span class="dato-value" [ngClass]="getTendenciaClass(sugerencia.tendencia)">
+                    {{ sugerencia.tendencia }}
+                  </span>
+                </div>
+
+                <div class="dato-item" [ngClass]="getDiasAgotamientoClass(sugerencia.diasParaAgotamiento)">
+                  <span class="dato-label">⚠️ Se agotará en:</span>
+                  <span class="dato-value">
+                    <strong>{{ sugerencia.diasParaAgotamiento }} días</strong>
+                  </span>
+                </div>
+
+                <div class="dato-item">
+                  <span class="dato-label">📦 Proveedor:</span>
+                  <span class="dato-value">{{ sugerencia.proveedorNombre }}</span>
+                </div>
+
+                <div class="dato-item">
+                  <span class="dato-label">📅 Llegada estimada:</span>
+                  <span class="dato-value">{{ formatearFechaEstimada(sugerencia.fechaEstimadaReposicion) }}</span>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 12px; align-items: center;">
                 <span class="badge" [ngClass]="getCriticidadClass(sugerencia.criticidad)">
                   {{ sugerencia.criticidad }}
                 </span>
@@ -515,7 +613,8 @@
           </div>
         } @else if (!prediccionesML) {
           <div class="empty-state">
-            <p>No hay datos de pronóstico disponibles. Verifique que el servicio ML esté activo.</p>
+            <p>⚠️ No hay datos de pronóstico disponibles</p>
+            <p style="font-size: 11px; margin-top: 8px;">Verifique que el servicio ML esté activo y tenga datos históricos suficientes</p>
           </div>
         } @else {
           <div class="ml-stats-row">
@@ -550,7 +649,8 @@
           </div>
         } @else if (top10RiesgoQuiebre.length === 0) {
           <div class="empty-state">
-            <p>No hay productos con riesgo de quiebre proyectado</p>
+            <p>✅ No hay productos con riesgo de quiebre proyectado</p>
+            <p style="font-size: 11px; margin-top: 8px;">El modelo de ML no detectó productos en riesgo según las proyecciones actuales</p>
           </div>
         } @else {
           @for (producto of top10RiesgoQuiebre; track producto.productoId) {

@@ -1,0 +1,66 @@
+<div class="calendario-container">
+  <div class="page-header">
+    <h1>Calendario de Recepciones</h1>
+    <p class="subtitle">CP020: Pedidos aprobados programados por fecha de entrega</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (isLoading) {
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Cargando calendario...</p>
+    </div>
+  } @else {
+    @if (gruposPorFecha.length === 0) {
+      <div class="empty-state">
+        <p>No hay recepciones programadas</p>
+        <small>Las órdenes confirmadas con fechas de entrega aparecerán aquí</small>
+      </div>
+    } @else {
+      <div class="calendario-content">
+        <div class="total-badge">
+          Total de recepciones programadas: <strong>{{ ordenes.length }}</strong>
+        </div>
+
+        @for (grupo of gruposPorFecha; track grupo.fechaStr) {
+          <div class="fecha-grupo">
+            <div class="fecha-header">
+              <h2>{{ grupo.fechaStr }}</h2>
+              <span class="count-badge">{{ grupo.ordenes.length }} pedido(s)</span>
+            </div>
+
+            <div class="ordenes-list">
+              @for (orden of grupo.ordenes; track orden.id) {
+                <div class="orden-card">
+                  <div class="orden-info">
+                    <div class="orden-numero">
+                      <strong>Orden #{{ orden.orderNumber }}</strong>
+                      <span [class]="getEstadoClass(orden.status)" class="status-badge">
+                        {{ getEstadoTexto(orden.status) }}
+                      </span>
+                    </div>
+
+                    <div class="orden-detalles">
+                      @if (orden.supplier) {
+                        <p><strong>Proveedor:</strong> {{ orden.supplier.name }}</p>
+                      }
+                      <p><strong>Monto total:</strong> S/ {{ orden.totalAmount | number:'1.2-2' }}</p>
+                      @if (orden.notes) {
+                        <p><strong>Notas:</strong> {{ orden.notes }}</p>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

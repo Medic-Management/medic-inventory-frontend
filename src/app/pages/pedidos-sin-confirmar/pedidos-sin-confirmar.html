@@ -1,0 +1,146 @@
+<div class="pedidos-sin-confirmar-page">
+  <div class="page-header">
+    <h1>🔔 Pedidos Sin Confirmar</h1>
+    <p class="subtitle">CP010: Monitoreo de acuses de recibo - HU-10</p>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Sección 1: Pedidos Críticos (> 48 horas sin confirmar) -->
+  <div class="section-card critical-section">
+    <div class="section-header">
+      <div class="header-content">
+        <h2>⚠️ Pedidos Críticos (> 48 horas sin acuse)</h2>
+        <span class="badge badge-danger">{{ pedidosSinConfirmar.length }}</span>
+      </div>
+      <p class="section-description">
+        Pedidos enviados hace más de 48 horas que no han recibido confirmación del proveedor.
+        <strong>Requieren seguimiento inmediato.</strong>
+      </p>
+    </div>
+
+    @if (loading) {
+      <div class="loading-state">
+        <p>Cargando pedidos...</p>
+      </div>
+    } @else if (pedidosSinConfirmar.length === 0) {
+      <div class="empty-state">
+        <p>✅ No hay pedidos sin confirmar mayores a 48 horas</p>
+        <p class="text-muted">Todos los pedidos recientes han sido confirmados</p>
+      </div>
+    } @else {
+      <div class="pedidos-list">
+        @for (pedido of pedidosSinConfirmar; track pedido.id) {
+          <div class="pedido-card critical">
+            <div class="pedido-header">
+              <div class="pedido-info">
+                <h3>Pedido #{{ pedido.id }}</h3>
+                <span class="badge badge-critical">{{ calcularHorasTranscurridas(pedido.creadaEn) }}h sin confirmar</span>
+              </div>
+              <span class="estado-badge estado-sent">{{ pedido.estado }}</span>
+            </div>
+
+            <div class="pedido-body">
+              <div class="info-row">
+                <span class="label">📦 Producto:</span>
+                <span class="value">{{ pedido.productoNombre }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">🏢 Proveedor:</span>
+                <span class="value">{{ pedido.proveedorNombre }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">📊 Cantidad:</span>
+                <span class="value">{{ pedido.cantidadSolicitada }} unidades</span>
+              </div>
+              <div class="info-row">
+                <span class="label">📅 Enviado:</span>
+                <span class="value">{{ formatearFecha(pedido.creadaEn) }}</span>
+              </div>
+              @if (pedido.notas) {
+                <div class="info-row">
+                  <span class="label">📝 Notas:</span>
+                  <span class="value">{{ pedido.notas }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="pedido-actions">
+              <button class="btn btn-primary" (click)="confirmarAcuse(pedido)">
+                ✅ Confirmar Acuse Recibido
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Sección 2: Pedidos Enviados (< 48 horas) -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="header-content">
+        <h2>📧 Pedidos Enviados (esperando acuse)</h2>
+        <span class="badge badge-info">{{ pedidosEnviados.length }}</span>
+      </div>
+      <p class="section-description">
+        Pedidos enviados recientemente que aún están dentro del plazo de 48 horas para confirmación.
+      </p>
+    </div>
+
+    @if (pedidosEnviados.length === 0) {
+      <div class="empty-state">
+        <p>No hay pedidos enviados pendientes de confirmación</p>
+      </div>
+    } @else {
+      <div class="pedidos-list">
+        @for (pedido of pedidosEnviados; track pedido.id) {
+          <div class="pedido-card">
+            <div class="pedido-header">
+              <div class="pedido-info">
+                <h3>Pedido #{{ pedido.id }}</h3>
+                <span class="badge badge-info">{{ calcularHorasTranscurridas(pedido.creadaEn) }}h</span>
+              </div>
+              <span class="estado-badge estado-sent">{{ pedido.estado }}</span>
+            </div>
+
+            <div class="pedido-body">
+              <div class="info-row">
+                <span class="label">📦 Producto:</span>
+                <span class="value">{{ pedido.productoNombre }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">🏢 Proveedor:</span>
+                <span class="value">{{ pedido.proveedorNombre }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">📊 Cantidad:</span>
+                <span class="value">{{ pedido.cantidadSolicitada }} unidades</span>
+              </div>
+              <div class="info-row">
+                <span class="label">📅 Enviado:</span>
+                <span class="value">{{ formatearFecha(pedido.creadaEn) }}</span>
+              </div>
+            </div>
+
+            <div class="pedido-actions">
+              <button class="btn btn-secondary" (click)="confirmarAcuse(pedido)">
+                ✅ Confirmar Acuse Recibido
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

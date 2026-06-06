@@ -29,7 +29,7 @@ export interface RoleResponse {
   providedIn: 'root'
 })
 export class UserManagementService {
-  private apiUrl = `${environment.apiUrl}/users';
+  private apiUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) { }
 

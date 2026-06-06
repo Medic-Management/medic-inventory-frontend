@@ -83,7 +83,11 @@ export class UsuariosComponent implements OnInit {
           this.loadUsuarios();
           this.showForm = false;
         },
-        error: (error) => alert('Error al actualizar usuario')
+        error: (error) => {
+          // HU-15: Mostrar mensaje específico del backend
+          const errorMsg = error.error?.message || 'Error al actualizar usuario';
+          alert(errorMsg);
+        }
       });
     } else {
       this.userService.createUser(this.formData).subscribe({
@@ -91,7 +95,11 @@ export class UsuariosComponent implements OnInit {
           this.loadUsuarios();
           this.showForm = false;
         },
-        error: (error) => alert('Error al crear usuario')
+        error: (error) => {
+          // HU-15: Mostrar mensaje específico del backend (ej: email duplicado)
+          const errorMsg = error.error?.message || 'Error al crear usuario';
+          alert(errorMsg);
+        }
       });
     }
   }

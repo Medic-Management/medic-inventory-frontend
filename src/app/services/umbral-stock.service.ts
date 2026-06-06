@@ -30,7 +30,7 @@ export interface UmbralStockResponse {
   providedIn: 'root'
 })
 export class UmbralStockService {
-  private apiUrl = `${environment.apiUrl}/umbrales';
+  private apiUrl = `${environment.apiUrl}/umbrales`;
 
   constructor(private http: HttpClient) { }
 
@@ -40,6 +40,10 @@ export class UmbralStockService {
 
   getUmbralById(id: number): Observable<UmbralStockResponse> {
     return this.http.get<UmbralStockResponse>(`${this.apiUrl}/${id}`);
+  }
+
+  getUmbralByProductoAndSede(productoId: number, sedeId: number): Observable<UmbralStockResponse> {
+    return this.http.get<UmbralStockResponse>(`${this.apiUrl}/producto/${productoId}/sede/${sedeId}`);
   }
 
   createUmbral(request: UmbralStockRequest): Observable<UmbralStockResponse> {

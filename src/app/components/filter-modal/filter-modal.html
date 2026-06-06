@@ -47,22 +47,25 @@
         </div>
 
         <div class="form-group">
-          <label>Rango de precio</label>
+          <label>Nivel de Stock (CP012)</label>
           <div class="range-inputs">
             <input
               type="number"
-              [(ngModel)]="filters.priceMin"
+              [(ngModel)]="filters.stockMin"
               placeholder="Mín"
               class="form-control"
+              min="0"
             />
             <span>-</span>
             <input
               type="number"
-              [(ngModel)]="filters.priceMax"
+              [(ngModel)]="filters.stockMax"
               placeholder="Máx"
               class="form-control"
+              min="0"
             />
           </div>
+          <small class="filter-hint">Filtrar por cantidad de unidades en stock</small>
         </div>
 
         <div class="form-group">

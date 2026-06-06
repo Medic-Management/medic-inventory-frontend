@@ -33,7 +33,7 @@ export interface EntradaResponse {
   providedIn: 'root'
 })
 export class EntradaService {
-  private apiUrl = `${environment.apiUrl}/entradas';
+  private apiUrl = `${environment.apiUrl}/entradas`;
 
   constructor(private http: HttpClient) { }
 
