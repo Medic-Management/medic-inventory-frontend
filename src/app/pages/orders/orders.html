@@ -11,44 +11,20 @@
 
     <div class="stat-card">
       <h3 class="stat-label">Total Recibido</h3>
-      <div class="stat-split">
-        <div>
-          <p class="stat-value">{{ stats.totalReceived }}</p>
-          <p class="stat-description">Órdenes entregadas</p>
-        </div>
-        <div class="revenue">
-          <p class="stat-value">{{ formatCurrency(stats.receivedAmount) }}</p>
-          <p class="stat-description">Ingresos</p>
-        </div>
-      </div>
+      <p class="stat-value">{{ stats.totalReceived }}</p>
+      <p class="stat-description">Órdenes entregadas</p>
     </div>
 
     <div class="stat-card">
       <h3 class="stat-label">Total Cancelado</h3>
-      <div class="stat-split">
-        <div>
-          <p class="stat-value">{{ stats.totalCancelled }}</p>
-          <p class="stat-description">Órdenes canceladas</p>
-        </div>
-        <div class="cost">
-          <p class="stat-value">{{ formatCurrency(stats.cancelledAmount) }}</p>
-          <p class="stat-description">Costo</p>
-        </div>
-      </div>
+      <p class="stat-value">{{ stats.totalCancelled }}</p>
+      <p class="stat-description">Órdenes canceladas</p>
     </div>
 
     <div class="stat-card">
       <h3 class="stat-label">En Camino</h3>
-      <div class="stat-split">
-        <div>
-          <p class="stat-value">{{ stats.inTransit }}</p>
-          <p class="stat-description">Órdenes en tránsito</p>
-        </div>
-        <div class="cost">
-          <p class="stat-value">{{ formatCurrency(stats.inTransitAmount) }}</p>
-          <p class="stat-description">Costo</p>
-        </div>
-      </div>
+      <p class="stat-value">{{ stats.inTransit }}</p>
+      <p class="stat-description">Órdenes en tránsito</p>
     </div>
   </div>
 
@@ -95,7 +71,6 @@
           <tr>
             <th>Número de Orden</th>
             <th>Proveedor</th>
-            <th>Valor Total</th>
             <th>Cantidad Items</th>
             <th>Fecha de Orden</th>
             <th>Entrega Esperada</th>
@@ -105,14 +80,13 @@
         <tbody>
           @if (getPaginatedOrders().length === 0) {
             <tr>
-              <td colspan="7" class="no-data">No hay órdenes para mostrar</td>
+              <td colspan="6" class="no-data">No hay órdenes para mostrar</td>
             </tr>
           }
           @for (order of getPaginatedOrders(); track order.id) {
             <tr>
               <td class="order-id">{{ order.orderNumber }}</td>
               <td>{{ order.supplier?.nombre || '-' }}</td>
-              <td>{{ formatCurrency(order.totalAmount || 0) }}</td>
               <td>{{ getTotalItems(order) }} unidades</td>
               <td>{{ formatDate(order.orderDate) }}</td>
               <td>{{ formatDate(order.deliveryDate) }}</td>
@@ -164,7 +138,6 @@
                 <th>Número</th>
                 <th>Fecha</th>
                 <th>Proveedor</th>
-                <th>Monto</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -174,7 +147,6 @@
                   <td>{{ order.orderNumber }}</td>
                   <td>{{ formatDate(order.orderDate) }}</td>
                   <td>{{ order.supplier?.nombre || '-' }}</td>
-                  <td>{{ formatCurrency(order.totalAmount || 0) }}</td>
                   <td>
                     <span class="status-badge" [ngClass]="getStatusClass(order.status)">
                       {{ getStatusText(order.status) }}

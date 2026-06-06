@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
+import { PreferencesService } from '../../services/preferences.service';
 
 @Component({
   selector: 'app-settings',
@@ -33,7 +34,19 @@ export class SettingsComponent implements OnInit {
 
   userId: number = 0;
 
-  constructor(private settingsService: SettingsService) {}
+  constructor(
+    private settingsService: SettingsService,
+    private preferences: PreferencesService
+  ) {}
+
+  // CP025: refleja en toda la app las preferencias de presentación
+  private aplicarPreferencias() {
+    this.preferences.set({
+      currency: this.settings.currency,
+      dateFormat: this.settings.dateFormat,
+      timezone: this.settings.timezone,
+    });
+  }
 
   ngOnInit() {
     // Obtener el userId del usuario logueado
@@ -48,6 +61,7 @@ export class SettingsComponent implements OnInit {
       this.settingsService.getUserSettings(this.userId).subscribe({
         next: (response) => {
           this.settings = response;
+          this.aplicarPreferencias();
           console.log('Configuración cargada desde el backend:', response);
         },
         error: (error) => {
@@ -62,6 +76,7 @@ export class SettingsComponent implements OnInit {
     // CP025: Guardar configuración en el backend
     this.settingsService.updateSettings(this.userId, this.settings).subscribe({
       next: (response) => {
+        this.aplicarPreferencias();
         console.log('Configuración guardada exitosamente:', response);
         alert('Configuración guardada correctamente');
       },

@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
+import { SettingsService } from '../../services/settings.service';
+import { PreferencesService } from '../../services/preferences.service';
 
 @Component({
   selector: 'app-login',
@@ -15,12 +17,32 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   errorMessage: string = '';
   isSubmitting: boolean = false;
+  showPassword: boolean = false;
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   constructor(
     private router: Router,
     private http: HttpClient,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private settingsService: SettingsService,
+    private preferences: PreferencesService
   ) {}
+
+  // CP025: carga las preferencias de presentación del usuario tras autenticar
+  private cargarPreferencias(userId: number): void {
+    if (!userId) return;
+    this.settingsService.getUserSettings(userId).subscribe({
+      next: (s) => this.preferences.set({
+        currency: s.currency,
+        dateFormat: s.dateFormat,
+        timezone: s.timezone,
+      }),
+      error: () => { /* mantiene las preferencias por defecto */ }
+    });
+  }
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -63,6 +85,9 @@ export class LoginComponent implements OnInit {
             role: response.role
           }));
           console.log('[LOGIN] Token guardado:', response.token);
+
+          // CP025: aplica las preferencias de presentación del usuario
+          this.cargarPreferencias(response.userId);
 
           this.isSubmitting = false;
           console.log('[LOGIN] Navegando a dashboard...');

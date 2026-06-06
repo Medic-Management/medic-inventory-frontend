@@ -1,273 +1,214 @@
+// ============================================================
+//  SIDEBAR — panel de marca permanente (verde apotecario)
+// ============================================================
+
 .sidebar {
-  width: 260px;
-  background: white;
-  backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow:
-    4px 0 20px rgba(5, 150, 105, 0.08),
-    inset -1px 0 0 rgba(255, 255, 255, 0.5);
+  width: 264px;
+  flex: none;
+  height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 24px 0;
+  padding: 22px 0 18px;
   position: relative;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  color: #d8e9e1;
+  background:
+    radial-gradient(120% 60% at 100% 0%, rgba(70, 199, 154, 0.16) 0%, transparent 55%),
+    linear-gradient(180deg, #0c5c47 0%, #093d2f 100%);
+  transition: width 0.32s var(--ease);
+  z-index: 5;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(180deg, #059669 0%, #10b981 50%, transparent 100%);
-    opacity: 0.3;
-  }
-
+  // ---- Logo / marca ----
   .logo-container {
-    padding: 0 24px 32px;
+    flex: none;
+    padding: 0 20px 26px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 10px;
 
     .logo {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      flex-shrink: 0;
+      gap: 0.6rem;
+      font-weight: 600;
+      font-size: 1.02rem;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+
+      &__name em { font-style: normal; font-weight: 300; opacity: 0.65; }
+
+      // Cruz farmacéutica CSS (idéntica al login)
+      &__cross {
+        position: relative;
+        width: 32px; height: 32px;
+        border-radius: 9px;
+        flex: none;
+        background: linear-gradient(150deg, var(--mint) 0%, #2faa7e 100%);
+        box-shadow: 0 8px 18px -6px rgba(70, 199, 154, 0.6);
+
+        span {
+          position: absolute; top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
+          background: #093d2f; border-radius: 2px;
+        }
+        span:first-child { width: 15px; height: 4px; }
+        span:last-child  { width: 4px; height: 15px; }
+      }
     }
 
     .toggle-btn {
-      background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-      border: 1px solid rgba(5, 150, 105, 0.2);
-      border-radius: 8px;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      flex: none;
+      width: 30px; height: 30px;
+      display: grid; place-items: center;
+      border-radius: 9px;
       cursor: pointer;
-      color: #059669;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
+      color: #bfe0d3;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: background 0.25s var(--ease), color 0.25s var(--ease);
 
-      &:hover {
-        background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
-      }
-
-      &:active {
-        transform: scale(0.95);
-      }
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
+      &:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+      svg { width: 18px; height: 18px; }
     }
   }
 
+  // ---- Navegación ----
   .nav-menu {
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     padding: 0 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar { width: 6px; }
+    &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border: none; }
   }
 
   .nav-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    color: #6b7280;
+    padding: 11px 14px;
+    color: #aecabe;
     text-decoration: none;
-    border-radius: 12px;
-    font-size: 14px;
+    border-radius: var(--r-md);
+    font-size: 0.875rem;
     font-weight: 500;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    overflow: hidden;
+    cursor: pointer;
+    transition: background 0.22s var(--ease), color 0.22s var(--ease);
 
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 0;
-      height: 100%;
-      background: linear-gradient(90deg, rgba(5, 150, 105, 0.1) 0%, transparent 100%);
-      transition: width 0.4s ease;
-      border-radius: 12px;
-    }
-
-    svg {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      transition: transform 0.3s ease;
-      position: relative;
-      z-index: 1;
-    }
+    svg { width: 19px; height: 19px; flex: none; opacity: 0.9; }
 
     span {
-      position: relative;
-      z-index: 1;
       white-space: nowrap;
       overflow: hidden;
-      transition: opacity 0.2s ease, width 0.3s ease;
+      transition: opacity 0.2s ease;
     }
 
-    // CP010: Badge de notificaciones
-    .notification-badge {
-      margin-left: auto;
-      font-size: 16px;
-      animation: ring 2s infinite;
-    }
+    .notification-badge { margin-left: auto; font-size: 14px; }
 
     &:hover {
-      background: linear-gradient(90deg, rgba(5, 150, 105, 0.08) 0%, rgba(243, 244, 246, 0.5) 100%);
-      color: #059669;
-      transform: translateX(4px);
-      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
-
-      &::before {
-        width: 100%;
-      }
-
-      svg {
-        transform: scale(1.1) rotate(5deg);
-      }
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
     }
 
     &.active {
-      background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
-      color: #059669;
+      background: linear-gradient(135deg, rgba(70, 199, 154, 0.22) 0%, rgba(70, 199, 154, 0.08) 100%);
+      color: #fff;
       font-weight: 600;
-      box-shadow:
-        0 4px 12px rgba(5, 150, 105, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+      svg { opacity: 1; color: var(--mint); }
 
       &::after {
         content: '';
         position: absolute;
-        left: 0;
-        top: 50%;
+        left: 0; top: 50%;
         transform: translateY(-50%);
-        width: 4px;
-        height: 70%;
-        background: linear-gradient(180deg, #059669 0%, #10b981 100%);
+        width: 3px; height: 60%;
+        background: var(--mint);
         border-radius: 0 4px 4px 0;
-        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4);
-      }
-
-      svg {
-        transform: scale(1.05);
       }
     }
   }
 
+  // ---- Footer ----
   .sidebar-footer {
+    flex: none;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 0 12px;
+    gap: 2px;
+    padding: 14px 12px 0;
     margin-top: auto;
-    padding-top: 24px;
-    border-top: 1px solid rgba(229, 231, 235, 0.5);
-    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #059669, transparent);
-      opacity: 0.3;
+    .nav-item.logout {
+      color: #f3b8ad;
+      &:hover { background: rgba(192, 57, 43, 0.22); color: #ffd9d1; }
     }
   }
 
-  // Collapsed state styles
+  // ============================================================
+  //  COLAPSADO
+  // ============================================================
   &.collapsed {
-    width: 70px;
+    width: 76px;
 
     .logo-container {
-      padding: 0 15px 32px;
+      padding: 0 0 26px;
       justify-content: center;
+
+      .logo__name { display: none; }
 
       .toggle-btn {
         position: absolute;
-        top: 24px;
-        right: -16px;
-        background: white;
-        border: 2px solid rgba(5, 150, 105, 0.3);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        top: 20px; right: -14px;
+        background: #0f7a5c;
+        border-color: rgba(255,255,255,0.2);
+        color: #fff;
+        box-shadow: var(--sh-md);
         z-index: 10;
-
-        &:hover {
-          background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
-          border-color: #059669;
-        }
       }
     }
 
-    .nav-menu,
-    .sidebar-footer {
-      padding: 0 7px;
-    }
+    .nav-menu, .sidebar-footer { padding-left: 10px; padding-right: 10px; }
 
     .nav-item {
       justify-content: center;
-      padding: 12px;
-      position: relative;
+      padding: 11px;
 
-      span {
-        opacity: 0;
-        width: 0;
-        pointer-events: none;
-      }
+      span:not(.notification-badge) { opacity: 0; width: 0; pointer-events: none; }
+      .notification-badge { display: none; }
 
-      &:hover {
-        transform: none;
+      // tooltip flotante al hover
+      &:hover span:not(.notification-badge) {
+        opacity: 1;
+        width: auto;
+        position: absolute;
+        left: calc(100% + 12px);
+        padding: 7px 12px;
+        background: #093d2f;
+        color: #fff;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        white-space: nowrap;
+        box-shadow: var(--sh-lg);
+        z-index: 100;
 
-        span {
-          opacity: 1;
-          width: auto;
+        &::before {
+          content: '';
           position: absolute;
-          left: 100%;
-          margin-left: 12px;
-          padding: 8px 16px;
-          background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(16, 185, 129, 0.9) 100%);
-          color: white;
-          border-radius: 8px;
-          white-space: nowrap;
-          box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-          pointer-events: auto;
-          font-weight: 500;
-          z-index: 100;
-
-          &::before {
-            content: '';
-            position: absolute;
-            left: -4px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-top: 6px solid transparent;
-            border-bottom: 6px solid transparent;
-            border-right: 6px solid rgba(5, 150, 105, 0.95);
-          }
-        }
-      }
-
-      &.active {
-        &::after {
-          height: 60%;
+          left: -5px; top: 50%;
+          transform: translateY(-50%);
+          border: 5px solid transparent;
+          border-right-color: #093d2f;
         }
       }
     }

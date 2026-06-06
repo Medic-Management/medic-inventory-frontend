@@ -2,10 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoteService, LoteResponse } from '../../services/lote.service';
+import { AppDatePipe } from '../../pipes/app-date.pipe';
 
 @Component({
   selector: 'app-lotes',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AppDatePipe],
   templateUrl: './lotes.html',
   styleUrl: './lotes.scss'
 })

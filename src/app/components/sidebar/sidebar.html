@@ -1,7 +1,8 @@
 <aside class="sidebar" [class.collapsed]="isCollapsed">
   <div class="logo-container">
     <div class="logo">
-      <img src="/logo.png" alt="Medic Management Logo" style="height: 40px; width: auto; object-fit: contain;">
+      <span class="logo__cross" aria-hidden="true"><span></span><span></span></span>
+      <span class="logo__name">Medic<em>Management</em></span>
     </div>
     <button class="toggle-btn" (click)="toggleSidebar()" title="{{ isCollapsed ? 'Expandir menú' : 'Contraer menú' }}">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">

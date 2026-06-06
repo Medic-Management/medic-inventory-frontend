@@ -58,7 +58,7 @@
               <tr [class]="getVencimientoClass(lote)">
                 <td><strong>{{ lote.codigoLote }}</strong></td>
                 <td>{{ lote.productoNombre }}</td>
-                <td>{{ lote.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
+                <td>{{ lote.fechaVencimiento | appDate }}</td>
                 <td>
                   <span [class]="getVencimientoClass(lote)">
                     @if (lote.diasHastaVencimiento < 0) {

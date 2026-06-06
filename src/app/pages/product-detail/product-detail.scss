@@ -1,46 +1,78 @@
 .product-detail-page {
   max-width: 1400px;
   margin: 0 auto;
+  font-family: var(--font-ui);
 
   .page-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
     margin-bottom: 24px;
 
     .page-title {
-      font-size: 28px;
+      font-family: var(--font-display);
+      font-size: 30px;
       font-weight: 600;
-      color: #111827;
+      letter-spacing: -0.01em;
+      color: var(--ink);
       margin: 0;
     }
 
     .page-actions {
       display: flex;
       gap: 12px;
+      flex-wrap: wrap;
 
       .btn {
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        border: 1px solid #e5e7eb;
-        background: white;
-        color: #374151;
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        transition: all 0.2s;
+        padding: 11px 20px;
+        border-radius: var(--r-md);
+        font-family: var(--font-ui);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        border: 1.5px solid transparent;
+        transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease),
+                    background 0.25s var(--ease), border-color 0.25s var(--ease),
+                    color 0.25s var(--ease);
 
         svg {
           width: 16px;
           height: 16px;
         }
 
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      // Botón primario: gradiente de marca
+      .btn-primary {
+        background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        color: #fff;
+        box-shadow: 0 12px 26px -12px rgba(12, 92, 71, 0.6);
+
         &:hover {
-          background-color: #f9fafb;
-          border-color: #d1d5db;
+          transform: translateY(-2px);
+          box-shadow: 0 18px 34px -14px rgba(12, 92, 71, 0.7);
+        }
+      }
+
+      // Botones secundarios: ghost
+      .btn-outline {
+        background: var(--surface);
+        border-color: var(--line);
+        color: var(--ink);
+
+        &:hover {
+          border-color: var(--brand);
+          color: var(--brand);
+          background: var(--mint-tint);
         }
       }
     }
@@ -48,7 +80,7 @@
 
   // Tabs
   .tabs {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--line);
     margin-bottom: 32px;
 
     .tab {
@@ -57,19 +89,20 @@
       background: none;
       border: none;
       border-bottom: 3px solid transparent;
-      color: #6b7280;
+      color: var(--ink-soft);
+      font-family: var(--font-ui);
       font-size: 15px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
 
       &.active {
-        border-bottom-color: #2563eb;
-        color: #2563eb;
+        border-bottom-color: var(--brand);
+        color: var(--brand);
       }
 
       &:hover:not(.active) {
-        color: #374151;
+        color: var(--ink);
       }
     }
   }
@@ -81,43 +114,54 @@
     gap: 32px;
   }
 
+  // Tarjeta blanca compartida
+  .detail-section,
+  .product-image-container,
+  .stock-stats {
+    background: var(--surface);
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-md);
+  }
+
   // Details Column
   .details-column {
     .detail-section {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       margin-bottom: 24px;
 
       .section-title {
+        font-family: var(--font-display);
         font-size: 18px;
         font-weight: 600;
-        color: #111827;
-        margin: 0 0 20px 0;
+        color: var(--ink);
+        margin: 0 0 16px 0;
       }
 
       .detail-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px 0;
-        border-bottom: 1px solid #f3f4f6;
+        gap: 16px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line-soft);
 
         &:last-child {
           border-bottom: none;
+          padding-bottom: 0;
         }
 
         .detail-label {
           font-size: 14px;
-          color: #6b7280;
+          color: var(--ink-soft);
           font-weight: 500;
         }
 
         .detail-value {
           font-size: 15px;
-          color: #111827;
-          font-weight: 500;
+          color: var(--ink);
+          font-weight: 600;
+          text-align: right;
         }
       }
     }
@@ -126,61 +170,72 @@
   // Image & Stats Column
   .image-stats-column {
     .product-image-container {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       margin-bottom: 24px;
 
       .product-image-placeholder {
-        border: 2px dashed #e5e7eb;
-        border-radius: 12px;
+        border: 1.5px dashed var(--line);
+        border-radius: var(--r-md);
         padding: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #f9fafb;
+        background-color: var(--mint-tint);
         min-height: 250px;
 
         .product-image {
           max-width: 100%;
           max-height: 300px;
           object-fit: contain;
+          border-radius: var(--r-sm);
         }
 
         svg {
-          color: #d1d5db;
+          color: var(--mint);
+          opacity: 0.85;
         }
       }
     }
 
     .stock-stats {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
       .stat-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 16px;
         padding: 14px 0;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid var(--line-soft);
 
         &:last-child {
           border-bottom: none;
+          padding-bottom: 0;
         }
 
         .stat-label {
           font-size: 14px;
-          color: #6b7280;
+          color: var(--ink-soft);
+          font-weight: 500;
         }
 
+        // Valor de stock con badge pill por defecto (normal / ok)
         .stat-value {
+          display: inline-flex;
+          align-items: center;
+          font-family: var(--font-display);
           font-size: 18px;
-          color: #111827;
           font-weight: 600;
+          color: var(--ink);
         }
+      }
+
+      // Primer indicador (Stock inicial) destacado como pill de marca
+      .stat-row:first-child .stat-value {
+        font-family: var(--font-ui);
+        font-size: 0.85rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--r-pill);
+        background: var(--mint-tint);
+        color: var(--brand);
+        border: 1px solid var(--mint-soft);
       }
     }
   }
@@ -191,6 +246,32 @@
   .product-detail-page {
     .content-grid {
       grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .product-detail-page {
+    .page-header {
+      align-items: flex-start;
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .page-actions {
+        width: 100%;
+
+        .btn {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    }
+
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
   }
 }
