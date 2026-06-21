@@ -75,6 +75,11 @@
         <div class="pedido-seleccionado-info">
           <h2>📦 Registrando recepción del Pedido #{{ pedidoSeleccionado.id }}</h2>
           <p><strong>Producto:</strong> {{ pedidoSeleccionado.productoNombre }} | <strong>Proveedor:</strong> {{ pedidoSeleccionado.proveedorNombre }}</p>
+          <!-- CP011/HU-11: aclara qué se autorrellenó y qué debe completar el auxiliar -->
+          <p class="autorrelleno-hint">
+            ✅ Se autorrellenaron <strong>Producto</strong> y <strong>Cantidad</strong> desde el pedido (puedes ajustar la cantidad).
+            Completa el <strong>Código de Lote</strong> y la <strong>Fecha de Vencimiento</strong> de la mercadería recibida antes de confirmar.
+          </p>
         </div>
       } @else {
         <h2>Registrar Nueva Entrada</h2>

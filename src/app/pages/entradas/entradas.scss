@@ -419,6 +419,14 @@
 
     strong { color: var(--ink); }
   }
+
+  .autorrelleno-hint {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--mint-soft);
+    font-size: 13px;
+    line-height: 1.5;
+  }
 }
 
 /* --- Responsive --- */
