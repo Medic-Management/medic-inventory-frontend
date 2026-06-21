@@ -48,7 +48,6 @@
               <th>Fecha Vencimiento</th>
               <th>Días para vencer</th>
               <th>Stock</th>
-              <th>Precio Unit.</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -69,7 +68,6 @@
                   </span>
                 </td>
                 <td>{{ lote.cantidadDisponible }}</td>
-                <td>S/ {{ lote.precioUnitario | number:'1.2-2' }}</td>
                 <td>
                   <span [class]="getEstadoClass(lote)" class="estado-badge">
                     {{ lote.estado ? 'ACTIVO' : 'BLOQUEADO' }}
