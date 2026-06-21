@@ -1,6 +1,6 @@
 // Environment para producción (Netlify)
 export const environment = {
   production: true,
-  // Para producción - IP del servidor Azure
-  apiUrl: 'http://172.200.21.101:8080/api'
+  // Servidor Azure por HTTPS (puerto 8443) — requerido porque Netlify usa HTTPS
+  apiUrl: 'https://172.200.21.101:8443/api'
 };
