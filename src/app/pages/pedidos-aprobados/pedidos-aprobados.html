@@ -47,6 +47,8 @@
       <div class="loading-state">
         <p>Cargando pedidos aprobados...</p>
       </div>
+    } @else if (errorMessage) {
+      <!-- CP024: ante un error de carga NO se muestra el mensaje de "sin datos" -->
     } @else if (pedidosAprobados.length === 0) {
       <div class="empty-state">
         <p>✅ No hay pedidos aprobados pendientes de envío</p>
