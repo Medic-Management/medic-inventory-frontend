@@ -121,6 +121,7 @@
               <th>Lote</th>
               <th>Cantidad</th>
               <th>Fecha</th>
+              <th>Dispensado por</th>
               <th>Documento Ref.</th>
               <th>Motivo</th>
               <th>Acciones</th>
@@ -134,6 +135,7 @@
                 <td>{{ disp.codigoLote }}</td>
                 <td>{{ disp.cantidad }} unidades</td>
                 <td>{{ formatDate(disp.ocurrioEn) }}</td>
+                <td>{{ disp.dispensadoPorNombre || '-' }}</td>
                 <td>{{ disp.documentoReferencia || '-' }}</td>
                 <td>{{ disp.motivo || '-' }}</td>
                 <td>
