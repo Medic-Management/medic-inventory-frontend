@@ -67,6 +67,8 @@
     <div class="loading-state">
       <p>Cargando comprobantes...</p>
     </div>
+  } @else if (errorMessage) {
+    <!-- CP023: ante un error de carga NO se muestra el mensaje de "sin resultados" -->
   } @else if (comprobantesFiltrados.length === 0) {
     <div class="empty-state">
       <p>No se encontraron comprobantes con los filtros aplicados</p>
