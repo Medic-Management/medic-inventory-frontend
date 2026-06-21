@@ -186,6 +186,25 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // CP022/HU-22: indica si se está recalculando la cobertura
+  verificandoCobertura = false;
+
+  // CP022/HU-22: recalcula la cobertura (genera/actualiza alertas) y refresca la vista
+  refrescarCobertura() {
+    this.verificandoCobertura = true;
+    this.alertaCoberturaService.verificarCoberturaYGenerarAlertas().subscribe({
+      next: () => {
+        this.loadAlertasCobertura();
+        this.verificandoCobertura = false;
+      },
+      error: (error) => {
+        console.error('Error al recalcular cobertura:', error);
+        this.loadAlertasCobertura();
+        this.verificandoCobertura = false;
+      }
+    });
+  }
+
   // HU-17: Cargar alertas de cobertura
   loadAlertasCobertura() {
     this.alertaCoberturaService.getAlertasCoberturaActivas().subscribe({

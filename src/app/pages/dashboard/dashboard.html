@@ -458,7 +458,7 @@
         }
       </div>
 
-      <!-- HU-17: Widget de Alertas de Cobertura -->
+      <!-- HU-17 / HU-22: Widget de Alertas de Cobertura -->
       <div class="section-card">
         <div class="section-header-flex">
           <h2 class="section-title">Alertas de Cobertura 📅</h2>
@@ -468,6 +468,10 @@
               <span class="badge badge-orange">{{ resumenCobertura.alertasMedias }} Media</span>
               <span class="badge badge-yellow">{{ resumenCobertura.alertasBajas }} Baja</span>
             }
+            <!-- CP022/HU-22: recalcular y refrescar la cobertura -->
+            <button class="btn btn-outline-small" (click)="refrescarCobertura()" [disabled]="verificandoCobertura" title="Recalcular cobertura">
+              {{ verificandoCobertura ? '⏳ Actualizando...' : '🔄 Actualizar' }}
+            </button>
           </div>
         </div>
         @if (alertasCobertura.length === 0) {
