@@ -254,9 +254,12 @@ export class SolicitudesComponent implements OnInit {
         setTimeout(() => this.successMessage = '', 3000);
       },
       error: (error) => {
-        this.errorMessage = 'Error al aprobar la solicitud';
+        // El estado pudo cambiar por detrás: avisar y refrescar la lista
+        this.errorMessage = error?.error?.message ||
+          `No se pudo aprobar la solicitud #${solicitud.id}. Es posible que ya no esté en estado Borrador.`;
+        this.loadSolicitudes();
         console.error('Error:', error);
-        setTimeout(() => this.errorMessage = '', 3000);
+        setTimeout(() => this.errorMessage = '', 4000);
       }
     });
   }
